@@ -1,7 +1,10 @@
 # 三角洲行动 · 改枪码库
 
-> **🌐 在线访问：<https://hajimi619.github.io/delta-codes/>**
-> 手机、电脑直接打开，无需登录。仓库：<https://github.com/hajimi619/delta-codes>
+> **🌐 在线访问：<https://hajimiovo.top/>**
+> 手机、电脑直接打开，无需登录，所有人都能新增 / 标记失效改枪码。
+>
+> 镜像：<https://hajimi619.github.io/delta-codes/> · 仓库：<https://github.com/hajimi619/delta-codes>
+> 接口：<https://api.hajimiovo.top/api/changes>
 
 把一份公开的腾讯文档《三角洲行动改枪码合集》里的改枪码
 抓下来，做成一个能搜索、筛选、收藏、对比、一键复制的网页。
@@ -42,9 +45,10 @@
 
 ```
 delta-codes/
-├─ docs/                     ← GitHub Pages 发布目录
+├─ docs/                     ← 发布目录（Cloudflare Pages + GitHub Pages 共用）
 │  ├─ index.html             网页本体（界面 + 交互）
 │  ├─ data.js                由 build_site.py 生成的数据包（window.DELTA_DATA）
+│  ├─ img/guns/*.webp        68 张枪械图
 │  └─ .nojekyll
 ├─ data/
 │  ├─ codes.json             抓取结果（基础数据，含来源 tab / 行列号）
@@ -61,7 +65,8 @@ delta-codes/
 │  ├─ extract_gun_images.py  从图鉴截图裁出每把枪 → docs/img/guns/*.webp
 │  ├─ build_site.py          data/*.json → docs/data.js（清洗 + 补 id/价格/图片）
 │  ├─ build_singlefile.py    打包成单文件 dist/delta-codes.html（图片内联）
-│  └─ deploy_github.py       纯 REST API 部署到 GitHub Pages（不需要 git）
+│  ├─ deploy_github.py       纯 REST API 部署到 GitHub Pages（不需要 git）
+│  └─ deploy_pages.ps1       部署 docs/ 到 Cloudflare Pages（走 wrangler）
 ├─ preview/                  截图
 └─ .github/workflows/
    └─ refresh-codes.yml      在 GitHub 上手动触发一次数据刷新（可选定时）
@@ -89,21 +94,29 @@ delta-codes/
 & $py scripts\build_site.py
 ```
 
-## 在线编辑（可选，默认关闭）
+## 在线编辑
 
-站点默认是**只读**的。要开启"所有人都能新增 / 标记失效改枪码"，需要一个后端来存改动——
-GitHub Pages 是纯静态的，没有地方写数据。
-
-后端用的是 **Cloudflare Worker + D1**（免费额度足够），部署步骤见
-[worker/README.md](worker/README.md)，全程点点点和粘贴，约 5 分钟。
-
-部署完把 Worker 地址填进 `config.json`：
+站点**已经开启**在线编辑，后端是 **Cloudflare Worker + D1**（免费额度足够），
+接口地址 <https://api.hajimiovo.top>，写进 `config.json`：
 
 ```json
-{ "apiBase": "https://delta-codes-api.你的子域.workers.dev" }
+{ "apiBase": "https://api.hajimiovo.top" }
 ```
 
-然后重新 `build_site.py` 再部署，页面上就会出现 **「+ 新增改枪码」** 和每条的 **「标记失效」** 按钮。
+`apiBase` 留空即回到只读模式。部署步骤见 [worker/README.md](worker/README.md)。
+
+页面上的入口：**「+ 新增改枪码」**（筛选栏右侧）和每条的 **「标记失效」**（详情页 ⊘）。
+
+**接口：**
+
+| 方法 | 路径 | 作用 |
+|---|---|---|
+| GET | `/api/changes` | 拉取全部改动（新增 + 失效标记） |
+| POST | `/api/add` | 新增一个改枪码 |
+| POST | `/api/flag` | 标记失效 / 恢复 |
+
+**防滥用：** 同一个码不能重复提交 · 每 IP 每小时最多 30 次写操作 ·
+枪械名 / 名字 / 备注都有长度上限 · CORS 只放行自有域名和 GitHub Pages。
 
 **设计上刻意做了两层保护：**
 
@@ -132,6 +145,32 @@ cd D:\APP\dswork\delta-codes
 推到 GitHub 后，在 Actions 里点「Run workflow」也能刷新（会自己 commit 回仓库，
 Pages 随后自动重新发布）；想每天自动跑就把 `schedule` 的注释打开。
 
+## 部署
+
+站点同时发布到两个地方，内容一样：
+
+| 目标 | 地址 | 部署方式 | 说明 |
+|---|---|---|---|
+| **Cloudflare Pages** | <https://hajimiovo.top/> | `scripts/deploy_pages.ps1` | **主站**。国内可直连（约 1–3 秒） |
+| GitHub Pages | <https://hajimi619.github.io/delta-codes/> | `scripts/deploy_github.py` | 镜像 / 备份 |
+
+```powershell
+cd D:\APP\dswork\delta-codes
+& pwsh scripts\deploy_pages.ps1      # Cloudflare（token 放在 ..\.cf-token）
+& $py scripts\deploy_github.py --token-file ..\.gh-token --repo delta-codes
+```
+
+两个脚本都会跳过内容没变的文件。
+
+### 域名与解析
+
+- `hajimiovo.top` / `www.hajimiovo.top` → CNAME → `delta-codes.pages.dev`（Cloudflare 代理）
+- `api.hajimiovo.top` → Cloudflare Worker `delta-codes-api`（自定义域名）
+- DNS 托管在 Cloudflare（NS：`mckenzie` / `robert`.ns.cloudflare.com），**不需要备案**
+
+> 为什么不用 Worker 自带的 `*.workers.dev`：那个域名在国内被 DNS 污染，
+> 普通用户**完全连不上**，接口会一直失败。换成自己的域名后国内实测可以直连。
+
 ## 发布到 GitHub Pages
 
 1. 在 GitHub 建一个空仓库（public）。
@@ -153,7 +192,6 @@ Pages 随后自动重新发布）；想每天自动跑就把 `schedule` 的注�
 4. 等 1 分钟左右，访问 `https://<你的用户名>.github.io/<仓库名>/`。
 
 > 因为发布目录就叫 `docs`，不需要任何构建步骤，Pages 直接读这个文件夹。
-> 想用自己的域名，在 Pages 里填 Custom domain 即可。
 
 ## 数据是怎么拿到的
 
