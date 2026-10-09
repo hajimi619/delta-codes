@@ -1,0 +1,3585 @@
+{
+ "source": "https://docs.qq.com/sheet/DUmZJeER0dmNTSVRP",
+ "tabs": [
+  {
+   "tab": "BB08J2",
+   "sheetId": "BB08J2",
+   "rows": 156,
+   "cols": 19,
+   "notices": [
+    "GALI的烽火改枪码合集",
+    "改枪码失效是因为一个枪码用的人太多导致的是游戏问题不是我们的问题 遇到失效的直接去群里上报就可以了上报就会更新 来直播间催我的或者在群里说话嘴带脏字的 直接飞升处理",
+    "RM277",
+    "AR57",
+    "MK47",
+    "KC17",
+    "K437",
+    "AS Val",
+    "CAR-15",
+    "PTR-32",
+    "SCAR-H",
+    "AK12",
+    "SG552",
+    "K416",
+    "ASH-12",
+    "AKS-74U",
+    "QBZ-95",
+    "M4A1",
+    "直播中不要找我更新改枪码！！！！！！！  每天都有固定时间给大家更新的！！！！直播中不要找我更新改枪码！！！！！！！！！"
+   ],
+   "records": [
+    {
+     "code": "6L6JE9S01SD6JA3I74O3I",
+     "gun": "MDR突击步枪",
+     "mode": "烽火地带",
+     "build": "32w性价比",
+     "full": "MDR突击步枪-烽火地带-6L6JE9S01SD6JA3I74O3I",
+     "row": 12,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JHQ804BG7MUGF089BS",
+     "gun": "汤姆逊冲锋枪",
+     "mode": "烽火地带",
+     "build": "22w丐版",
+     "full": "汤姆逊冲锋枪-烽火地带-6L6JHQ804BG7MUGF089BS",
+     "row": 12,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJUV004BG7MUGF089BS",
+     "gun": "SVCH精确射手步枪",
+     "mode": "烽火地带",
+     "build": "57w红点无后座",
+     "full": "SVCH精确射手步枪-烽火地带-6LGJUV004BG7MUGF089BS",
+     "row": 12,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT3Q8063PRJI1QTIR9P",
+     "gun": "M250通用机枪",
+     "mode": "烽火地带",
+     "build": "28W青春版",
+     "full": "M250通用机枪-烽火地带-6JQT3Q8063PRJI1QTIR9P",
+     "row": 12,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JEA401SD6JA3I74O3I",
+     "gun": "MDR突击步枪",
+     "mode": "烽火地带",
+     "build": "44w红点",
+     "full": "MDR突击步枪-烽火地带-6L6JEA401SD6JA3I74O3I",
+     "row": 13,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JHQK04BG7MUGF089BS",
+     "gun": "汤姆逊冲锋枪",
+     "mode": "烽火地带",
+     "build": "36w半改",
+     "full": "汤姆逊冲锋枪-烽火地带-6L6JHQK04BG7MUGF089BS",
+     "row": 13,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJUVO04BG7MUGF089BS",
+     "gun": "SVCH精确射手步枪",
+     "mode": "烽火地带",
+     "build": "38W半改",
+     "full": "SVCH精确射手步枪-烽火地带-6LGJUVO04BG7MUGF089BS",
+     "row": 13,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQTR4G063PRJI1QTIR9P",
+     "gun": "M250通用机枪",
+     "mode": "烽火地带",
+     "build": "53W新手版",
+     "full": "M250通用机枪-烽火地带-6JQTR4G063PRJI1QTIR9P",
+     "row": 13,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LAVVB401SD6JA3I74O3I",
+     "gun": "MDR突击步枪",
+     "mode": "烽火地带",
+     "build": "55w倍镜",
+     "full": "MDR突击步枪-烽火地带-6LAVVB401SD6JA3I74O3I",
+     "row": 14,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L8M3O401SD6JA3I74O3I",
+     "gun": "汤姆逊冲锋枪",
+     "mode": "烽火地带",
+     "build": "50w满改双修",
+     "full": "汤姆逊冲锋枪-烽火地带-6L8M3O401SD6JA3I74O3I",
+     "row": 14,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJV0004BG7MUGF089BS",
+     "gun": "SVCH精确射手步枪",
+     "mode": "烽火地带",
+     "build": "54W倍镜款",
+     "full": "SVCH精确射手步枪-烽火地带-6LGJV0004BG7MUGF089BS",
+     "row": 14,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6K08G063PRJI1QTIR9P",
+     "gun": "M250通用机枪",
+     "mode": "烽火地带",
+     "build": "62W满改2倍",
+     "full": "M250通用机枪-烽火地带-6K6K08G063PRJI1QTIR9P",
+     "row": 14,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJF8801SD6JA3I74O3I",
+     "gun": "RM277突击步枪",
+     "mode": "烽火地带",
+     "build": "41w倍镜无后座",
+     "full": "RM277突击步枪-烽火地带-6LHJF8801SD6JA3I74O3I",
+     "row": 15,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JHR404BG7MUGF089BS",
+     "gun": "汤姆逊冲锋枪",
+     "mode": "烽火地带",
+     "build": "47w新手版",
+     "full": "汤姆逊冲锋枪-烽火地带-6L6JHR404BG7MUGF089BS",
+     "row": 15,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJTTK04BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "54W顶级半改",
+     "full": "M14射手步枪-烽火地带-6LGJTTK04BG7MUGF089BS",
+     "row": 15,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6K08S063PRJI1QTIR9P",
+     "gun": "M250通用机枪",
+     "mode": "烽火地带",
+     "build": "60W常规操速",
+     "full": "M250通用机枪-烽火地带-6K6K08S063PRJI1QTIR9P",
+     "row": 15,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJF8O01SD6JA3I74O3I",
+     "gun": "RM277突击步枪",
+     "mode": "烽火地带",
+     "build": "22w丐版",
+     "full": "RM277突击步枪-烽火地带-6LHJF8O01SD6JA3I74O3I",
+     "row": 16,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L8M2NC01SD6JA3I74O3I",
+     "gun": "汤姆逊冲锋枪",
+     "mode": "烽火地带",
+     "build": "27w腰射版",
+     "full": "汤姆逊冲锋枪-烽火地带-6L8M2NC01SD6JA3I74O3I",
+     "row": 16,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJTUK04BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "72W新手30发",
+     "full": "M14射手步枪-烽火地带-6LGJTUK04BG7MUGF089BS",
+     "row": 16,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT3T4063PRJI1QTIR9P",
+     "gun": "M250通用机枪",
+     "mode": "烽火地带",
+     "build": "53W嘉豪操速版",
+     "full": "M250通用机枪-烽火地带-6JQT3T4063PRJI1QTIR9P",
+     "row": 16,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJF9C01SD6JA3I74O3I",
+     "gun": "RM277突击步枪",
+     "mode": "烽火地带",
+     "build": "47w红点",
+     "full": "RM277突击步枪-烽火地带-6LHJF9C01SD6JA3I74O3I",
+     "row": 17,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJTNG04BG7MUGF089BS",
+     "gun": "MK4冲锋枪",
+     "mode": "烽火地带",
+     "build": "30w性价比三连发",
+     "full": "MK4冲锋枪-烽火地带-6LGJTNG04BG7MUGF089BS",
+     "row": 17,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JLJS04BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "71W高操速爆闪",
+     "full": "M14射手步枪-烽火地带-6L6JLJS04BG7MUGF089BS",
+     "row": 17,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT7L4063PRJI1QTIR9P",
+     "gun": "PKM通用机枪",
+     "mode": "烽火地带",
+     "build": "26W顶级丐版",
+     "full": "PKM通用机枪-烽火地带-6JQT7L4063PRJI1QTIR9P",
+     "row": 17,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4981C01SD6JA3I74O3I",
+     "gun": "AR57突击步枪",
+     "mode": "烽火地带",
+     "build": "38W满改",
+     "full": "AR57突击步枪-烽火地带-6L4981C01SD6JA3I74O3I",
+     "row": 18,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJTOG04BG7MUGF089BS",
+     "gun": "MK4冲锋枪",
+     "mode": "烽火地带",
+     "build": "30w性价比全自动",
+     "full": "MK4冲锋枪-烽火地带-6LGJTOG04BG7MUGF089BS",
+     "row": 18,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJTV804BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "58w性价比操速",
+     "full": "M14射手步枪-烽火地带-6LGJTV804BG7MUGF089BS",
+     "row": 18,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT7LO063PRJI1QTIR9P",
+     "gun": "PKM通用机枪",
+     "mode": "烽火地带",
+     "build": "36W消音",
+     "full": "PKM通用机枪-烽火地带-6JQT7LO063PRJI1QTIR9P",
+     "row": 18,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4981S01SD6JA3I74O3I",
+     "gun": "AR57突击步枪",
+     "mode": "烽火地带",
+     "build": "23w丐版",
+     "full": "AR57突击步枪-烽火地带-6L4981S01SD6JA3I74O3I",
+     "row": 19,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LFL32G04BG7MUGF089BS",
+     "gun": "MK4冲锋枪",
+     "mode": "烽火地带",
+     "build": "50w倍镜消音三连发",
+     "full": "MK4冲锋枪-烽火地带-6LFL32G04BG7MUGF089BS",
+     "row": 19,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JLK804BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "74W消音50发",
+     "full": "M14射手步枪-烽火地带-6L6JLK804BG7MUGF089BS",
+     "row": 19,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JLV8063PRJI1QTIR9P",
+     "gun": "PKM通用机枪",
+     "mode": "烽火地带",
+     "build": "55W满改三倍",
+     "full": "PKM通用机枪-烽火地带-6L6JLV8063PRJI1QTIR9P",
+     "row": 19,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4982G01SD6JA3I74O3I",
+     "gun": "AR57突击步枪",
+     "mode": "烽火地带",
+     "build": "30W半改",
+     "full": "AR57突击步枪-烽火地带-6L4982G01SD6JA3I74O3I",
+     "row": 20,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LFL33O04BG7MUGF089BS",
+     "gun": "MK4冲锋枪",
+     "mode": "烽火地带",
+     "build": "48w双修全自动",
+     "full": "MK4冲锋枪-烽火地带-6LFL33O04BG7MUGF089BS",
+     "row": 20,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJU0S04BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "85W顶级大弹鼓",
+     "full": "M14射手步枪-烽火地带-6LGJU0S04BG7MUGF089BS",
+     "row": 20,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT7MG063PRJI1QTIR9P",
+     "gun": "PKM通用机枪",
+     "mode": "烽火地带",
+     "build": "57W满改红点",
+     "full": "PKM通用机枪-烽火地带-6JQT7MG063PRJI1QTIR9P",
+     "row": 20,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4982S01SD6JA3I74O3I",
+     "gun": "AR57突击步枪",
+     "mode": "烽火地带",
+     "build": "66W满改双修倍镜",
+     "full": "AR57突击步枪-烽火地带-6L4982S01SD6JA3I74O3I",
+     "row": 21,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LFL33G04BG7MUGF089BS",
+     "gun": "MK4冲锋枪",
+     "mode": "烽火地带",
+     "build": "51W高操速红点",
+     "full": "MK4冲锋枪-烽火地带-6LFL33G04BG7MUGF089BS",
+     "row": 21,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJU1O04BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "2倍大弹鼓",
+     "full": "M14射手步枪-烽火地带-6LGJU1O04BG7MUGF089BS",
+     "row": 21,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6KIV148063PRJI1QTIR9P",
+     "gun": "PKM通用机枪",
+     "mode": "烽火地带",
+     "build": "40W短管",
+     "full": "PKM通用机枪-烽火地带-6KIV148063PRJI1QTIR9P",
+     "row": 21,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4983C01SD6JA3I74O3I",
+     "gun": "AR57突击步枪",
+     "mode": "烽火地带",
+     "build": "40W满改倍镜",
+     "full": "AR57突击步枪-烽火地带-6L4983C01SD6JA3I74O3I",
+     "row": 22,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVC404BG7MUGF089BS",
+     "gun": "QCQ171冲锋枪",
+     "mode": "烽火地带",
+     "build": "QCQ171",
+     "full": "QCQ171冲锋枪-烽火地带-6JQSVC404BG7MUGF089BS",
+     "row": 22,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT09K04BG7MUGF089BS",
+     "gun": "M700狙击步枪",
+     "mode": "烽火地带",
+     "build": "bbfps 35W",
+     "full": "M700狙击步枪-烽火地带-6JQT09K04BG7MUGF089BS",
+     "row": 22,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6K0D8063PRJI1QTIR9P",
+     "gun": "QJB201轻机枪",
+     "mode": "烽火地带",
+     "build": "24W青春版",
+     "full": "QJB201轻机枪-烽火地带-6K6K0D8063PRJI1QTIR9P",
+     "row": 22,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4JL8001SD6JA3I74O3I",
+     "gun": "MCX LT突击步枪",
+     "mode": "烽火地带",
+     "build": "20w丐版",
+     "full": "MCX LT突击步枪-烽火地带-6L4JL8001SD6JA3I74O3I",
+     "row": 23,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4JP404BG7MUGF089BS",
+     "gun": "QCQ171冲锋枪",
+     "mode": "烽火地带",
+     "build": "苏醒同款优化版",
+     "full": "QCQ171冲锋枪-烽火地带-6JO4JP404BG7MUGF089BS",
+     "row": 23,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6JVHK04BG7MUGF089BS",
+     "gun": "M700狙击步枪",
+     "mode": "烽火地带",
+     "build": "20W破点版",
+     "full": "M700狙击步枪-烽火地带-6K6JVHK04BG7MUGF089BS",
+     "row": 23,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JJ18063PRJI1QTIR9P",
+     "gun": "QJB201轻机枪",
+     "mode": "烽火地带",
+     "build": "42W风怒",
+     "full": "QJB201轻机枪-烽火地带-6L6JJ18063PRJI1QTIR9P",
+     "row": 23,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4JL8G01SD6JA3I74O3I",
+     "gun": "MCX LT突击步枪",
+     "mode": "烽火地带",
+     "build": "32W半改",
+     "full": "MCX LT突击步枪-烽火地带-6L4JL8G01SD6JA3I74O3I",
+     "row": 24,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVDO04BG7MUGF089BS",
+     "gun": "MP7冲锋枪",
+     "mode": "烽火地带",
+     "build": "26W腰射",
+     "full": "MP7冲锋枪-烽火地带-6JQSVDO04BG7MUGF089BS",
+     "row": 24,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6JVI004BG7MUGF089BS",
+     "gun": "M700狙击步枪",
+     "mode": "烽火地带",
+     "build": "40W猛攻",
+     "full": "M700狙击步枪-烽火地带-6K6JVI004BG7MUGF089BS",
+     "row": 24,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHPHUG01SD6JA3I74O3I",
+     "gun": "QJB201轻机枪",
+     "mode": "烽火地带",
+     "build": "红点消音满改",
+     "full": "QJB201轻机枪-烽火地带-6LHPHUG01SD6JA3I74O3I",
+     "row": 24,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4JL9001SD6JA3I74O3I",
+     "gun": "MCX LT突击步枪",
+     "mode": "烽火地带",
+     "build": "40W满改加速",
+     "full": "MCX LT突击步枪-烽火地带-6L4JL9001SD6JA3I74O3I",
+     "row": 25,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVE804BG7MUGF089BS",
+     "gun": "MP7冲锋枪",
+     "mode": "烽火地带",
+     "build": "51W满改双修",
+     "full": "MP7冲锋枪-烽火地带-6JQSVE804BG7MUGF089BS",
+     "row": 25,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JIBS04BG7MUGF089BS",
+     "gun": "M700狙击步枪",
+     "mode": "烽火地带",
+     "build": "全自动红点",
+     "full": "M700狙击步枪-烽火地带-6L6JIBS04BG7MUGF089BS",
+     "row": 25,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT3OG063PRJI1QTIR9P",
+     "gun": "QJB201轻机枪",
+     "mode": "烽火地带",
+     "build": "41W100后坐力",
+     "full": "QJB201轻机枪-烽火地带-6JQT3OG063PRJI1QTIR9P",
+     "row": 25,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4JL9C01SD6JA3I74O3I",
+     "gun": "MCX LT突击步枪",
+     "mode": "烽火地带",
+     "build": "40W满改消音",
+     "full": "MCX LT突击步枪-烽火地带-6L4JL9C01SD6JA3I74O3I",
+     "row": 26,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6JVCK04BG7MUGF089BS",
+     "gun": "MP7冲锋枪",
+     "mode": "烽火地带",
+     "build": "50W双修",
+     "full": "MP7冲锋枪-烽火地带-6K6JVCK04BG7MUGF089BS",
+     "row": 26,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JIC404BG7MUGF089BS",
+     "gun": "M700狙击步枪",
+     "mode": "烽火地带",
+     "build": "倍镜双形态",
+     "full": "M700狙击步枪-烽火地带-6L6JIC404BG7MUGF089BS",
+     "row": 26,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT3OS063PRJI1QTIR9P",
+     "gun": "QJB201轻机枪",
+     "mode": "烽火地带",
+     "build": "35W短管高速导气",
+     "full": "QJB201轻机枪-烽火地带-6JQT3OS063PRJI1QTIR9P",
+     "row": 26,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L4JL9S01SD6JA3I74O3I",
+     "gun": "MCX LT突击步枪",
+     "mode": "烽火地带",
+     "build": "45W满改",
+     "full": "MCX LT突击步枪-烽火地带-6L4JL9S01SD6JA3I74O3I",
+     "row": 27,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVF404BG7MUGF089BS",
+     "gun": "MP7冲锋枪",
+     "mode": "烽火地带",
+     "build": "30W丐版",
+     "full": "MP7冲锋枪-烽火地带-6JQSVF404BG7MUGF089BS",
+     "row": 27,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT40K063PRJI1QTIR9P",
+     "gun": "M249轻机枪",
+     "mode": "烽火地带",
+     "build": "17W青春版",
+     "full": "M249轻机枪-烽火地带-6JQT40K063PRJI1QTIR9P",
+     "row": 27,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7T0Q401SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "烽火地带",
+     "build": "40w侧镜",
+     "full": "MK47突击步枪-烽火地带-6L7T0Q401SD6JA3I74O3I",
+     "row": 28,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4JRS04BG7MUGF089BS",
+     "gun": "MP7冲锋枪",
+     "mode": "烽火地带",
+     "build": "45w双修版本",
+     "full": "MP7冲锋枪-烽火地带-6JO4JRS04BG7MUGF089BS",
+     "row": 28,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT19K04BG7MUGF089BS",
+     "gun": "PSG-1射手步枪",
+     "mode": "烽火地带",
+     "build": "26W青春版",
+     "full": "PSG-1射手步枪-烽火地带-6JQT19K04BG7MUGF089BS",
+     "row": 28,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT41C063PRJI1QTIR9P",
+     "gun": "M249轻机枪",
+     "mode": "烽火地带",
+     "build": "31W高操速",
+     "full": "M249轻机枪-烽火地带-6JQT41C063PRJI1QTIR9P",
+     "row": 28,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7T0RS01SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "烽火地带",
+     "build": "58W鏖战",
+     "full": "MK47突击步枪-烽火地带-6L7T0RS01SD6JA3I74O3I",
+     "row": 29,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVGC04BG7MUGF089BS",
+     "gun": "勇士冲锋枪",
+     "mode": "烽火地带",
+     "build": "16W青春版腰射",
+     "full": "勇士冲锋枪-烽火地带-6JQSVGC04BG7MUGF089BS",
+     "row": 29,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6JVM004BG7MUGF089BS",
+     "gun": "PSG-1射手步枪",
+     "mode": "烽火地带",
+     "build": "52W满改",
+     "full": "PSG-1射手步枪-烽火地带-6K6JVM004BG7MUGF089BS",
+     "row": 29,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT438063PRJI1QTIR9P",
+     "gun": "M249轻机枪",
+     "mode": "烽火地带",
+     "build": "49W满改两倍",
+     "full": "M249轻机枪-烽火地带-6JQT438063PRJI1QTIR9P",
+     "row": 29,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7T0U001SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "烽火地带",
+     "build": "60W余烬消音高操速",
+     "full": "MK47突击步枪-烽火地带-6L7T0U001SD6JA3I74O3I",
+     "row": 30,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVH004BG7MUGF089BS",
+     "gun": "勇士冲锋枪",
+     "mode": "烽火地带",
+     "build": "14W青春版开镜",
+     "full": "勇士冲锋枪-烽火地带-6JQSVH004BG7MUGF089BS",
+     "row": 30,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JTS47804BG7MUGF089BS",
+     "gun": "SVD狙击步枪",
+     "mode": "烽火地带",
+     "build": "27W",
+     "full": "SVD狙击步枪-烽火地带-6JTS47804BG7MUGF089BS",
+     "row": 30,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT450063PRJI1QTIR9P",
+     "gun": "M249轻机枪",
+     "mode": "烽火地带",
+     "build": "38W高操速",
+     "full": "M249轻机枪-烽火地带-6JQT450063PRJI1QTIR9P",
+     "row": 30,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7T10001SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "烽火地带",
+     "build": "80W满改二倍镜",
+     "full": "MK47突击步枪-烽火地带-6L7T10001SD6JA3I74O3I",
+     "row": 31,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVIS04BG7MUGF089BS",
+     "gun": "SR-3M紧凑突击步枪",
+     "mode": "烽火地带",
+     "build": "47W林树移速双休",
+     "full": "SR-3M紧凑突击步枪-烽火地带-6JQSVIS04BG7MUGF089BS",
+     "row": 31,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1Q804BG7MUGF089BS",
+     "gun": "SVD狙击步枪",
+     "mode": "烽火地带",
+     "build": "51W",
+     "full": "SVD狙击步枪-烽火地带-6JQT1Q804BG7MUGF089BS",
+     "row": 31,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4KBC063PRJI1QTIR9P",
+     "gun": "M249轻机枪",
+     "mode": "烽火地带",
+     "build": "25w链锯",
+     "full": "M249轻机枪-烽火地带-6JO4KBC063PRJI1QTIR9P",
+     "row": 31,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7T10G01SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "烽火地带",
+     "build": "70W满改稳定",
+     "full": "MK47突击步枪-烽火地带-6L7T10G01SD6JA3I74O3I",
+     "row": 32,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVJC04BG7MUGF089BS",
+     "gun": "SR-3M紧凑突击步枪",
+     "mode": "烽火地带",
+     "build": "30W半改",
+     "full": "SR-3M紧凑突击步枪-烽火地带-6JQSVJC04BG7MUGF089BS",
+     "row": 32,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7SVF001SD6JA3I74O3I",
+     "gun": "KC17突击步枪",
+     "mode": "烽火地带",
+     "build": "20W青春版",
+     "full": "KC17突击步枪-烽火地带-6L7SVF001SD6JA3I74O3I",
+     "row": 33,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVJO04BG7MUGF089BS",
+     "gun": "SR-3M紧凑突击步枪",
+     "mode": "烽火地带",
+     "build": "48W满改腰射",
+     "full": "SR-3M紧凑突击步枪-烽火地带-6JQSVJO04BG7MUGF089BS",
+     "row": 33,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1UC04BG7MUGF089BS",
+     "gun": "Mini-14射手步枪",
+     "mode": "烽火地带",
+     "build": "22W半改",
+     "full": "Mini-14射手步枪-烽火地带-6JQT1UC04BG7MUGF089BS",
+     "row": 33,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7SVGO01SD6JA3I74O3I",
+     "gun": "KC17突击步枪",
+     "mode": "烽火地带",
+     "build": "45W满改火控/3.5倍镜",
+     "full": "KC17突击步枪-烽火地带-6L7SVGO01SD6JA3I74O3I",
+     "row": 34,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVK404BG7MUGF089BS",
+     "gun": "SR-3M紧凑突击步枪",
+     "mode": "烽火地带",
+     "build": "59W全能版",
+     "full": "SR-3M紧凑突击步枪-烽火地带-6JQSVK404BG7MUGF089BS",
+     "row": 34,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1VG04BG7MUGF089BS",
+     "gun": "Mini-14射手步枪",
+     "mode": "烽火地带",
+     "build": "42W满改",
+     "full": "Mini-14射手步枪-烽火地带-6JQT1VG04BG7MUGF089BS",
+     "row": 34,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L7SVHC01SD6JA3I74O3I",
+     "gun": "KC17突击步枪",
+     "mode": "烽火地带",
+     "build": "59W红点满改（投稿）",
+     "full": "KC17突击步枪-烽火地带-6L7SVHC01SD6JA3I74O3I",
+     "row": 35,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVKG04BG7MUGF089BS",
+     "gun": "SR-3M紧凑突击步枪",
+     "mode": "烽火地带",
+     "build": "70W超快开镜",
+     "full": "SR-3M紧凑突击步枪-烽火地带-6JQSVKG04BG7MUGF089BS",
+     "row": 35,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1S804BG7MUGF089BS",
+     "gun": "VSS射手步枪",
+     "mode": "烽火地带",
+     "build": "44W",
+     "full": "VSS射手步枪-烽火地带-6JQT1S804BG7MUGF089BS",
+     "row": 35,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L2NOE401SD6JA3I74O3I",
+     "gun": "KC17突击步枪",
+     "mode": "烽火地带",
+     "build": "34W红点（投稿）",
+     "full": "KC17突击步枪-烽火地带-6L2NOE401SD6JA3I74O3I",
+     "row": 36,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6F19C04BG7MUGF089BS",
+     "gun": "SMG-45冲锋枪",
+     "mode": "烽火地带",
+     "build": "SMG45",
+     "full": "SMG-45冲锋枪-烽火地带-6K6F19C04BG7MUGF089BS",
+     "row": 36,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1FK04BG7MUGF089BS",
+     "gun": "SR-25射手步枪",
+     "mode": "烽火地带",
+     "build": "52W性价比短枪管",
+     "full": "SR-25射手步枪-烽火地带-6JQT1FK04BG7MUGF089BS",
+     "row": 36,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LAVP6801SD6JA3I74O3I",
+     "gun": "KC17突击步枪",
+     "mode": "烽火地带",
+     "build": "52w消音",
+     "full": "KC17突击步枪-烽火地带-6LAVP6801SD6JA3I74O3I",
+     "row": 37,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6F19O04BG7MUGF089BS",
+     "gun": "SMG-45冲锋枪",
+     "mode": "烽火地带",
+     "build": "20W步枪",
+     "full": "SMG-45冲锋枪-烽火地带-6K6F19O04BG7MUGF089BS",
+     "row": 37,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1G404BG7MUGF089BS",
+     "gun": "SR-25射手步枪",
+     "mode": "烽火地带",
+     "build": "62W满改",
+     "full": "SR-25射手步枪-烽火地带-6JQT1G404BG7MUGF089BS",
+     "row": 37,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JEHC01SD6JA3I74O3I",
+     "gun": "K437突击步枪",
+     "mode": "烽火地带",
+     "build": "33W操速丐版",
+     "full": "K437突击步枪-烽火地带-6L6JEHC01SD6JA3I74O3I",
+     "row": 38,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVMK04BG7MUGF089BS",
+     "gun": "SMG-45冲锋枪",
+     "mode": "烽火地带",
+     "build": "43W全能版",
+     "full": "SMG-45冲锋枪-烽火地带-6JQSVMK04BG7MUGF089BS",
+     "row": 38,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1LS04BG7MUGF089BS",
+     "gun": "SR-25射手步枪",
+     "mode": "烽火地带",
+     "build": "短管速射流",
+     "full": "SR-25射手步枪-烽火地带-6JQT1LS04BG7MUGF089BS",
+     "row": 38,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFCGC01SD6JA3I74O3I",
+     "gun": "K437突击步枪",
+     "mode": "烽火地带",
+     "build": "40W满改操速",
+     "full": "K437突击步枪-烽火地带-6LGFCGC01SD6JA3I74O3I",
+     "row": 39,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVO404BG7MUGF089BS",
+     "gun": "野牛冲锋枪",
+     "mode": "烽火地带",
+     "build": "野牛",
+     "full": "野牛冲锋枪-烽火地带-6JQSVO404BG7MUGF089BS",
+     "row": 39,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1MC04BG7MUGF089BS",
+     "gun": "SR-25射手步枪",
+     "mode": "烽火地带",
+     "build": "50W性价比全距离",
+     "full": "SR-25射手步枪-烽火地带-6JQT1MC04BG7MUGF089BS",
+     "row": 39,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LAVT4401SD6JA3I74O3I",
+     "gun": "K437突击步枪",
+     "mode": "烽火地带",
+     "build": "50倍镜款",
+     "full": "K437突击步枪-烽火地带-6LAVT4401SD6JA3I74O3I",
+     "row": 40,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVPC04BG7MUGF089BS",
+     "gun": "UZI冲锋枪",
+     "mode": "烽火地带",
+     "build": "12W",
+     "full": "UZI冲锋枪-烽火地带-6JQSVPC04BG7MUGF089BS",
+     "row": 40,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT0C804BG7MUGF089BS",
+     "gun": "R93狙击步枪",
+     "mode": "烽火地带",
+     "build": "35W",
+     "full": "R93狙击步枪-烽火地带-6JQT0C804BG7MUGF089BS",
+     "row": 40,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFCH401SD6JA3I74O3I",
+     "gun": "K437突击步枪",
+     "mode": "烽火地带",
+     "build": "53W满改轻语",
+     "full": "K437突击步枪-烽火地带-6LGFCH401SD6JA3I74O3I",
+     "row": 41,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JURNES04BG7MUGF089BS",
+     "gun": "Vector冲锋枪",
+     "mode": "烽火地带",
+     "build": "32W半改",
+     "full": "Vector冲锋枪-烽火地带-6JURNES04BG7MUGF089BS",
+     "row": 41,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT0EC04BG7MUGF089BS",
+     "gun": "SV-98狙击步枪",
+     "mode": "烽火地带",
+     "build": "23W",
+     "full": "SV-98狙击步枪-烽火地带-6JQT0EC04BG7MUGF089BS",
+     "row": 41,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JEMC01SD6JA3I74O3I",
+     "gun": "K437突击步枪",
+     "mode": "烽火地带",
+     "build": "40w半改",
+     "full": "K437突击步枪-烽火地带-6L6JEMC01SD6JA3I74O3I",
+     "row": 42,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVR404BG7MUGF089BS",
+     "gun": "Vector冲锋枪",
+     "mode": "烽火地带",
+     "build": "44W开镜",
+     "full": "Vector冲锋枪-烽火地带-6JQSVR404BG7MUGF089BS",
+     "row": 42,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT07804BG7MUGF089BS",
+     "gun": "AWM狙击步枪",
+     "mode": "烽火地带",
+     "build": "真真真真半改AW",
+     "full": "AWM狙击步枪-烽火地带-6JQT07804BG7MUGF089BS",
+     "row": 42,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJUG001SD6JA3I74O3I",
+     "gun": "腾龙突击步枪",
+     "mode": "烽火地带",
+     "build": "50W高速红点",
+     "full": "腾龙突击步枪-烽火地带-6LGJUG001SD6JA3I74O3I",
+     "row": 43,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVRG04BG7MUGF089BS",
+     "gun": "Vector冲锋枪",
+     "mode": "烽火地带",
+     "build": "57W满改",
+     "full": "Vector冲锋枪-烽火地带-6JQSVRG04BG7MUGF089BS",
+     "row": 43,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT08404BG7MUGF089BS",
+     "gun": "AWM狙击步枪",
+     "mode": "烽火地带",
+     "build": "80W初速版",
+     "full": "AWM狙击步枪-烽火地带-6JQT08404BG7MUGF089BS",
+     "row": 43,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJUGK01SD6JA3I74O3I",
+     "gun": "腾龙突击步枪",
+     "mode": "烽火地带",
+     "build": "50W2倍无后座",
+     "full": "腾龙突击步枪-烽火地带-6LGJUGK01SD6JA3I74O3I",
+     "row": 44,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVSO04BG7MUGF089BS",
+     "gun": "P90冲锋枪",
+     "mode": "烽火地带",
+     "build": "16W青春版",
+     "full": "P90冲锋枪-烽火地带-6JQSVSO04BG7MUGF089BS",
+     "row": 44,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT08K04BG7MUGF089BS",
+     "gun": "AWM狙击步枪",
+     "mode": "烽火地带",
+     "build": "67W操速版",
+     "full": "AWM狙击步枪-烽火地带-6JQT08K04BG7MUGF089BS",
+     "row": 44,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJUGS01SD6JA3I74O3I",
+     "gun": "腾龙突击步枪",
+     "mode": "烽火地带",
+     "build": "30W半改高速",
+     "full": "腾龙突击步枪-烽火地带-6LGJUGS01SD6JA3I74O3I",
+     "row": 45,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVT404BG7MUGF089BS",
+     "gun": "P90冲锋枪",
+     "mode": "烽火地带",
+     "build": "34W满改",
+     "full": "P90冲锋枪-烽火地带-6JQSVT404BG7MUGF089BS",
+     "row": 45,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1NS04BG7MUGF089BS",
+     "gun": "SKS射手步枪",
+     "mode": "烽火地带",
+     "build": "53W",
+     "full": "SKS射手步枪-烽火地带-6JQT1NS04BG7MUGF089BS",
+     "row": 45,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGJUH401SD6JA3I74O3I",
+     "gun": "腾龙突击步枪",
+     "mode": "烽火地带",
+     "build": "53W45弹夹消音",
+     "full": "腾龙突击步枪-烽火地带-6LGJUH401SD6JA3I74O3I",
+     "row": 46,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVU404BG7MUGF089BS",
+     "gun": "MP5冲锋枪",
+     "mode": "烽火地带",
+     "build": "9W青春版腰射",
+     "full": "MP5冲锋枪-烽火地带-6JQSVU404BG7MUGF089BS",
+     "row": 46,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1OC04BG7MUGF089BS",
+     "gun": "SKS射手步枪",
+     "mode": "烽火地带",
+     "build": "跑狙43W",
+     "full": "SKS射手步枪-烽火地带-6JQT1OC04BG7MUGF089BS",
+     "row": 46,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGUDFG01SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "72W新手满改",
+     "full": "AS Val突击步枪-烽火地带-6LGUDFG01SD6JA3I74O3I",
+     "row": 47,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQSVUG04BG7MUGF089BS",
+     "gun": "MP5冲锋枪",
+     "mode": "烽火地带",
+     "build": "16W满改腰射",
+     "full": "MP5冲锋枪-烽火地带-6JQSVUG04BG7MUGF089BS",
+     "row": 47,
+     "col": 6,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1C804BG7MUGF089BS",
+     "gun": "SR9射手步枪",
+     "mode": "烽火地带",
+     "build": "15W",
+     "full": "SR9射手步枪-烽火地带-6JQT1C804BG7MUGF089BS",
+     "row": 47,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGUDHG01SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "42W腰射开镜",
+     "full": "AS Val突击步枪-烽火地带-6LGUDHG01SD6JA3I74O3I",
+     "row": 48,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT1EK04BG7MUGF089BS",
+     "gun": "SR9射手步枪",
+     "mode": "烽火地带",
+     "build": "36W",
+     "full": "SR9射手步枪-烽火地带-6JQT1EK04BG7MUGF089BS",
+     "row": 48,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGUDHS01SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "88W满改2/4高手版",
+     "full": "AS Val突击步枪-烽火地带-6LGUDHS01SD6JA3I74O3I",
+     "row": 49,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT17C04BG7MUGF089BS",
+     "gun": "杠杆式步枪",
+     "mode": "烽火地带",
+     "build": "20W 24镜",
+     "full": "杠杆式步枪-烽火地带-6JQT17C04BG7MUGF089BS",
+     "row": 49,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJEOC01SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "真真半改巨浪",
+     "full": "AS Val突击步枪-烽火地带-6LHJEOC01SD6JA3I74O3I",
+     "row": 50,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT17O04BG7MUGF089BS",
+     "gun": "杠杆式步枪",
+     "mode": "烽火地带",
+     "build": "30W37倍镜",
+     "full": "杠杆式步枪-烽火地带-6JQT17O04BG7MUGF089BS",
+     "row": 50,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGUDJ001SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "80W高手满改",
+     "full": "AS Val突击步枪-烽火地带-6LGUDJ001SD6JA3I74O3I",
+     "row": 51,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT18404BG7MUGF089BS",
+     "gun": "杠杆式步枪",
+     "mode": "烽火地带",
+     "build": "金枪客版",
+     "full": "杠杆式步枪-烽火地带-6JQT18404BG7MUGF089BS",
+     "row": 51,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGUDMC01SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "80W满改2/4新手版",
+     "full": "AS Val突击步枪-烽火地带-6LGUDMC01SD6JA3I74O3I",
+     "row": 52,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4JU404BG7MUGF089BS",
+     "gun": "M82狙击步枪",
+     "mode": "烽火地带",
+     "build": "0操速满改",
+     "full": "M82狙击步枪-烽火地带-6JO4JU404BG7MUGF089BS",
+     "row": 52,
+     "col": 10,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGUE1401SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "嘉豪版本81操速",
+     "full": "AS Val突击步枪-烽火地带-6LGUE1401SD6JA3I74O3I",
+     "row": 53,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6KHVDPO01SD6JA3I74O3I",
+     "gun": "CAR-15突击步枪",
+     "mode": "烽火地带",
+     "build": "9W丐版",
+     "full": "CAR-15突击步枪-烽火地带-6KHVDPO01SD6JA3I74O3I",
+     "row": 54,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJF3O01SD6JA3I74O3I",
+     "gun": "PTR-32突击步枪",
+     "mode": "烽火地带",
+     "build": "11W青春版",
+     "full": "PTR-32突击步枪-烽火地带-6LHJF3O01SD6JA3I74O3I",
+     "row": 55,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJF4801SD6JA3I74O3I",
+     "gun": "PTR-32突击步枪",
+     "mode": "烽火地带",
+     "build": "25W满改",
+     "full": "PTR-32突击步枪-烽火地带-6LHJF4801SD6JA3I74O3I",
+     "row": 56,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFBBG01SD6JA3I74O3I",
+     "gun": "G3战斗步枪",
+     "mode": "烽火地带",
+     "build": "",
+     "full": "G3战斗步枪-烽火地带-6LGFBBG01SD6JA3I74O3I",
+     "row": 57,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFBC001SD6JA3I74O3I",
+     "gun": "G3战斗步枪",
+     "mode": "烽火地带",
+     "build": "27W半改",
+     "full": "G3战斗步枪-烽火地带-6LGFBC001SD6JA3I74O3I",
+     "row": 58,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFBCC01SD6JA3I74O3I",
+     "gun": "G3战斗步枪",
+     "mode": "烽火地带",
+     "build": "45W满改三倍",
+     "full": "G3战斗步枪-烽火地带-6LGFBCC01SD6JA3I74O3I",
+     "row": 59,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB3S01SD6JA3I74O3I",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "烽火地带",
+     "build": "20W青春版",
+     "full": "SCAR-H战斗步枪-烽火地带-6LGFB3S01SD6JA3I74O3I",
+     "row": 60,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB4C01SD6JA3I74O3I",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "烽火地带",
+     "build": "39W半改",
+     "full": "SCAR-H战斗步枪-烽火地带-6LGFB4C01SD6JA3I74O3I",
+     "row": 61,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB4O01SD6JA3I74O3I",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "烽火地带",
+     "build": "60W满改三倍",
+     "full": "SCAR-H战斗步枪-烽火地带-6LGFB4O01SD6JA3I74O3I",
+     "row": 62,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB5401SD6JA3I74O3I",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "烽火地带",
+     "build": "45W满改红点消音",
+     "full": "SCAR-H战斗步枪-烽火地带-6LGFB5401SD6JA3I74O3I",
+     "row": 63,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB5G01SD6JA3I74O3I",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "烽火地带",
+     "build": "机密40w倍镜",
+     "full": "SCAR-H战斗步枪-烽火地带-6LGFB5G01SD6JA3I74O3I",
+     "row": 64,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT80C063PRJI1QTIR9P",
+     "gun": "S12K霰弹枪",
+     "mode": "烽火地带",
+     "build": "20W",
+     "full": "S12K霰弹枪-烽火地带-6JQT80C063PRJI1QTIR9P",
+     "row": 64,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB0801SD6JA3I74O3I",
+     "gun": "AK-12突击步枪",
+     "mode": "烽火地带",
+     "build": "26W丐版",
+     "full": "AK-12突击步枪-烽火地带-6LGFB0801SD6JA3I74O3I",
+     "row": 65,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT8VG063PRJI1QTIR9P",
+     "gun": "M1014霰弹枪",
+     "mode": "烽火地带",
+     "build": "26W",
+     "full": "M1014霰弹枪-烽火地带-6JQT8VG063PRJI1QTIR9P",
+     "row": 65,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB2001SD6JA3I74O3I",
+     "gun": "AK-12突击步枪",
+     "mode": "烽火地带",
+     "build": "35W顶级半改",
+     "full": "AK-12突击步枪-烽火地带-6LGFB2001SD6JA3I74O3I",
+     "row": 66,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT7TG063PRJI1QTIR9P",
+     "gun": "725双管霰弹枪",
+     "mode": "烽火地带",
+     "build": "10W腰射喷",
+     "full": "725双管霰弹枪-烽火地带-6JQT7TG063PRJI1QTIR9P",
+     "row": 66,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFB2C01SD6JA3I74O3I",
+     "gun": "AK-12突击步枪",
+     "mode": "烽火地带",
+     "build": "54W满改火控",
+     "full": "AK-12突击步枪-烽火地带-6LGFB2C01SD6JA3I74O3I",
+     "row": 67,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT7U4063PRJI1QTIR9P",
+     "gun": "725双管霰弹枪",
+     "mode": "烽火地带",
+     "build": "19W开镜莽侠",
+     "full": "725双管霰弹枪-烽火地带-6JQT7U4063PRJI1QTIR9P",
+     "row": 67,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFCQC01SD6JA3I74O3I",
+     "gun": "SG552突击步枪",
+     "mode": "烽火地带",
+     "build": "",
+     "full": "SG552突击步枪-烽火地带-6LGFCQC01SD6JA3I74O3I",
+     "row": 68,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFCQS01SD6JA3I74O3I",
+     "gun": "SG552突击步枪",
+     "mode": "烽火地带",
+     "build": "30W半改",
+     "full": "SG552突击步枪-烽火地带-6LGFCQS01SD6JA3I74O3I",
+     "row": 69,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JJ4S063PRJI1QTIR9P",
+     "gun": "93R",
+     "mode": "烽火地带",
+     "build": "全自动",
+     "full": "93R-烽火地带-6L6JJ4S063PRJI1QTIR9P",
+     "row": 69,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFCRC01SD6JA3I74O3I",
+     "gun": "SG552突击步枪",
+     "mode": "烽火地带",
+     "build": "43W满改",
+     "full": "SG552突击步枪-烽火地带-6LGFCRC01SD6JA3I74O3I",
+     "row": 70,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT948063PRJI1QTIR9P",
+     "gun": "G18",
+     "mode": "烽火地带",
+     "build": "10W",
+     "full": "G18-烽火地带-6JQT948063PRJI1QTIR9P",
+     "row": 70,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9NCG01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "86W高操速",
+     "full": "M7战斗步枪-烽火地带-6LF9NCG01SD6JA3I74O3I",
+     "row": 71,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4KDS063PRJI1QTIR9P",
+     "gun": "沙漠之鹰",
+     "mode": "烽火地带",
+     "build": "沙鹰",
+     "full": "沙漠之鹰-烽火地带-6JO4KDS063PRJI1QTIR9P",
+     "row": 71,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9ND001SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "66W顶级半改高操速",
+     "full": "M7战斗步枪-烽火地带-6LF9ND001SD6JA3I74O3I",
+     "row": 72,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT980063PRJI1QTIR9P",
+     "gun": ".357左轮",
+     "mode": "烽火地带",
+     "build": "26W三倍狙",
+     "full": ".357左轮-烽火地带-6JQT980063PRJI1QTIR9P",
+     "row": 72,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9NDG01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "103W红点稳定",
+     "full": "M7战斗步枪-烽火地带-6LF9NDG01SD6JA3I74O3I",
+     "row": 73,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT99K063PRJI1QTIR9P",
+     "gun": "复合弓",
+     "mode": "烽火地带",
+     "build": "28W腰射",
+     "full": "复合弓-烽火地带-6JQT99K063PRJI1QTIR9P",
+     "row": 73,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9NDS01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "90W红点消音",
+     "full": "M7战斗步枪-烽火地带-6LF9NDS01SD6JA3I74O3I",
+     "row": 74,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6KFHF9401SD6JA3I74O3I",
+     "gun": "复合弓",
+     "mode": "烽火地带",
+     "build": "25w双休",
+     "full": "复合弓-烽火地带-6KFHF9401SD6JA3I74O3I",
+     "row": 74,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9NEC01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "满改倍镜消音                                喜欢啥倍镜自己换",
+     "full": "M7战斗步枪-烽火地带-6LF9NEC01SD6JA3I74O3I",
+     "row": 75,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT7PS063PRJI1QTIR9P",
+     "gun": "FS-12霰弹枪",
+     "mode": "烽火地带",
+     "build": "16W",
+     "full": "FS-12霰弹枪-烽火地带-6JQT7PS063PRJI1QTIR9P",
+     "row": 75,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9MJ401SD6JA3I74O3I",
+     "gun": "AUG突击步枪",
+     "mode": "烽火地带",
+     "build": "24W三倍无后座",
+     "full": "AUG突击步枪-烽火地带-6LF9MJ401SD6JA3I74O3I",
+     "row": 76,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9MRC01SD6JA3I74O3I",
+     "gun": "AUG突击步枪",
+     "mode": "烽火地带",
+     "build": "19W青春版",
+     "full": "AUG突击步枪-烽火地带-6LF9MRC01SD6JA3I74O3I",
+     "row": 77,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9MRS01SD6JA3I74O3I",
+     "gun": "AUG突击步枪",
+     "mode": "烽火地带",
+     "build": "25W半改",
+     "full": "AUG突击步枪-烽火地带-6LF9MRS01SD6JA3I74O3I",
+     "row": 78,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LF9MS801SD6JA3I74O3I",
+     "gun": "AUG突击步枪",
+     "mode": "烽火地带",
+     "build": "50W满改3倍",
+     "full": "AUG突击步枪-烽火地带-6LF9MS801SD6JA3I74O3I",
+     "row": 79,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6KHVE2801SD6JA3I74O3I",
+     "gun": "M16A4突击步枪",
+     "mode": "烽火地带",
+     "build": "23W两倍",
+     "full": "M16A4突击步枪-烽火地带-6KHVE2801SD6JA3I74O3I",
+     "row": 80,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6KHVE2K01SD6JA3I74O3I",
+     "gun": "M16A4突击步枪",
+     "mode": "烽火地带",
+     "build": "36W三倍",
+     "full": "M16A4突击步枪-烽火地带-6KHVE2K01SD6JA3I74O3I",
+     "row": 81,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFCV401SD6JA3I74O3I",
+     "gun": "K416突击步枪",
+     "mode": "烽火地带",
+     "build": "20W丐版",
+     "full": "K416突击步枪-烽火地带-6LGFCV401SD6JA3I74O3I",
+     "row": 82,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFCVG01SD6JA3I74O3I",
+     "gun": "K416突击步枪",
+     "mode": "烽火地带",
+     "build": "54W大弹夹",
+     "full": "K416突击步枪-烽火地带-6LGFCVG01SD6JA3I74O3I",
+     "row": 83,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFD0001SD6JA3I74O3I",
+     "gun": "K416突击步枪",
+     "mode": "烽火地带",
+     "build": "34W半改",
+     "full": "K416突击步枪-烽火地带-6LGFD0001SD6JA3I74O3I",
+     "row": 84,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFD0C01SD6JA3I74O3I",
+     "gun": "K416突击步枪",
+     "mode": "烽火地带",
+     "build": "50W满改消音二倍",
+     "full": "K416突击步枪-烽火地带-6LGFD0C01SD6JA3I74O3I",
+     "row": 85,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LGFD1801SD6JA3I74O3I",
+     "gun": "K416突击步枪",
+     "mode": "烽火地带",
+     "build": "70W火控倍镜",
+     "full": "K416突击步枪-烽火地带-6LGFD1801SD6JA3I74O3I",
+     "row": 86,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJEU001SD6JA3I74O3I",
+     "gun": "ASh-12战斗步枪",
+     "mode": "烽火地带",
+     "build": "39W补偿半改",
+     "full": "ASh-12战斗步枪-烽火地带-6LHJEU001SD6JA3I74O3I",
+     "row": 87,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJEUG01SD6JA3I74O3I",
+     "gun": "ASh-12战斗步枪",
+     "mode": "烽火地带",
+     "build": "33W双发枪管",
+     "full": "ASh-12战斗步枪-烽火地带-6LHJEUG01SD6JA3I74O3I",
+     "row": 88,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJEUS01SD6JA3I74O3I",
+     "gun": "ASh-12战斗步枪",
+     "mode": "烽火地带",
+     "build": "49W满改红点",
+     "full": "ASh-12战斗步枪-烽火地带-6LHJEUS01SD6JA3I74O3I",
+     "row": 89,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJEV801SD6JA3I74O3I",
+     "gun": "ASh-12战斗步枪",
+     "mode": "烽火地带",
+     "build": "52W满改二倍",
+     "full": "ASh-12战斗步枪-烽火地带-6LHJEV801SD6JA3I74O3I",
+     "row": 90,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JKO80E8GD6DF03A21V",
+     "gun": "汤姆逊冲锋枪",
+     "mode": "烽火地带",
+     "build": "上交",
+     "full": "汤姆逊冲锋枪-烽火地带-6L6JKO80E8GD6DF03A21V",
+     "row": 90,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6LHJEVK01SD6JA3I74O3I",
+     "gun": "ASh-12战斗步枪",
+     "mode": "烽火地带",
+     "build": "50W战斧超稳",
+     "full": "ASh-12战斗步枪-烽火地带-6LHJEVK01SD6JA3I74O3I",
+     "row": 91,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6KHVE7S01SD6JA3I74O3I",
+     "gun": "AKS-74U突击步枪",
+     "mode": "烽火地带",
+     "build": "9W青春版",
+     "full": "AKS-74U突击步枪-烽火地带-6KHVE7S01SD6JA3I74O3I",
+     "row": 92,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JKS40E8GD6DF03A21V",
+     "gun": "MDR突击步枪",
+     "mode": "烽火地带",
+     "build": "上交",
+     "full": "MDR突击步枪-烽火地带-6L6JKS40E8GD6DF03A21V",
+     "row": 92,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4IUC0E8GD6DF03A21V",
+     "gun": "QBZ95-1突击步枪",
+     "mode": "烽火地带",
+     "build": "15W青春版",
+     "full": "QBZ95-1突击步枪-烽火地带-6JO4IUC0E8GD6DF03A21V",
+     "row": 93,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4IUS0E8GD6DF03A21V",
+     "gun": "QBZ95-1突击步枪",
+     "mode": "烽火地带",
+     "build": "35万火控",
+     "full": "QBZ95-1突击步枪-烽火地带-6JO4IUS0E8GD6DF03A21V",
+     "row": 94,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6NRS00E8GD6DF03A21V",
+     "gun": "QJB201轻机枪",
+     "mode": "烽火地带",
+     "build": "上交",
+     "full": "QJB201轻机枪-烽火地带-6L6NRS00E8GD6DF03A21V",
+     "row": 94,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JO4IV40E8GD6DF03A21V",
+     "gun": "QBZ95-1突击步枪",
+     "mode": "烽火地带",
+     "build": "30W红点半改",
+     "full": "QBZ95-1突击步枪-烽火地带-6JO4IV40E8GD6DF03A21V",
+     "row": 95,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT3O0063PRJI1QTIR9P",
+     "gun": "QJB201轻机枪",
+     "mode": "烽火地带",
+     "build": "局内击杀",
+     "full": "QJB201轻机枪-烽火地带-6JQT3O0063PRJI1QTIR9P",
+     "row": 95,
+     "col": 14,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT3000E8GD6DF03A21V",
+     "gun": "AKM突击步枪",
+     "mode": "烽火地带",
+     "build": "18W青春版",
+     "full": "AKM突击步枪-烽火地带-6JQT3000E8GD6DF03A21V",
+     "row": 96,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT30G0E8GD6DF03A21V",
+     "gun": "AKM突击步枪",
+     "mode": "烽火地带",
+     "build": "22W腰射ak",
+     "full": "AKM突击步枪-烽火地带-6JQT30G0E8GD6DF03A21V",
+     "row": 97,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT30S0E8GD6DF03A21V",
+     "gun": "AKM突击步枪",
+     "mode": "烽火地带",
+     "build": "32W半改",
+     "full": "AKM突击步枪-烽火地带-6JQT30S0E8GD6DF03A21V",
+     "row": 98,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6L6JKKS0E8GD6DF03A21V",
+     "gun": "AKM突击步枪",
+     "mode": "烽火地带",
+     "build": "50W满改二倍",
+     "full": "AKM突击步枪-烽火地带-6L6JKKS0E8GD6DF03A21V",
+     "row": 99,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT3380E8GD6DF03A21V",
+     "gun": "M4A1突击步枪",
+     "mode": "烽火地带",
+     "build": "22W丐版",
+     "full": "M4A1突击步枪-烽火地带-6JQT3380E8GD6DF03A21V",
+     "row": 100,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT33K0E8GD6DF03A21V",
+     "gun": "M4A1突击步枪",
+     "mode": "烽火地带",
+     "build": "33W急停流",
+     "full": "M4A1突击步枪-烽火地带-6JQT33K0E8GD6DF03A21V",
+     "row": 101,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6K6F0R00E8GD6DF03A21V",
+     "gun": "M4A1突击步枪",
+     "mode": "烽火地带",
+     "build": "24W操速二倍",
+     "full": "M4A1突击步枪-烽火地带-6K6F0R00E8GD6DF03A21V",
+     "row": 102,
+     "col": 2,
+     "tab": "BB08J2"
+    },
+    {
+     "code": "6JQT34K0E8GD6DF03A21V",
+     "gun": "M4A1突击步枪",
+     "mode": "烽火地带",
+     "build": "35W半改二倍",
+     "full": "M4A1突击步枪-烽火地带-6JQT34K0E8GD6DF03A21V",
+     "row": 103,
+     "col": 2,
+     "tab": "BB08J2"
+    }
+   ],
+   "label": "烽火地带"
+  },
+  {
+   "tab": "bxp5c6",
+   "sheetId": "bxp5c6",
+   "rows": 115,
+   "cols": 15,
+   "notices": [
+    "GALI大战场的改枪码合集（哪列方便用哪列都是一样的）",
+    "改枪码失效是因为一个枪码用的人太多导致的是游戏问题不是我们的问题 遇到失效的直接去群里上报就可以了上报就会更新 来直播间催我的或者在群里说话嘴带脏字的 直接飞升处理",
+    "全面战场",
+    "枪械名称",
+    "MCX-LT",
+    "M250",
+    "MK47",
+    "K437",
+    "KC17",
+    "As-Val",
+    "ASh-12",
+    "CAR-15",
+    "SCAR-H",
+    "AK-12",
+    "K416",
+    "QBZ-95",
+    "M4A1",
+    "SG552",
+    "SR-3M",
+    "Vector",
+    "Qjb201",
+    "SV-98",
+    "M700",
+    "AKS-74U",
+    "PTR-32",
+    "QCQ171",
+    "SMG-45",
+    "S12K",
+    "Mini-14",
+    "SR-25",
+    "PSG-1",
+    "M249轻机枪",
+    "P90冲锋枪",
+    "UZI冲锋枪",
+    "MP5冲锋枪",
+    "沙漠之鹰",
+    "QSZ92G",
+    "FS-12",
+    "直播中不要找我更新改枪码！！！！！！！ 我除了直播时间和睡觉其他时间我只要看到消息就会马上更新！直播中不要找我更新改枪码！！！！！！！！！"
+   ],
+   "records": [
+    {
+     "code": "6IURRO404E93FJHAQGRLM",
+     "gun": "MCX LT突击步枪",
+     "mode": "全面战场",
+     "build": "红点激光",
+     "full": "MCX LT突击步枪-全面战场-6IURRO404E93FJHAQGRLM",
+     "row": 12,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IURRQ804E93FJHAQGRLM",
+     "gun": "MCX LT突击步枪",
+     "mode": "全面战场",
+     "build": "蜂窝",
+     "full": "MCX LT突击步枪-全面战场-6IURRQ804E93FJHAQGRLM",
+     "row": 13,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6HIISIO0CQ9J5LUV083F9",
+     "gun": "M250通用机枪",
+     "mode": "全面战场",
+     "build": "37镜压百米",
+     "full": "M250通用机枪-全面战场-6HIISIO0CQ9J5LUV083F9",
+     "row": 14,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IJKK1G0BU5JCHT0HSJOU",
+     "gun": "M250通用机枪",
+     "mode": "全面战场",
+     "build": "红点腰射稳定",
+     "full": "M250通用机枪-全面战场-6IJKK1G0BU5JCHT0HSJOU",
+     "row": 15,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6JAC92C05F7T434AE5R57",
+     "gun": "MK47突击步枪",
+     "mode": "全面战场",
+     "build": "红点稳定",
+     "full": "MK47突击步枪-全面战场-6JAC92C05F7T434AE5R57",
+     "row": 16,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EFMC09BE3VITK7SUTP",
+     "gun": "K437突击步枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "K437突击步枪-全面战场-6I5EFMC09BE3VITK7SUTP",
+     "row": 17,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EG7809BE3VITK7SUTP",
+     "gun": "K437突击步枪",
+     "mode": "全面战场",
+     "build": "三倍",
+     "full": "K437突击步枪-全面战场-6I5EG7809BE3VITK7SUTP",
+     "row": 18,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EGCK09BE3VITK7SUTP",
+     "gun": "K437突击步枪",
+     "mode": "全面战场",
+     "build": "大弹鼓",
+     "full": "K437突击步枪-全面战场-6I5EGCK09BE3VITK7SUTP",
+     "row": 19,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GPHOKS094898G9NDDGRT",
+     "gun": "KC17突击步枪",
+     "mode": "全面战场",
+     "build": "红点百米稳定",
+     "full": "KC17突击步枪-全面战场-6GPHOKS094898G9NDDGRT",
+     "row": 20,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EH2S09BE3VITK7SUTP",
+     "gun": "KC17突击步枪",
+     "mode": "全面战场",
+     "build": "火控",
+     "full": "KC17突击步枪-全面战场-6I5EH2S09BE3VITK7SUTP",
+     "row": 21,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GVQH580DKPR1AESPN8DT",
+     "gun": "KC17突击步枪",
+     "mode": "全面战场",
+     "build": "大弹鼓",
+     "full": "KC17突击步枪-全面战场-6GVQH580DKPR1AESPN8DT",
+     "row": 22,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I253FC080ELE0AQVMCG8",
+     "gun": "M14射手步枪",
+     "mode": "全面战场",
+     "build": "红点大弹鼓",
+     "full": "M14射手步枪-全面战场-6I253FC080ELE0AQVMCG8",
+     "row": 23,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GPHRH4094898G9NDDGRT",
+     "gun": "M14射手步枪",
+     "mode": "全面战场",
+     "build": "超稳定红点",
+     "full": "M14射手步枪-全面战场-6GPHRH4094898G9NDDGRT",
+     "row": 24,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I252A4080ELE0AQVMCG8",
+     "gun": "腾龙突击步枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "腾龙突击步枪-全面战场-6I252A4080ELE0AQVMCG8",
+     "row": 25,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IURV7004E93FJHAQGRLM",
+     "gun": "腾龙突击步枪",
+     "mode": "全面战场",
+     "build": "腰射红点",
+     "full": "腾龙突击步枪-全面战场-6IURV7004E93FJHAQGRLM",
+     "row": 26,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I252BC080ELE0AQVMCG8",
+     "gun": "腾龙突击步枪",
+     "mode": "全面战场",
+     "build": "腾龙大弹鼓",
+     "full": "腾龙突击步枪-全面战场-6I252BC080ELE0AQVMCG8",
+     "row": 27,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EJ2K09BE3VITK7SUTP",
+     "gun": "AS Val突击步枪",
+     "mode": "全面战场",
+     "build": "腰射红点",
+     "full": "AS Val突击步枪-全面战场-6I5EJ2K09BE3VITK7SUTP",
+     "row": 28,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IURVM804E93FJHAQGRLM",
+     "gun": "AS Val突击步枪",
+     "mode": "全面战场",
+     "build": "满改红点",
+     "full": "AS Val突击步枪-全面战场-6IURVM804E93FJHAQGRLM",
+     "row": 29,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EJL409BE3VITK7SUTP",
+     "gun": "ASh-12战斗步枪",
+     "mode": "全面战场",
+     "build": "腰射红点",
+     "full": "ASh-12战斗步枪-全面战场-6I5EJL409BE3VITK7SUTP",
+     "row": 30,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EKA409BE3VITK7SUTP",
+     "gun": "ASh-12战斗步枪",
+     "mode": "全面战场",
+     "build": "红点稳定",
+     "full": "ASh-12战斗步枪-全面战场-6I5EKA409BE3VITK7SUTP",
+     "row": 31,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1H4TC0B47DBPRUAR75R",
+     "gun": "CAR-15突击步枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "CAR-15突击步枪-全面战场-6G1H4TC0B47DBPRUAR75R",
+     "row": 32,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IA800B47DBPRUAR75R",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "全面战场",
+     "build": "37架点大弹鼓",
+     "full": "SCAR-H战斗步枪-全面战场-6G1IA800B47DBPRUAR75R",
+     "row": 33,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6H94TD4094898G9NDDGRT",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "全面战场",
+     "build": "红点大弹鼓",
+     "full": "SCAR-H战斗步枪-全面战场-6H94TD4094898G9NDDGRT",
+     "row": 34,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IAE00B47DBPRUAR75R",
+     "gun": "AK-12突击步枪",
+     "mode": "全面战场",
+     "build": "红点稳定",
+     "full": "AK-12突击步枪-全面战场-6G1IAE00B47DBPRUAR75R",
+     "row": 35,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G3RMNC0B47DBPRUAR75R",
+     "gun": "AK-12突击步枪",
+     "mode": "全面战场",
+     "build": "三倍",
+     "full": "AK-12突击步枪-全面战场-6G3RMNC0B47DBPRUAR75R",
+     "row": 36,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EKT409BE3VITK7SUTP",
+     "gun": "AK-12突击步枪",
+     "mode": "全面战场",
+     "build": "腰射开镜",
+     "full": "AK-12突击步枪-全面战场-6I5EKT409BE3VITK7SUTP",
+     "row": 37,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GVQP4S0DKPR1AESPN8DT",
+     "gun": "AK-12突击步枪",
+     "mode": "全面战场",
+     "build": "大弹鼓",
+     "full": "AK-12突击步枪-全面战场-6GVQP4S0DKPR1AESPN8DT",
+     "row": 38,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6JACAO005F7T434AE5R57",
+     "gun": "M7战斗步枪",
+     "mode": "全面战场",
+     "build": "红点稳定",
+     "full": "M7战斗步枪-全面战场-6JACAO005F7T434AE5R57",
+     "row": 39,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5ELQ009BE3VITK7SUTP",
+     "gun": "M7战斗步枪",
+     "mode": "全面战场",
+     "build": "满腰射双修",
+     "full": "M7战斗步枪-全面战场-6I5ELQ009BE3VITK7SUTP",
+     "row": 40,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IAMK0B47DBPRUAR75R",
+     "gun": "AUG突击步枪",
+     "mode": "全面战场",
+     "build": "红点大弹鼓",
+     "full": "AUG突击步枪-全面战场-6G1IAMK0B47DBPRUAR75R",
+     "row": 41,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GC26C80B47DBPRUAR75R",
+     "gun": "AUG突击步枪",
+     "mode": "全面战场",
+     "build": "37镜稳压",
+     "full": "AUG突击步枪-全面战场-6GC26C80B47DBPRUAR75R",
+     "row": 42,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IAQS0B47DBPRUAR75R",
+     "gun": "K416突击步枪",
+     "mode": "全面战场",
+     "build": "激光红点",
+     "full": "K416突击步枪-全面战场-6G1IAQS0B47DBPRUAR75R",
+     "row": 43,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EMN809BE3VITK7SUTP",
+     "gun": "K416突击步枪",
+     "mode": "全面战场",
+     "build": "腰射红点",
+     "full": "K416突击步枪-全面战场-6I5EMN809BE3VITK7SUTP",
+     "row": 44,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GVQN680DKPR1AESPN8DT",
+     "gun": "K416突击步枪",
+     "mode": "全面战场",
+     "build": "大弹鼓",
+     "full": "K416突击步枪-全面战场-6GVQN680DKPR1AESPN8DT",
+     "row": 45,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IAU80B47DBPRUAR75R",
+     "gun": "QBZ95-1突击步枪",
+     "mode": "全面战场",
+     "build": "稳定三倍",
+     "full": "QBZ95-1突击步枪-全面战场-6G1IAU80B47DBPRUAR75R",
+     "row": 46,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IB2G0B47DBPRUAR75R",
+     "gun": "AKM突击步枪",
+     "mode": "全面战场",
+     "build": "红点稳定",
+     "full": "AKM突击步枪-全面战场-6G1IB2G0B47DBPRUAR75R",
+     "row": 47,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I254Q0080ELE0AQVMCG8",
+     "gun": "M4A1突击步枪",
+     "mode": "全面战场",
+     "build": "红点激光",
+     "full": "M4A1突击步枪-全面战场-6I254Q0080ELE0AQVMCG8",
+     "row": 48,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6HIJ3RG0CQ9J5LUV083F9",
+     "gun": "SG552突击步枪",
+     "mode": "全面战场",
+     "build": "红点激光",
+     "full": "SG552突击步枪-全面战场-6HIJ3RG0CQ9J5LUV083F9",
+     "row": 49,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5ENP409BE3VITK7SUTP",
+     "gun": "MP7冲锋枪",
+     "mode": "全面战场",
+     "build": "腰射红点",
+     "full": "MP7冲锋枪-全面战场-6I5ENP409BE3VITK7SUTP",
+     "row": 50,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EO2S09BE3VITK7SUTP",
+     "gun": "SR-3M紧凑突击步枪",
+     "mode": "全面战场",
+     "build": "腰射满改",
+     "full": "SR-3M紧凑突击步枪-全面战场-6I5EO2S09BE3VITK7SUTP",
+     "row": 51,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IUSBQG06N3JUGK4SSBSR",
+     "gun": "Vector冲锋枪",
+     "mode": "全面战场",
+     "build": "腰射红点",
+     "full": "Vector冲锋枪-全面战场-6IUSBQG06N3JUGK4SSBSR",
+     "row": 52,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6HIIQRS0CQ9J5LUV083F9",
+     "gun": "QJB201轻机枪",
+     "mode": "全面战场",
+     "build": "架点热成像",
+     "full": "QJB201轻机枪-全面战场-6HIIQRS0CQ9J5LUV083F9",
+     "row": 53,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6HIIQSO0CQ9J5LUV083F9",
+     "gun": "QJB201轻机枪",
+     "mode": "全面战场",
+     "build": "稳定二倍",
+     "full": "QJB201轻机枪-全面战场-6HIIQSO0CQ9J5LUV083F9",
+     "row": 54,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1I8NC0B47DBPRUAR75R",
+     "gun": "M250通用机枪",
+     "mode": "全面战场",
+     "build": "5倍架点激光",
+     "full": "M250通用机枪-全面战场-6G1I8NC0B47DBPRUAR75R",
+     "row": 55,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IC0C0B47DBPRUAR75R",
+     "gun": "PKM通用机枪",
+     "mode": "全面战场",
+     "build": "三倍架点",
+     "full": "PKM通用机枪-全面战场-6G1IC0C0B47DBPRUAR75R",
+     "row": 56,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G2RMU40B47DBPRUAR75R",
+     "gun": "PKM通用机枪",
+     "mode": "全面战场",
+     "build": "红点百米稳定",
+     "full": "PKM通用机枪-全面战场-6G2RMU40B47DBPRUAR75R",
+     "row": 57,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1IC4S0B47DBPRUAR75R",
+     "gun": "AWM狙击步枪",
+     "mode": "全面战场",
+     "build": "6/12倍镜",
+     "full": "AWM狙击步枪-全面战场-6G1IC4S0B47DBPRUAR75R",
+     "row": 58,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1ICBK0B47DBPRUAR75R",
+     "gun": "R93狙击步枪",
+     "mode": "全面战场",
+     "build": "6/12倍镜",
+     "full": "R93狙击步枪-全面战场-6G1ICBK0B47DBPRUAR75R",
+     "row": 59,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1ICE80B47DBPRUAR75R",
+     "gun": "SV-98狙击步枪",
+     "mode": "全面战场",
+     "build": "6/12倍镜",
+     "full": "SV-98狙击步枪-全面战场-6G1ICE80B47DBPRUAR75R",
+     "row": 60,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G1ID0O0B47DBPRUAR75R",
+     "gun": "M700狙击步枪",
+     "mode": "全面战场",
+     "build": "6/12倍镜",
+     "full": "M700狙击步枪-全面战场-6G1ID0O0B47DBPRUAR75R",
+     "row": 61,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GPHPMS094898G9NDDGRT",
+     "gun": "复合弓",
+     "mode": "全面战场",
+     "build": "开镜流",
+     "full": "复合弓-全面战场-6GPHPMS094898G9NDDGRT",
+     "row": 62,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6GPHQ14094898G9NDDGRT",
+     "gun": "复合弓",
+     "mode": "全面战场",
+     "build": "腰射流",
+     "full": "复合弓-全面战场-6GPHQ14094898G9NDDGRT",
+     "row": 63,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G264UC0B47DBPRUAR75R",
+     "gun": "AKS-74U突击步枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "AKS-74U突击步枪-全面战场-6G264UC0B47DBPRUAR75R",
+     "row": 64,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G265280B47DBPRUAR75R",
+     "gun": "PTR-32突击步枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "PTR-32突击步枪-全面战场-6G265280B47DBPRUAR75R",
+     "row": 65,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G2RG3O0B47DBPRUAR75R",
+     "gun": "K437突击步枪",
+     "mode": "全面战场",
+     "build": "稳定火控",
+     "full": "K437突击步枪-全面战场-6G2RG3O0B47DBPRUAR75R",
+     "row": 66,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G265HG0B47DBPRUAR75R",
+     "gun": "勇士冲锋枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "勇士冲锋枪-全面战场-6G265HG0B47DBPRUAR75R",
+     "row": 67,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IURU4S04E93FJHAQGRLM",
+     "gun": "MP7冲锋枪",
+     "mode": "全面战场",
+     "build": "腰射双修",
+     "full": "MP7冲锋枪-全面战场-6IURU4S04E93FJHAQGRLM",
+     "row": 68,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EPGS09BE3VITK7SUTP",
+     "gun": "MP7冲锋枪",
+     "mode": "全面战场",
+     "build": "腰射大弹鼓",
+     "full": "MP7冲锋枪-全面战场-6I5EPGS09BE3VITK7SUTP",
+     "row": 69,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G265OC0B47DBPRUAR75R",
+     "gun": "QCQ171冲锋枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "QCQ171冲锋枪-全面战场-6G265OC0B47DBPRUAR75R",
+     "row": 70,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G265TK0B47DBPRUAR75R",
+     "gun": "SMG-45冲锋枪",
+     "mode": "全面战场",
+     "build": "稳定红点",
+     "full": "SMG-45冲锋枪-全面战场-6G265TK0B47DBPRUAR75R",
+     "row": 71,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G25POS0B47DBPRUAR75R",
+     "gun": "S12K霰弹枪",
+     "mode": "全面战场",
+     "build": "满腰射",
+     "full": "S12K霰弹枪-全面战场-6G25POS0B47DBPRUAR75R",
+     "row": 72,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G2662G0B47DBPRUAR75R",
+     "gun": "S12K霰弹枪",
+     "mode": "全面战场",
+     "build": "撞火威龙",
+     "full": "S12K霰弹枪-全面战场-6G2662G0B47DBPRUAR75R",
+     "row": 73,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G5RODS0B47DBPRUAR75R",
+     "gun": "M1014霰弹枪",
+     "mode": "全面战场",
+     "build": "腰射红点",
+     "full": "M1014霰弹枪-全面战场-6G5RODS0B47DBPRUAR75R",
+     "row": 74,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G266740B47DBPRUAR75R",
+     "gun": "Mini-14射手步枪",
+     "mode": "全面战场",
+     "build": "",
+     "full": "Mini-14射手步枪-全面战场-6G266740B47DBPRUAR75R",
+     "row": 75,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6HIJ4GO0CQ9J5LUV083F9",
+     "gun": "SKS射手步枪",
+     "mode": "全面战场",
+     "build": "",
+     "full": "SKS射手步枪-全面战场-6HIJ4GO0CQ9J5LUV083F9",
+     "row": 76,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IFLABK09BE3VITK7SUTP",
+     "gun": "SVD狙击步枪",
+     "mode": "全面战场",
+     "build": "37镜稳压",
+     "full": "SVD狙击步枪-全面战场-6IFLABK09BE3VITK7SUTP",
+     "row": 77,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EPTC09BE3VITK7SUTP",
+     "gun": "SR-25射手步枪",
+     "mode": "全面战场",
+     "build": "稳定速点",
+     "full": "SR-25射手步枪-全面战场-6I5EPTC09BE3VITK7SUTP",
+     "row": 78,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6HIJ6TS0CQ9J5LUV083F9",
+     "gun": "PSG-1射手步枪",
+     "mode": "全面战场",
+     "build": "脚架6-12",
+     "full": "PSG-1射手步枪-全面战场-6HIJ6TS0CQ9J5LUV083F9",
+     "row": 79,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G5QI4C0B47DBPRUAR75R",
+     "gun": "M249轻机枪",
+     "mode": "全面战场",
+     "build": "红点稳定",
+     "full": "M249轻机枪-全面战场-6G5QI4C0B47DBPRUAR75R",
+     "row": 80,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G5RQU80B47DBPRUAR75R",
+     "gun": "M249轻机枪",
+     "mode": "全面战场",
+     "build": "",
+     "full": "M249轻机枪-全面战场-6G5RQU80B47DBPRUAR75R",
+     "row": 81,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EQAO09BE3VITK7SUTP",
+     "gun": "P90冲锋枪",
+     "mode": "全面战场",
+     "build": "红点",
+     "full": "P90冲锋枪-全面战场-6I5EQAO09BE3VITK7SUTP",
+     "row": 82,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EQBC09BE3VITK7SUTP",
+     "gun": "P90冲锋枪",
+     "mode": "全面战场",
+     "build": "超稳定",
+     "full": "P90冲锋枪-全面战场-6I5EQBC09BE3VITK7SUTP",
+     "row": 83,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G83U4G0B47DBPRUAR75R",
+     "gun": "UZI冲锋枪",
+     "mode": "全面战场",
+     "build": "高腰射红点",
+     "full": "UZI冲锋枪-全面战场-6G83U4G0B47DBPRUAR75R",
+     "row": 84,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G83VCC0B47DBPRUAR75R",
+     "gun": "MP5冲锋枪",
+     "mode": "全面战场",
+     "build": "红点稳定",
+     "full": "MP5冲锋枪-全面战场-6G83VCC0B47DBPRUAR75R",
+     "row": 85,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G840CO0B47DBPRUAR75R",
+     "gun": "M1911",
+     "mode": "全面战场",
+     "build": "手枪",
+     "full": "M1911-全面战场-6G840CO0B47DBPRUAR75R",
+     "row": 86,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G840OK0B47DBPRUAR75R",
+     "gun": "G17",
+     "mode": "全面战场",
+     "build": "手枪",
+     "full": "G17-全面战场-6G840OK0B47DBPRUAR75R",
+     "row": 87,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G8417O0B47DBPRUAR75R",
+     "gun": "93R",
+     "mode": "全面战场",
+     "build": "手枪",
+     "full": "93R-全面战场-6G8417O0B47DBPRUAR75R",
+     "row": 88,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G841SC0B47DBPRUAR75R",
+     "gun": "G18",
+     "mode": "全面战场",
+     "build": "手枪",
+     "full": "G18-全面战场-6G841SC0B47DBPRUAR75R",
+     "row": 89,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G842CC0B47DBPRUAR75R",
+     "gun": "沙漠之鹰",
+     "mode": "全面战场",
+     "build": "手枪",
+     "full": "沙漠之鹰-全面战场-6G842CC0B47DBPRUAR75R",
+     "row": 90,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6G842QS0B47DBPRUAR75R",
+     "gun": "QSZ92G",
+     "mode": "全面战场",
+     "build": "手枪",
+     "full": "QSZ92G-全面战场-6G842QS0B47DBPRUAR75R",
+     "row": 91,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IURTN804E93FJHAQGRLM",
+     "gun": "MK4冲锋枪",
+     "mode": "全面战场",
+     "build": "连射",
+     "full": "MK4冲锋枪-全面战场-6IURTN804E93FJHAQGRLM",
+     "row": 92,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IURTRO04E93FJHAQGRLM",
+     "gun": "MK4冲锋枪",
+     "mode": "全面战场",
+     "build": "三连发",
+     "full": "MK4冲锋枪-全面战场-6IURTRO04E93FJHAQGRLM",
+     "row": 93,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EE3O09BE3VITK7SUTP",
+     "gun": "MK47突击步枪",
+     "mode": "全面战场",
+     "build": "满腰射",
+     "full": "MK47突击步枪-全面战场-6I5EE3O09BE3VITK7SUTP",
+     "row": 94,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EN7409BE3VITK7SUTP",
+     "gun": "AKM突击步枪",
+     "mode": "全面战场",
+     "build": "腰射流",
+     "full": "AKM突击步枪-全面战场-6I5EN7409BE3VITK7SUTP",
+     "row": 95,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6I5EQOS09BE3VITK7SUTP",
+     "gun": "杠杆式步枪",
+     "mode": "全面战场",
+     "build": "腰射流",
+     "full": "杠杆式步枪-全面战场-6I5EQOS09BE3VITK7SUTP",
+     "row": 96,
+     "col": 2,
+     "tab": "bxp5c6"
+    },
+    {
+     "code": "6IUSBIC06N3JUGK4SSBSR",
+     "gun": "FS-12霰弹枪",
+     "mode": "全面战场",
+     "build": "腰射流",
+     "full": "FS-12霰弹枪-全面战场-6IUSBIC06N3JUGK4SSBSR",
+     "row": 97,
+     "col": 2,
+     "tab": "bxp5c6"
+    }
+   ],
+   "label": "全面战场"
+  },
+  {
+   "tab": "bav4en",
+   "sheetId": "bav4en",
+   "rows": 110,
+   "cols": 15,
+   "notices": [
+    "烽火高操速T0枪改装合集",
+    "改枪码失效是因为一个枪码用的人太多导致的是游戏问题不是我们的问题 遇到失效的直接去群里上报就可以了上报就会更新 来直播间催我的或者在群里说话嘴带脏字的 直接飞升处理",
+    "直播中不要找我更新改枪码！！！！！！！  每天都有固定时间给大家更新的！！！！直播中不要找我更新改枪码！！！！！！！！！",
+    "AS Val"
+   ],
+   "records": [
+    {
+     "code": "6KF0HV801SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "35w",
+     "full": "AS Val突击步枪-烽火地带-6KF0HV801SD6JA3I74O3I",
+     "row": 10,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KF0I1G01SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "60w",
+     "full": "AS Val突击步枪-烽火地带-6KF0I1G01SD6JA3I74O3I",
+     "row": 11,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KF0I0801SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "烽火地带",
+     "build": "60w",
+     "full": "AS Val突击步枪-烽火地带-6KF0I0801SD6JA3I74O3I",
+     "row": 12,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KLSPBG01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "57w",
+     "full": "M7战斗步枪-烽火地带-6KLSPBG01SD6JA3I74O3I",
+     "row": 13,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6K6K3HK01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "72w",
+     "full": "M7战斗步枪-烽火地带-6K6K3HK01SD6JA3I74O3I",
+     "row": 14,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KJUM7O01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "73w",
+     "full": "M7战斗步枪-烽火地带-6KJUM7O01SD6JA3I74O3I",
+     "row": 15,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6K6K3MK01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "85w",
+     "full": "M7战斗步枪-烽火地带-6K6K3MK01SD6JA3I74O3I",
+     "row": 16,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KOH7JG01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "烽火地带",
+     "build": "72w",
+     "full": "M7战斗步枪-烽火地带-6KOH7JG01SD6JA3I74O3I",
+     "row": 17,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6JQT7LO063PRJI1QTIR9P",
+     "gun": "PKM通用机枪",
+     "mode": "烽火地带",
+     "build": "42w",
+     "full": "PKM通用机枪-烽火地带-6JQT7LO063PRJI1QTIR9P",
+     "row": 18,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KIV148063PRJI1QTIR9P",
+     "gun": "PKM通用机枪",
+     "mode": "烽火地带",
+     "build": "37w",
+     "full": "PKM通用机枪-烽火地带-6KIV148063PRJI1QTIR9P",
+     "row": 19,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KF6VTS04BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "73w",
+     "full": "M14射手步枪-烽火地带-6KF6VTS04BG7MUGF089BS",
+     "row": 20,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6JQT0L404BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "53w",
+     "full": "M14射手步枪-烽火地带-6JQT0L404BG7MUGF089BS",
+     "row": 21,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6JQT0OK04BG7MUGF089BS",
+     "gun": "M14射手步枪",
+     "mode": "烽火地带",
+     "build": "54w",
+     "full": "M14射手步枪-烽火地带-6JQT0OK04BG7MUGF089BS",
+     "row": 22,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KG071G01SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "烽火地带",
+     "build": "49w",
+     "full": "MK47突击步枪-烽火地带-6KG071G01SD6JA3I74O3I",
+     "row": 23,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6KIV2HK01SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "烽火地带",
+     "build": "53w",
+     "full": "MK47突击步枪-烽火地带-6KIV2HK01SD6JA3I74O3I",
+     "row": 24,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6JQT08K04BG7MUGF089BS",
+     "gun": "AWM狙击步枪",
+     "mode": "烽火地带",
+     "build": "94w",
+     "full": "AWM狙击步枪-烽火地带-6JQT08K04BG7MUGF089BS",
+     "row": 25,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6JQT1LS04BG7MUGF089BS",
+     "gun": "SR-25射手步枪",
+     "mode": "烽火地带",
+     "build": "59w",
+     "full": "SR-25射手步枪-烽火地带-6JQT1LS04BG7MUGF089BS",
+     "row": 26,
+     "col": 5,
+     "tab": "bav4en"
+    },
+    {
+     "code": "6JQT1MC04BG7MUGF089BS",
+     "gun": "SR-25射手步枪",
+     "mode": "烽火地带",
+     "build": "50w",
+     "full": "SR-25射手步枪-烽火地带-6JQT1MC04BG7MUGF089BS",
+     "row": 27,
+     "col": 5,
+     "tab": "bav4en"
+    }
+   ],
+   "label": "烽火高操速T0"
+  },
+  {
+   "tab": "3anshx",
+   "sheetId": "3anshx",
+   "rows": 110,
+   "cols": 9,
+   "notices": [
+    "黑潮爆破改枪码大全",
+    "改枪码失效是因为一个枪码用的人太多导致的是游戏问题不是我们的问题 遇到失效的直接去群里上报就可以了上报就会更新 来直播间催我的或者在群里说话嘴带脏字的 直接飞升处理",
+    "直播中不要找我更新改枪码！！！！！！！  每天都有固定时间给大家更新的！！！！直播中不要找我更新改枪码！！！！！！！！！"
+   ],
+   "records": [
+    {
+     "code": "6LEFBQK01SD6JA3I74O3I",
+     "gun": "G18",
+     "mode": "黑潮爆破",
+     "build": "",
+     "full": "G18-黑潮爆破-6LEFBQK01SD6JA3I74O3I",
+     "row": 12,
+     "col": 1,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCDC01SD6JA3I74O3I",
+     "gun": "SG552突击步枪",
+     "mode": "黑潮爆破",
+     "build": "SG552",
+     "full": "SG552突击步枪-黑潮爆破-6LEFCDC01SD6JA3I74O3I",
+     "row": 12,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE2C01SD6JA3I74O3I",
+     "gun": "KC17突击步枪",
+     "mode": "黑潮爆破",
+     "build": "KC17",
+     "full": "KC17突击步枪-黑潮爆破-6LEFE2C01SD6JA3I74O3I",
+     "row": 12,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFED801SD6JA3I74O3I",
+     "gun": "MK47突击步枪",
+     "mode": "黑潮爆破",
+     "build": "MK47",
+     "full": "MK47突击步枪-黑潮爆破-6LEFED801SD6JA3I74O3I",
+     "row": 12,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFBRO01SD6JA3I74O3I",
+     "gun": "93R",
+     "mode": "黑潮爆破",
+     "build": "",
+     "full": "93R-黑潮爆破-6LEFBRO01SD6JA3I74O3I",
+     "row": 13,
+     "col": 1,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCE801SD6JA3I74O3I",
+     "gun": "QBZ95-1突击步枪",
+     "mode": "黑潮爆破",
+     "build": "QBZ95",
+     "full": "QBZ95-1突击步枪-黑潮爆破-6LEFCE801SD6JA3I74O3I",
+     "row": 13,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE3401SD6JA3I74O3I",
+     "gun": "AKM突击步枪",
+     "mode": "黑潮爆破",
+     "build": "AKM",
+     "full": "AKM突击步枪-黑潮爆破-6LEFE3401SD6JA3I74O3I",
+     "row": 13,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEDS01SD6JA3I74O3I",
+     "gun": "K416突击步枪",
+     "mode": "黑潮爆破",
+     "build": "K416",
+     "full": "K416突击步枪-黑潮爆破-6LEFEDS01SD6JA3I74O3I",
+     "row": 13,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFBSO01SD6JA3I74O3I",
+     "gun": "M1911",
+     "mode": "黑潮爆破",
+     "build": "",
+     "full": "M1911-黑潮爆破-6LEFBSO01SD6JA3I74O3I",
+     "row": 14,
+     "col": 1,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCFG01SD6JA3I74O3I",
+     "gun": "G3战斗步枪",
+     "mode": "黑潮爆破",
+     "build": "G3",
+     "full": "G3战斗步枪-黑潮爆破-6LEFCFG01SD6JA3I74O3I",
+     "row": 14,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE3S01SD6JA3I74O3I",
+     "gun": "M4A1突击步枪",
+     "mode": "黑潮爆破",
+     "build": "M4A1",
+     "full": "M4A1突击步枪-黑潮爆破-6LEFE3S01SD6JA3I74O3I",
+     "row": 14,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEEK01SD6JA3I74O3I",
+     "gun": "M7战斗步枪",
+     "mode": "黑潮爆破",
+     "build": "M7",
+     "full": "M7战斗步枪-黑潮爆破-6LEFEEK01SD6JA3I74O3I",
+     "row": 14,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFBTK01SD6JA3I74O3I",
+     "gun": "沙漠之鹰",
+     "mode": "黑潮爆破",
+     "build": "",
+     "full": "沙漠之鹰-黑潮爆破-6LEFBTK01SD6JA3I74O3I",
+     "row": 15,
+     "col": 1,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCGC01SD6JA3I74O3I",
+     "gun": "勇士冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "勇士",
+     "full": "勇士冲锋枪-黑潮爆破-6LEFCGC01SD6JA3I74O3I",
+     "row": 15,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE4K01SD6JA3I74O3I",
+     "gun": "AUG突击步枪",
+     "mode": "黑潮爆破",
+     "build": "AUG",
+     "full": "AUG突击步枪-黑潮爆破-6LEFE4K01SD6JA3I74O3I",
+     "row": 15,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEF801SD6JA3I74O3I",
+     "gun": "AS Val突击步枪",
+     "mode": "黑潮爆破",
+     "build": "ASVAL",
+     "full": "AS Val突击步枪-黑潮爆破-6LEFEF801SD6JA3I74O3I",
+     "row": 15,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCH801SD6JA3I74O3I",
+     "gun": "MP5冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "MP5",
+     "full": "MP5冲锋枪-黑潮爆破-6LEFCH801SD6JA3I74O3I",
+     "row": 16,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE5K01SD6JA3I74O3I",
+     "gun": "SCAR-H战斗步枪",
+     "mode": "黑潮爆破",
+     "build": "SCAR",
+     "full": "SCAR-H战斗步枪-黑潮爆破-6LEFE5K01SD6JA3I74O3I",
+     "row": 16,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEG401SD6JA3I74O3I",
+     "gun": "腾龙突击步枪",
+     "mode": "黑潮爆破",
+     "build": "腾龙",
+     "full": "腾龙突击步枪-黑潮爆破-6LEFEG401SD6JA3I74O3I",
+     "row": 16,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCI001SD6JA3I74O3I",
+     "gun": "SMG-45冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "SMG",
+     "full": "SMG-45冲锋枪-黑潮爆破-6LEFCI001SD6JA3I74O3I",
+     "row": 17,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE6G01SD6JA3I74O3I",
+     "gun": "SR-3M紧凑突击步枪",
+     "mode": "黑潮爆破",
+     "build": "SR3M",
+     "full": "SR-3M紧凑突击步枪-黑潮爆破-6LEFE6G01SD6JA3I74O3I",
+     "row": 17,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEH401SD6JA3I74O3I",
+     "gun": "K437突击步枪",
+     "mode": "黑潮爆破",
+     "build": "K437",
+     "full": "K437突击步枪-黑潮爆破-6LEFEH401SD6JA3I74O3I",
+     "row": 17,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCIO01SD6JA3I74O3I",
+     "gun": "725双管霰弹枪",
+     "mode": "黑潮爆破",
+     "build": "",
+     "full": "725双管霰弹枪-黑潮爆破-6LEFCIO01SD6JA3I74O3I",
+     "row": 18,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE7801SD6JA3I74O3I",
+     "gun": "QCQ171冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "",
+     "full": "QCQ171冲锋枪-黑潮爆破-6LEFE7801SD6JA3I74O3I",
+     "row": 18,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEI001SD6JA3I74O3I",
+     "gun": "Vector冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "VECTOR",
+     "full": "Vector冲锋枪-黑潮爆破-6LEFEI001SD6JA3I74O3I",
+     "row": 18,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCJK01SD6JA3I74O3I",
+     "gun": "S12K霰弹枪",
+     "mode": "黑潮爆破",
+     "build": "S12K",
+     "full": "S12K霰弹枪-黑潮爆破-6LEFCJK01SD6JA3I74O3I",
+     "row": 19,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE8001SD6JA3I74O3I",
+     "gun": "P90冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "P90",
+     "full": "P90冲锋枪-黑潮爆破-6LEFE8001SD6JA3I74O3I",
+     "row": 19,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEIO01SD6JA3I74O3I",
+     "gun": "MP7冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "MP7",
+     "full": "MP7冲锋枪-黑潮爆破-6LEFEIO01SD6JA3I74O3I",
+     "row": 19,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCKG01SD6JA3I74O3I",
+     "gun": "杠杆式步枪",
+     "mode": "黑潮爆破",
+     "build": "杠杆",
+     "full": "杠杆式步枪-黑潮爆破-6LEFCKG01SD6JA3I74O3I",
+     "row": 20,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE8O01SD6JA3I74O3I",
+     "gun": "MK4冲锋枪",
+     "mode": "黑潮爆破",
+     "build": "MK4",
+     "full": "MK4冲锋枪-黑潮爆破-6LEFE8O01SD6JA3I74O3I",
+     "row": 20,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEJC01SD6JA3I74O3I",
+     "gun": "M250通用机枪",
+     "mode": "黑潮爆破",
+     "build": "M250",
+     "full": "M250通用机枪-黑潮爆破-6LEFEJC01SD6JA3I74O3I",
+     "row": 20,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCLG01SD6JA3I74O3I",
+     "gun": "SKS射手步枪",
+     "mode": "黑潮爆破",
+     "build": "sks",
+     "full": "SKS射手步枪-黑潮爆破-6LEFCLG01SD6JA3I74O3I",
+     "row": 21,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFE9O01SD6JA3I74O3I",
+     "gun": "M249轻机枪",
+     "mode": "黑潮爆破",
+     "build": "M249",
+     "full": "M249轻机枪-黑潮爆破-6LEFE9O01SD6JA3I74O3I",
+     "row": 21,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEK801SD6JA3I74O3I",
+     "gun": "M14射手步枪",
+     "mode": "黑潮爆破",
+     "build": "M14",
+     "full": "M14射手步枪-黑潮爆破-6LEFEK801SD6JA3I74O3I",
+     "row": 21,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFCMC01SD6JA3I74O3I",
+     "gun": "SR9射手步枪",
+     "mode": "黑潮爆破",
+     "build": "SR9",
+     "full": "SR9射手步枪-黑潮爆破-6LEFCMC01SD6JA3I74O3I",
+     "row": 22,
+     "col": 3,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEAC01SD6JA3I74O3I",
+     "gun": "SVD狙击步枪",
+     "mode": "黑潮爆破",
+     "build": "SVD",
+     "full": "SVD狙击步枪-黑潮爆破-6LEFEAC01SD6JA3I74O3I",
+     "row": 22,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEL001SD6JA3I74O3I",
+     "gun": "SR-25射手步枪",
+     "mode": "黑潮爆破",
+     "build": "SR25",
+     "full": "SR-25射手步枪-黑潮爆破-6LEFEL001SD6JA3I74O3I",
+     "row": 22,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEB401SD6JA3I74O3I",
+     "gun": "R93狙击步枪",
+     "mode": "黑潮爆破",
+     "build": "R93",
+     "full": "R93狙击步枪-黑潮爆破-6LEFEB401SD6JA3I74O3I",
+     "row": 23,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFELO01SD6JA3I74O3I",
+     "gun": "AWM狙击步枪",
+     "mode": "黑潮爆破",
+     "build": "AWM",
+     "full": "AWM狙击步枪-黑潮爆破-6LEFELO01SD6JA3I74O3I",
+     "row": 23,
+     "col": 7,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEBS01SD6JA3I74O3I",
+     "gun": "M700狙击步枪",
+     "mode": "黑潮爆破",
+     "build": "M700",
+     "full": "M700狙击步枪-黑潮爆破-6LEFEBS01SD6JA3I74O3I",
+     "row": 24,
+     "col": 5,
+     "tab": "3anshx"
+    },
+    {
+     "code": "6LEFEMC01SD6JA3I74O3I",
+     "gun": "M82狙击步枪",
+     "mode": "黑潮爆破",
+     "build": "M82",
+     "full": "M82狙击步枪-黑潮爆破-6LEFEMC01SD6JA3I74O3I",
+     "row": 24,
+     "col": 7,
+     "tab": "3anshx"
+    }
+   ],
+   "label": "黑潮爆破"
+  }
+ ],
+ "total": 347
+}
