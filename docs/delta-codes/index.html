@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-base="../">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>三角洲行动 · 改枪码库</title>
+<meta name="description" content="三角洲行动改枪码检索库：按枪械浏览，烽火地带 / 全面战场 / 黑潮爆破，支持搜索、价格筛选、收藏与对比。" />
+<link rel="stylesheet" href="../assets/theme.css" />
+<style>
+  /* ---- 改枪码功能专属样式（共用部分见 ../assets/theme.css） ---- */
+
+  /* 使用须知 */
+  .notice{margin:18px 0 0;border-radius:16px;padding:12px 16px;font-size:13px;color:var(--dim);
+    background:linear-gradient(120deg,rgba(255,168,96,.22),rgba(255,255,255,.72) 42%,rgba(255,255,255,.66));
+    border:1px solid rgba(255,255,255,.95);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:var(--inset),0 6px 20px rgba(20,40,65,.07)}
+  .notice summary{cursor:pointer;color:var(--accent2);font-weight:600;list-style:none}
+  .notice summary::-webkit-details-marker{display:none}
+  .notice summary::before{content:"⚠ "}
+  .notice ul{margin:9px 0 2px;padding-left:18px}
+  .notice li{margin:4px 0}
+
+  /* 筛选面板 */
+  .panel{margin:18px 0 12px;border-radius:20px;padding:15px 16px;
+    background:linear-gradient(160deg,rgba(255,255,255,.82),rgba(255,255,255,.6) 48%,rgba(255,255,255,.72));
+    border:1px solid rgba(255,255,255,.95);border-top-color:rgba(255,255,255,1);
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:var(--inset),var(--shadow)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .row + .row{margin-top:10px}
+  .price-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--dim)}
+  .price-box input[type=range]{width:130px;accent-color:var(--accent);cursor:pointer}
+  .price-val{font-family:var(--mono);color:var(--accent2);min-width:88px;text-align:center}
+  .chk{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:13px;color:var(--dim)}
+  .chk input{accent-color:var(--accent);cursor:pointer}
+  select{padding:10px 12px;border-radius:12px;font-size:13.5px;cursor:pointer;font-family:inherit;
+    color:var(--txt);background:rgba(255,255,255,.8);border:1px solid rgba(20,40,65,.14);
+    box-shadow:inset 0 1px 0 #fff;outline:none}
+
+  /* 玩法 / 类型 胶囊 */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 10px}
+  .tab{padding:8px 16px;border-radius:999px;font-size:13.5px;cursor:pointer;user-select:none;
+    color:var(--dim);background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.95);
+    backdrop-filter:blur(12px) saturate(165%);-webkit-backdrop-filter:blur(12px) saturate(165%);
+    box-shadow:var(--inset),0 4px 14px rgba(20,40,65,.07);
+    transition:transform .16s,border-color .16s,color .16s,box-shadow .16s}
+  .tab:hover{color:var(--txt);transform:translateY(-1px);box-shadow:var(--inset),0 8px 20px rgba(20,40,65,.12)}
+  .tab.on{color:#fff;font-weight:700;border-color:rgba(255,255,255,.7);
+    background:linear-gradient(150deg,#ffb066,#f0812a 55%,#d9660a);
+    box-shadow:0 8px 22px rgba(226,112,10,.34),inset 0 1px 0 rgba(255,255,255,.5)}
+  .tab .n{opacity:.65;font-size:12px;margin-left:5px;font-family:var(--mono)}
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+  .pill{padding:7px 14px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none;color:var(--dim);
+    background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.9);
+    backdrop-filter:blur(10px) saturate(150%);-webkit-backdrop-filter:blur(10px) saturate(150%);
+    box-shadow:inset 0 1px 0 #fff,0 2px 8px rgba(20,40,65,.05);
+    transition:transform .16s,border-color .16s,color .16s,background .16s,box-shadow .16s}
+  .pill:hover{color:var(--txt);transform:translateY(-1px);background:rgba(255,255,255,.72)}
+  .pill.on{color:var(--txt);font-weight:600;background:rgba(255,255,255,.92);
+    box-shadow:inset 0 1px 0 #fff,0 6px 18px rgba(20,40,65,.14)}
+  .pill .n{opacity:.6;font-size:11.5px;margin-left:5px;font-family:var(--mono)}
+
+  /* 分类标题 */
+  .cat-section{margin-bottom:28px}
+  .cat-section:last-child{margin-bottom:0}
+  .cat-title{display:flex;align-items:center;gap:10px;margin:0 0 13px;font-size:15.5px;font-weight:700;color:var(--txt)}
+  .cat-title::before{content:"";width:3px;height:17px;border-radius:2px;
+    background:linear-gradient(180deg,#ffb066,#e2700a);box-shadow:0 0 10px rgba(226,112,10,.45)}
+  .cat-title .cnt{font-size:12px;color:var(--dim2);font-family:var(--mono);font-weight:400}
+  .cat-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(20,40,65,.13),transparent)}
+
+  /* ---------- 第一级：枪械卡 ---------- */
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(278px,1fr))}
+  .gun-card{position:relative;isolation:isolate;overflow:hidden;cursor:pointer;
+    padding:16px 17px 15px;display:flex;flex-direction:column;gap:10px;border-radius:22px;
+    background-color:rgba(255,255,255,.66);
+    background-image:
+      linear-gradient(118deg,rgba(255,255,255,.9) 0%,rgba(255,255,255,0) 36%,
+                      rgba(255,255,255,0) 64%,rgba(255,255,255,.5) 100%),
+      linear-gradient(160deg,rgba(255,255,255,.5),rgba(255,255,255,.16) 50%,rgba(255,255,255,.34));
+    background-size:240% 100%,100% 100%;
+    background-position:140% 0,0 0;
+    background-repeat:no-repeat;
+    border:1px solid rgba(255,255,255,.95);border-top-color:rgba(255,255,255,1);
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:var(--inset),var(--shadow);
+    transition:background-position .6s ease,transform .2s ease,box-shadow .2s ease;
+    animation:cardIn .3s ease both}
+  .gun-card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+    background:
+      radial-gradient(130% 72% at 6% -12%,rgba(255,255,255,.85),rgba(255,255,255,0) 58%),
+      radial-gradient(95% 62% at 106% 112%,rgba(255,168,96,.22),rgba(255,255,255,0) 62%)}
+  .gun-card::after{content:"";position:absolute;left:0;top:14%;bottom:14%;width:3px;border-radius:3px;
+    background:linear-gradient(180deg,transparent,var(--accent),transparent);
+    box-shadow:0 0 14px 1px rgba(226,112,10,.5);opacity:0;transition:opacity .25s}
+  .gun-card:hover{transform:translateY(-4px);background-position:-45% 0,0 0;
+    box-shadow:var(--inset),0 26px 50px rgba(20,40,65,.2),0 0 30px rgba(255,168,96,.25)}
+  .gun-card:hover::after{opacity:.85}
+  .gun-card.fav{border-color:rgba(201,138,0,.5)}
+  .gun-card.fav::after{background:linear-gradient(180deg,transparent,var(--star),transparent);
+    box-shadow:0 0 14px 1px rgba(201,138,0,.5);opacity:.9}
+  .gc-head{display:flex;align-items:center;gap:8px}
+  .gc-name{font-weight:700;font-size:17.5px;letter-spacing:.25px}
+  .gc-head .spacer{flex:1}
+  .gc-badges{display:flex;gap:6px;flex-wrap:wrap}
+  .badge.cat{font-weight:600}
+  .badge.price{color:#0b7d4f;border-color:rgba(15,157,99,.28);background:rgba(15,157,99,.12)}
+  .badge.price.t-low{color:#0b7d4f;border-color:rgba(15,157,99,.3);background:rgba(15,157,99,.13)}
+  .badge.price.t-mid{color:#9a6a00;border-color:rgba(201,138,0,.3);background:rgba(255,196,60,.2)}
+  .badge.price.t-high{color:#b2451f;border-color:rgba(210,95,45,.28);background:rgba(255,140,90,.18)}
+  .badge.mode{color:#1f5fa8;border-color:rgba(60,130,220,.24);background:rgba(90,160,240,.14)}
+  .badge.author{color:#9a6a00;border-color:rgba(201,138,0,.3);background:rgba(255,224,150,.6)}
+  .badge.gone{color:#b03333;border-color:rgba(214,69,69,.28);background:rgba(255,190,190,.55)}
+  .badge.mine{color:#6b4bb8;border-color:rgba(140,110,220,.28);background:rgba(220,208,255,.6)}
+  .gc-preview{font-size:12.5px;color:var(--dim2);line-height:1.65;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em}
+  .gc-go{font-size:12.5px;color:var(--accent2);font-weight:600;margin-top:auto;
+    display:flex;align-items:center;gap:5px;transition:gap .2s}
+  .gun-card:hover .gc-go{gap:10px}
+  .gc-pricebar{position:relative;height:5px;border-radius:4px;overflow:hidden;margin-top:8px;
+    background:rgba(20,40,65,.1);box-shadow:inset 0 1px 2px rgba(20,40,65,.16)}
+  .gc-pricebar i{position:absolute;top:0;bottom:0;border-radius:4px;
+    background:linear-gradient(90deg,#26c08a,#ffc14d 55%,#ff8a2b)}
+  .gc-pricebar u{position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(255,255,255,.6) 22px 23px)}
+  /* 枪械图：图鉴自带的深色底做成圆角图块，浅色页面上像产品图 */
+  .gc-img{position:relative;height:88px;border-radius:14px;overflow:hidden;
+    background:#26394b;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 4px 12px rgba(20,40,65,.18)}
+  .gc-img img{display:block;width:100%;height:100%;object-fit:contain;
+    filter:saturate(.82) brightness(1.06);transition:transform .28s ease}
+  .gun-card:hover .gc-img img{transform:scale(1.05)}
+  .dh-img{flex:0 0 auto;display:flex;align-items:center;justify-content:center;min-width:136px;height:64px;
+    border-radius:14px;overflow:hidden;background:#26394b;position:relative;z-index:1;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 4px 12px rgba(20,40,65,.18)}
+  .dh-img img{display:block;width:100%;height:100%;object-fit:contain;filter:saturate(.82) brightness(1.06)}
+
+  /* ---------- 第二级：枪械详情 ---------- */
+  .detail-head{position:relative;overflow:hidden;border-radius:22px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:17px 19px;margin-bottom:14px;
+    background-color:rgba(255,255,255,.7);
+    background-image:linear-gradient(160deg,rgba(255,255,255,.7),rgba(255,255,255,.3) 50%,rgba(255,255,255,.5));
+    border:1px solid rgba(255,255,255,.95);border-top-color:rgba(255,255,255,1);
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:var(--inset),var(--shadow);animation:cardIn .3s ease both}
+  .detail-head::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:3px;border-radius:3px;z-index:2;
+    background:linear-gradient(180deg,transparent,var(--accent),transparent);
+    box-shadow:0 0 16px 2px rgba(226,112,10,.45)}
+  .detail-head > *{position:relative;z-index:1}
+  .back{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border-radius:14px;font-size:13.5px;
+    color:var(--dim);cursor:pointer;background:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.95);
+    backdrop-filter:blur(12px);box-shadow:var(--inset),0 2px 8px rgba(20,40,65,.07);transition:.16s}
+  .back:hover{color:var(--txt);transform:translateX(-2px);box-shadow:var(--inset),0 6px 16px rgba(20,40,65,.13)}
+  .detail-head .title{font-size:23px;font-weight:800;letter-spacing:.4px}
+  .detail-head .meta{font-size:12.5px;color:var(--dim2);margin-top:3px;font-family:var(--mono)}
+  .detail-head .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+  .builds{display:flex;flex-direction:column;gap:10px}
+  .build-item{position:relative;overflow:hidden;border-radius:16px;
+    display:flex;align-items:center;gap:12px;padding:13px 16px;
+    background-color:rgba(255,255,255,.62);
+    background-image:linear-gradient(150deg,rgba(255,255,255,.5),rgba(255,255,255,.14) 52%,rgba(255,255,255,.3));
+    border:1px solid rgba(255,255,255,.95);border-top-color:rgba(255,255,255,1);
+    backdrop-filter:blur(14px) saturate(170%);-webkit-backdrop-filter:blur(14px) saturate(170%);
+    box-shadow:var(--inset),0 4px 16px rgba(20,40,65,.08);
+    transition:transform .18s,box-shadow .18s;animation:cardIn .3s ease both}
+  .build-item::before{content:"";position:absolute;left:0;top:16%;bottom:16%;width:3px;border-radius:3px;
+    background:var(--tier,#c9d4e0);box-shadow:0 0 10px 1px var(--tier,transparent);transition:.18s}
+  .build-item:hover{transform:translateX(4px);box-shadow:var(--inset),0 12px 30px rgba(20,40,65,.15)}
+  .build-item.fav{border-color:rgba(201,138,0,.45)}
+  .bi-left{flex:0 0 200px;min-width:0}
+  .bi-build{font-size:14.5px;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bi-sub{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .bi-code{flex:1;min-width:0;font-family:var(--mono);font-size:13.5px;letter-spacing:.5px;color:#1d3348;
+    background:rgba(255,255,255,.85);border:1px solid rgba(20,40,65,.12);border-radius:12px;padding:10px 13px;
+    overflow-x:auto;white-space:nowrap;scrollbar-width:none;
+    box-shadow:inset 0 1px 2px rgba(20,40,65,.06);transition:.18s}
+  .build-item:hover .bi-code{border-color:rgba(226,112,10,.35);color:#0f2136}
+  .bi-code::-webkit-scrollbar{display:none}
+  .bi-acts{flex:0 0 auto;display:flex;gap:6px;align-items:center}
+  .icon-btn.star.on{color:var(--star);border-color:rgba(201,138,0,.5);background:rgba(255,224,150,.6);
+    box-shadow:0 0 14px rgba(201,138,0,.28),inset 0 1px 0 #fff}
+  .icon-btn.cmp.on{color:var(--accent);border-color:rgba(226,112,10,.5);background:rgba(255,214,170,.7);
+    box-shadow:0 0 14px rgba(226,112,10,.26),inset 0 1px 0 #fff}
+  .icon-btn.flag:hover{color:var(--bad);border-color:rgba(214,69,69,.45)}
+  .icon-btn.flag.on{color:var(--ok);border-color:rgba(15,157,99,.45);background:rgba(178,238,212,.7)}
+
+  .build-item.invalid{opacity:.55;border-style:dashed}
+  .build-item.invalid .bi-code{text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:2px}
+
+  /* 枪名锁定（从详情页新增时） */
+  .fixed-gun{display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border-radius:13px;
+    font-size:14.5px;font-weight:700;color:var(--txt);
+    background:rgba(255,255,255,.92);border:1px solid rgba(226,112,10,.35);
+    box-shadow:inset 0 1px 2px rgba(20,40,65,.06),0 0 0 3px rgba(226,112,10,.08)}
+  .fixed-gun::before{content:"🔒";font-size:12px;opacity:.55}
+
+  /* 对比栏 / 对比表 */
+  .cmpbar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:40;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 15px;border-radius:20px;
+    max-width:calc(100vw - 28px);background-color:rgba(255,255,255,.8);
+    border:1px solid #fff;backdrop-filter:blur(26px) saturate(190%);-webkit-backdrop-filter:blur(26px) saturate(190%);
+    box-shadow:inset 0 1px 0 #fff,0 20px 50px rgba(20,40,65,.24)}
+  .cmpbar .chip{font-size:12px;padding:6px 10px;border-radius:10px;color:var(--dim);max-width:190px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    background:rgba(255,255,255,.85);border:1px solid rgba(20,40,65,.1)}
+  .cmpbar .chip b{color:var(--txt)}
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px;border-radius:14px;overflow:hidden;
+    border:1px solid rgba(20,40,65,.1)}
+  table.cmp th,table.cmp td{padding:10px 12px;text-align:left;vertical-align:top;
+    border-bottom:1px solid rgba(20,40,65,.07);border-right:1px solid rgba(20,40,65,.07)}
+  table.cmp tr:last-child th,table.cmp tr:last-child td{border-bottom:0}
+  table.cmp th:last-child,table.cmp td:last-child{border-right:0}
+  table.cmp th{background:rgba(240,245,252,.9);color:var(--dim);font-weight:600;white-space:nowrap;width:88px}
+  table.cmp td{font-family:var(--mono);font-size:12.5px;word-break:break-all;background:rgba(255,255,255,.6)}
+  table.cmp td.txt{font-family:inherit;font-size:13.5px}
+  .best{color:var(--ok);font-weight:700}
+
+  @media (max-width:620px){
+    .detail-head .acts{margin-left:0;width:100%}
+    .build-item{flex-wrap:wrap;gap:9px}
+    .bi-left{flex:1 1 100%}
+    .bi-code{flex:1 1 100%;order:3}
+    .bi-acts{order:2;margin-left:auto}
+  }
+  @media (max-width:760px){
+    .gun-card,.build-item{backdrop-filter:blur(10px) saturate(150%);-webkit-backdrop-filter:blur(10px) saturate(150%)}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" id="brand" href="../">
+      <div class="mark">Δ</div>
+      <div>
+        <h1>三角洲行动 · 改枪码库</h1>
+        <div class="sub" id="sub">加载中…</div>
+      </div>
+    </a>
+    <div class="stats">
+      <div class="stat">枪械 <b id="s-guns">0</b></div>
+      <div class="stat">改枪码 <b id="s-codes">0</b></div>
+      <div class="stat">收录 <b id="s-total">0</b></div>
+    </div>
+  </div>
+  <nav class="fnav" id="siteNav"></nav>
+</header>
+
+<div class="wrap">
+  <details class="notice" id="notice" hidden>
+    <summary>使用须知</summary>
+    <ul id="notice-list"></ul>
+  </details>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="chips" id="cats"></div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="price-box">
+        <span>价格</span>
+        <input type="range" id="pmin" />
+        <span class="price-val" id="pval">—</span>
+        <input type="range" id="pmax" />
+      </div>
+      <label class="chk"><input type="checkbox" id="noPrice" checked /> 包含未标价</label>
+      <label class="chk"><input type="checkbox" id="favOnly" /> 只看收藏</label>
+      <label class="chk" id="invWrap"><input type="checkbox" id="showInv" /> 显示已失效</label>
+      <select id="sort">
+        <option value="gun">按枪械名排序</option>
+        <option value="price">按最低价从低到高</option>
+        <option value="pricedesc">按最高价从高到低</option>
+        <option value="count">按方案数量排序</option>
+      </select>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn ghost" id="share">复制当前链接</button>
+        <button class="btn ghost" id="reset">清空筛选</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- level 1 -->
+  <div id="guns"></div>
+  <!-- level 2 -->
+  <div id="detail" hidden></div>
+
+  <div id="empty" class="empty" hidden><b>没有匹配的改枪码</b>换个关键词，或点「清空筛选」</div>
+
+  <footer>
+    <div id="foot-stats"></div>
+    <div id="foot-note"></div>
+    <div id="foot-copy"></div>
+  </footer>
+</div>
+
+<div class="cmpbar" id="cmpbar" hidden>
+  <span style="font-size:13px;color:var(--dim)">对比</span>
+  <span id="cmpchips" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+  <button class="btn on" id="cmpOpen" style="padding:7px 12px">开始对比</button>
+  <button class="btn ghost" id="cmpClear" style="padding:7px 12px">清空</button>
+</div>
+
+<div id="modalHost"></div>
+<button class="totop" id="toTop" title="回到顶部" aria-label="回到顶部">↑</button>
+<div class="toast" id="toast">已复制</div>
+
+<script src="../assets/site.js"></script>
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.DELTA_DATA || { records: [], modes: [], notices: [], total: 0,
+    priceMin: 0, priceMax: 0 };
+  var BASE = D.records || [];   // 仓库里烘焙好的基础数据（只读）
+  var CHANGES = [];             // 从 Worker 拉回来的改动：新增 + 失效标记
+  var ALL = [];                 // 合并后的最终列表
+  var byId = {};
+  var API = String(D.apiBase || "").replace(/\/+$/, "");
+  var apiOnline = false;
+  var FAV_KEY = "delta-codes-favs-v1";
+  var G_MIN = D.priceMin || 0, G_MAX = D.priceMax || 0;
+  var PRICE_RE = /(\d+(?:\.\d+)?)\s*[wW万]/;
+
+  // ---------- gun categories ----------
+  // 注意顺序：先匹配更具体的名字，否则会被泛化分类抢走。
+  // 枪名里是「…狙击步枪」，所以必须匹配「狙击步枪」而不是「狙击枪」。
+  var CATS = [
+    ["步枪", ["突击步枪", "战斗步枪"]],
+    ["冲锋枪", ["冲锋枪"]],
+    ["机枪", ["机枪"]],
+    ["射手步枪", ["射手步枪", "精确射手"]],
+    ["狙击步枪", ["狙击步枪", "狙击枪"]],
+    ["霰弹枪", ["霰弹枪"]],
+    ["手枪", ["手枪", "G17", "G18", "QSZ92G", "93R", "沙漠之鹰", "M1911", "左轮"]],
+  ];
+  function catOf(gun) {
+    for (var i = 0; i < CATS.length; i++)
+      for (var j = 0; j < CATS[i][1].length; j++)
+        if (gun.indexOf(CATS[i][1][j]) >= 0) return CATS[i][0];
+    return "其他";
+  }
+  function priceOf(text) {
+    var m = PRICE_RE.exec(text || "");
+    return m ? parseFloat(m[1]) : null;
+  }
+
+  // ---------- 视觉：分类配色 / 价格分级 ----------
+  var CAT_COLOR = {
+    "步枪": "#c25a08", "冲锋枪": "#0b7d4f", "机枪": "#1f5fa8",
+    "射手步枪": "#6b4bb8", "狙击步枪": "#b2451f", "霰弹枪": "#8a6a00",
+    "手枪": "#0f7d94", "其他": "#57697e"
+  };
+  function catColor(c) { return CAT_COLOR[c] || "#8ea3bb"; }
+  function priceTier(p) {
+    if (p == null) return "";
+    if (p <= 25) return "t-low";
+    if (p <= 55) return "t-mid";
+    return "t-high";
+  }
+  function tierColor(p) {
+    if (p == null) return "#243244";
+    if (p <= 25) return "#0f9d63";
+    if (p <= 55) return "#d99a00";
+    return "#d2601f";
+  }
+  /** 这把枪的价格区间在全局 9w–104w 里的相对位置 */
+  function priceBarHTML(min, max) {
+    if (min == null) return "";
+    var span = Math.max(1, G_MAX - G_MIN);
+    var left = Math.max(0, Math.min(100, (min - G_MIN) / span * 100));
+    var width = Math.max(3.5, Math.min(100 - left, (max - min) / span * 100));
+    return '<div class="gc-pricebar" title="' + min + 'w – ' + max + 'w">' +
+      "<i style=\"left:" + left.toFixed(1) + "%;width:" + width.toFixed(1) + "%\"></i><u></u></div>";
+  }
+
+  // ---------- 枪械图 ----------
+  var GUN_IMG = D.gunImages || {};
+  function gunImgSrc(gun) {
+    var f = GUN_IMG[gun];
+    if (!f) return "";
+    var inline = (window.DELTA_INLINE_IMAGES || {})[f];
+    return inline || ("img/guns/" + f);
+  }
+  function gunImgTag(gun, cls) {
+    var src = gunImgSrc(gun);
+    if (!src) return "";
+    return '<div class="' + cls + '"><img loading="lazy" decoding="async" src="' + esc(src) +
+      '" alt="' + esc(gun) + '"></div>';
+  }
+
+  /** 基础数据 + 改动 = 最终列表 */
+  function rebuildAll() {
+    var flag = {};
+    CHANGES.forEach(function (c) { if (c.type === "flag" && c.target_id) flag[c.target_id] = c.status; });
+
+    var out = BASE.map(function (r) {
+      var c = {};
+      for (var k in r) c[k] = r[k];
+      c.invalid = flag[r.id] === "invalid";
+      c.author = "";
+      c.userAdded = false;
+      return c;
+    });
+    CHANGES.forEach(function (c) {
+      if (c.type !== "add") return;
+      var id = "user|" + c.id;
+      out.push({
+        id: id, code: c.code, gun: c.gun, build: c.build || "",
+        mode: c.mode || c.tab, tab: c.tab, price: priceOf(c.build),
+        author: c.author || "", userAdded: true,
+        invalid: flag[id] === "invalid"
+      });
+    });
+    out.forEach(function (r) { r.cat = catOf(r.gun); });
+    ALL = out;
+    byId = {};
+    ALL.forEach(function (r) { byId[r.id] = r; });
+  }
+
+  // ---------- 后端 ----------
+  function apiGetChanges() {
+    if (!API) { apiOnline = false; return Promise.resolve(false); }
+    return fetch(API + "/api/changes", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) {
+        CHANGES = (d && d.changes) || [];
+        apiOnline = true;
+        rebuildAll();
+        return true;
+      })
+      .catch(function () { apiOnline = false; rebuildAll(); return false; });
+  }
+  function apiPost(path, body) {
+    return fetch(API + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body || {})
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (!r.ok) throw new Error((d && d.error) || ("HTTP " + r.status));
+        return d;
+      });
+    });
+  }
+
+  // ---------- state ----------
+  function defaults() {
+    return {
+      tab: "", cat: "", sort: "gun",
+      min: G_MIN, max: G_MAX, noPrice: true, favOnly: false, showInvalid: false,
+      gun: "", cmp: [], cmpOpen: false
+    };
+  }
+  var state = defaults();
+
+  var favs = new Set();
+  try {
+    var raw = localStorage.getItem(FAV_KEY);
+    if (raw) JSON.parse(raw).forEach(function (id) { favs.add(id); });
+  } catch (e) { /* storage disabled */ }
+  function saveFavs() {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(favs))); } catch (e) {}
+  }
+
+  // ---------- url <-> state ----------
+  function readHash() {
+    var s = defaults();
+    var h = location.hash.replace(/^#/, "");
+    if (h) {
+      var p = new URLSearchParams(h);
+      if (p.has("tab")) s.tab = p.get("tab");
+      if (p.has("cat")) s.cat = p.get("cat");
+      if (p.has("sort")) s.sort = p.get("sort");
+      if (p.has("min")) s.min = Number(p.get("min"));
+      if (p.has("max")) s.max = Number(p.get("max"));
+      if (p.has("np")) s.noPrice = p.get("np") === "1";
+      if (p.has("fav")) s.favOnly = p.get("fav") === "1";
+      if (p.has("inv")) s.showInvalid = p.get("inv") === "1";
+      if (p.has("gun")) s.gun = p.get("gun");
+      if (p.has("cmp")) s.cmp = p.get("cmp").split(",").filter(Boolean).slice(0, 3);
+      if (p.has("cmpopen")) s.cmpOpen = p.get("cmpopen") === "1";
+    }
+    s.min = Math.max(G_MIN, Math.min(G_MAX, s.min));
+    s.max = Math.max(G_MIN, Math.min(G_MAX, s.max));
+    if (s.min > s.max) s.min = s.max;
+    state = s;
+  }
+  function hashUrl() {
+    var p = new URLSearchParams();
+    if (state.tab) p.set("tab", state.tab);
+    if (state.tab) p.set("tab", state.tab);
+    if (state.cat) p.set("cat", state.cat);
+    if (state.sort !== "gun") p.set("sort", state.sort);
+    if (state.min > G_MIN) p.set("min", String(state.min));
+    if (state.max < G_MAX) p.set("max", String(state.max));
+    if (!state.noPrice) p.set("np", "0");
+    if (state.favOnly) p.set("fav", "1");
+    if (state.showInvalid) p.set("inv", "1");
+    if (state.gun) p.set("gun", state.gun);
+    if (state.cmp.length) p.set("cmp", state.cmp.join(","));
+    if (state.cmp.length && state.cmpOpen) p.set("cmpopen", "1");
+    var qs = p.toString();
+    return { rel: location.pathname + location.search + (qs ? "#" + qs : ""),
+             abs: location.origin + location.pathname + location.search + (qs ? "#" + qs : "") };
+  }
+  // mode: "replace" (filter tweaks) | "push" (进入/退出枪械详情) | "none"
+  function writeHash(mode) {
+    var u = hashUrl();
+    if (mode === "push") history.pushState(null, "", u.rel);
+    else if (mode !== "none") history.replaceState(null, "", u.rel);
+    return u.abs;
+  }
+  function applyHash() { readHash(); syncControls(); render(); }
+
+  // ---------- helpers ----------
+  var $ = function (s) { return document.querySelector(s); };
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[<>&"]/g, function (c) {
+      return { "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c];
+    });
+  }
+  var toast = $("#toast"), toastTimer;
+  function showToast(msg, ok) {
+    toast.textContent = msg;
+    toast.style.background = ok === false ? "var(--bad)" : "var(--ok)";
+    toast.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("on"); }, 1500);
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (res, rej) {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.style.cssText = "position:fixed;top:-1000px";
+        document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); ta.remove(); res();
+      } catch (e) { rej(e); }
+    });
+  }
+  function priceText(r) { return r.price != null ? r.price + "W" : "未标价"; }
+
+  // ---------- filtering ----------
+  function filterRecords() {
+    return ALL.filter(function (r) {
+      if (state.tab && r.tab !== state.tab) return false;
+      if (state.cat && r.cat !== state.cat) return false;
+      if (state.favOnly && !favs.has(r.id)) return false;
+      if (!state.showInvalid && r.invalid) return false;
+      var narrowed = state.min > G_MIN || state.max < G_MAX;
+      if (narrowed) {
+        if (r.price == null) { if (!state.noPrice) return false; }
+        else if (r.price < state.min || r.price > state.max) return false;
+      }
+      return true;
+    });
+  }
+  function groupByGun(rows) {
+    var map = {}, order = [];
+    rows.forEach(function (r) {
+      if (!map[r.gun]) { map[r.gun] = []; order.push(r.gun); }
+      map[r.gun].push(r);
+    });
+    return order.map(function (gun) {
+      var items = map[gun].slice().sort(function (a, b) {
+        return (a.price == null ? 1e9 : a.price) - (b.price == null ? 1e9 : b.price) ||
+          a.build.localeCompare(b.build, "zh");
+      });
+      var prices = items.map(function (r) { return r.price; }).filter(function (p) { return p != null; });
+      var modes = [];
+      items.forEach(function (r) { if (modes.indexOf(r.tab) < 0) modes.push(r.tab); });
+      return {
+        gun: gun, items: items, modes: modes,
+        cat: items[0].cat,
+        min: prices.length ? Math.min.apply(null, prices) : null,
+        max: prices.length ? Math.max.apply(null, prices) : null,
+        allFav: items.every(function (r) { return favs.has(r.id); })
+      };
+    });
+  }
+
+  function sortGroups(groups) {
+    groups.sort(function (a, b) {
+      if (state.sort === "count") return b.items.length - a.items.length || a.gun.localeCompare(b.gun, "zh");
+      if (state.sort === "price") return (a.min == null ? 1e9 : a.min) - (b.min == null ? 1e9 : b.min);
+      if (state.sort === "pricedesc") return (b.max == null ? -1 : b.max) - (a.max == null ? -1 : a.max);
+      return a.gun.localeCompare(b.gun, "zh");
+    });
+    return groups;
+  }
+
+  // ---------- level 1 markup ----------
+  function gunCard(g) {
+    var range = g.min == null ? "未标价"
+      : (g.min === g.max ? g.min + "W" : g.min + "w–" + g.max + "w");
+    var preview = g.items.map(function (r) { return r.build || "未命名"; }).join(" · ");
+    var gone = g.items.filter(function (r) { return r.invalid; }).length;
+    var fresh = g.items.filter(function (r) { return r.userAdded; }).length;
+    return '<article class="gun-card' + (g.allFav ? " fav" : "") + '" data-gun="' + esc(g.gun) + '">' +
+      '<div class="gc-head">' +
+        '<div class="gc-name">' + esc(g.gun) + "</div>" +
+        '<div class="spacer"></div>' +
+        '<button class="icon-btn star' + (g.allFav ? " on" : "") + '" data-act="favgun" title="收藏这把枪的全部方案">' +
+          (g.allFav ? "★" : "☆") + "</button>" +
+      "</div>" +
+      gunImgTag(g.gun, "gc-img") +
+      '<div class="gc-badges">' +
+        '<span class="badge cat" style="color:' + catColor(g.cat) + ";border-color:" + catColor(g.cat) +
+          '40;background:' + catColor(g.cat) + '14">' + esc(g.cat) + "</span>" +
+        '<span class="badge">' + g.items.length + " 套</span>" +
+        '<span class="badge price ' + priceTier(g.min) + '">' + range + "</span>" +
+        (gone ? '<span class="badge gone">' + gone + " 已失效</span>" : "") +
+        (fresh ? '<span class="badge mine">' + fresh + " 网友新增</span>" : "") +
+        g.modes.map(function (m) { return '<span class="badge mode">' + esc(m) + "</span>"; }).join("") +
+      "</div>" +
+      priceBarHTML(g.min, g.max) +
+      '<div class="gc-preview">' + esc(preview) + "</div>" +
+      '<div class="gc-go">查看 ' + g.items.length + " 个价位的改枪码 <span>→</span></div>" +
+      "</article>";
+  }
+
+  // ---------- level 2 markup ----------
+  function buildRow(r) {
+    var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
+    var canEdit = !!API && apiOnline;
+    return '<div class="build-item' + (isFav ? " fav" : "") + (r.invalid ? " invalid" : "") +
+        '" style="--tier:' + tierColor(r.price) + '" data-id="' + esc(r.id) + '">' +
+      '<div class="bi-left">' +
+        '<div class="bi-build">' + (r.build ? esc(r.build) : '<span style="color:var(--dim2)">默认/未命名</span>') + "</div>" +
+        '<div class="bi-sub">' +
+          '<span class="badge price ' + priceTier(r.price) + '">' + priceText(r) + "</span>" +
+          '<span class="badge mode">' + esc(r.tab) + "</span>" +
+          (r.invalid ? '<span class="badge gone">已失效</span>' : "") +
+          (r.userAdded ? '<span class="badge mine">网友新增</span>' : "") +
+          (r.author ? '<span class="badge author">由 ' + esc(r.author) + " 添加</span>" : "") +
+        "</div>" +
+      "</div>" +
+      '<div class="bi-code">' + esc(r.code) + "</div>" +
+      '<div class="bi-acts">' +
+        '<button class="icon-btn star' + (isFav ? " on" : "") + '" data-act="fav" title="收藏">' +
+          (isFav ? "★" : "☆") + "</button>" +
+        '<button class="icon-btn cmp' + (isCmp ? " on" : "") + '" data-act="cmp" title="加入对比">⇄</button>' +
+        (canEdit ? '<button class="icon-btn flag' + (r.invalid ? " on" : "") + '" data-act="flag" title="' +
+          (r.invalid ? "恢复这条码" : "标记为失效") + '">' + (r.invalid ? "↺" : "⊘") + "</button>" : "") +
+        '<button class="copy" data-code="' + esc(r.code) + '">复制</button>' +
+      "</div>" +
+      "</div>";
+  }
+  function detailHtml(g, filteredCount) {
+    return '<div class="detail-head">' +
+        '<button class="back" id="back">← 返回全部枪械</button>' +
+        gunImgTag(g.gun, "dh-img") +
+        "<div>" +
+          '<div class="title">' + esc(g.gun) + "</div>" +
+          '<div class="meta">' + esc(g.cat) + " · " + g.items.length + " 套方案 · 价格 " +
+            (g.min == null ? "未标价" : (g.min === g.max ? g.min + "W" : g.min + "w–" + g.max + "w")) +
+            (filteredCount > g.items.length ? "（筛选后 " + g.items.length + " 套 / 全部 " + filteredCount + " 套）" : "") +
+          "</div>" +
+        "</div>" +
+        '<div class="acts">' +
+          '<button class="btn primary" data-act="addhere">＋ 添加改枪码</button>' +
+          '<button class="btn" data-act="copygun">复制全部 ' + g.items.length + " 个码</button>" +
+          '<button class="btn' + (g.allFav ? " on" : "") + '" data-act="favgun">' +
+            (g.allFav ? "★ 已收藏" : "☆ 收藏全部") + "</button>" +
+        "</div>" +
+      "</div>" +
+      '<div class="builds">' + g.items.map(buildRow).join("") + "</div>";
+  }
+
+  // ---------- render ----------
+  function renderTabs() {
+    function gunsIn(pred) {
+      var s = {};
+      ALL.forEach(function (r) { if (pred(r)) s[r.gun] = 1; });
+      return Object.keys(s).length;
+    }
+    var items = [["", "全部", gunsIn(function () { return true; })]].concat(
+      D.modes.map(function (m) {
+        return [m, m, gunsIn(function (r) { return r.tab === m; })];
+      })
+    );
+    var html = items.map(function (it) {
+      return '<div class="tab' + (state.tab === it[0] ? " on" : "") + '" data-tab="' + esc(it[0]) + '">' +
+        esc(it[1]) + '<span class="n">' + it[2] + "</span></div>";
+    }).join("");
+    if (favs.size) {
+      var favGuns = {};
+      ALL.forEach(function (r) { if (favs.has(r.id)) favGuns[r.gun] = 1; });
+      html += '<div class="tab' + (state.favOnly ? " on" : "") + '" data-tab="__fav">★ 收藏' +
+        '<span class="n">' + Object.keys(favGuns).length + "</span></div>";
+    }
+    $("#tabs").innerHTML = html;
+  }
+
+  function renderCats() {
+    var guns = {};
+    ALL.forEach(function (r) {
+      if (state.tab && r.tab !== state.tab) return;
+      (guns[r.cat] = guns[r.cat] || {})[r.gun] = 1;
+    });
+    var counts = {};
+    Object.keys(guns).forEach(function (c) { counts[c] = Object.keys(guns[c]).length; });
+    var order = CATS.map(function (c) { return c[0]; }).filter(function (c) { return counts[c]; });
+    if (counts["其他"]) order.push("其他");
+    var total = 0;
+    Object.keys(counts).forEach(function (k) { total += counts[k]; });
+    var html = '<div class="pill' + (state.cat === "" ? " on" : "") + '" data-cat="">全部类型' +
+      '<span class="n">' + total + "</span></div>";
+    html += order.map(function (c) {
+      return '<div class="pill' + (state.cat === c ? " on" : "") + '" data-cat="' + esc(c) + '">' +
+        esc(c) + '<span class="n">' + counts[c] + "</span></div>";
+    }).join("");
+    $("#cats").innerHTML = html;
+  }
+
+  function render() {
+    var rows = filterRecords();
+    var groups = sortGroups(groupByGun(rows));
+    $("#s-guns").textContent = groups.length;
+    $("#s-codes").textContent = rows.length;
+    $("#s-total").textContent = ALL.length;
+    renderTabs();
+    renderCats();
+
+    var gunsEl = $("#guns"), detailEl = $("#detail");
+    var current = null;
+    if (state.gun) {
+      for (var i = 0; i < groups.length; i++) if (groups[i].gun === state.gun) { current = groups[i]; break; }
+    }
+
+    if (current) {
+      var allForGun = ALL.filter(function (r) { return r.gun === current.gun; }).length;
+      gunsEl.hidden = true; gunsEl.innerHTML = "";
+      detailEl.hidden = false;
+      detailEl.innerHTML = detailHtml(current, allForGun);
+    } else {
+      detailEl.hidden = true; detailEl.innerHTML = "";
+      gunsEl.hidden = false;
+      if (state.cat) {
+        // one category selected -> flat grid
+        gunsEl.innerHTML = '<div class="grid">' + groups.map(gunCard).join("") + "</div>";
+      } else {
+        // group the cards under category headings
+        var byCat = {}, order = [];
+        groups.forEach(function (g) {
+          if (!byCat[g.cat]) { byCat[g.cat] = []; order.push(g.cat); }
+          byCat[g.cat].push(g);
+        });
+        var rank = {};
+        CATS.forEach(function (c, idx) { rank[c[0]] = idx; });
+        order.sort(function (a, b) {
+          return (rank[a] == null ? 99 : rank[a]) - (rank[b] == null ? 99 : rank[b]);
+        });
+        gunsEl.innerHTML = order.map(function (c) {
+          return '<section class="cat-section">' +
+            '<h2 class="cat-title">' + esc(c) +
+              '<span class="cnt">' + byCat[c].length + " 把枪 · " +
+              byCat[c].reduce(function (n, g) { return n + g.items.length; }, 0) + " 套方案</span></h2>" +
+            '<div class="grid">' + byCat[c].map(gunCard).join("") + "</div></section>";
+        }).join("");
+      }
+    }
+    $("#empty").hidden = groups.length > 0;
+    renderCmpBar();
+    writeHash("replace");
+  }
+
+  function renderCmpBar() {
+    var bar = $("#cmpbar");
+    if (!state.cmp.length) { bar.hidden = true; $("#cmpchips").innerHTML = ""; return; }
+    bar.hidden = false;
+    $("#cmpchips").innerHTML = state.cmp.map(function (id) {
+      var r = byId[id];
+      return '<span class="chip"><b>' + esc(r ? r.gun : id) + "</b> " +
+        esc(r && r.build ? r.build : "") + "</span>";
+    }).join("");
+  }
+
+  // ---------- compare modal ----------
+  var CMP_ROWS = [
+    ["枪械", function (r) { return esc(r.gun); }, "txt"],
+    ["改装", function (r) { return r.build ? esc(r.build) : "—"; }, "txt"],
+    ["价格", function (r) { return r.price != null ? r.price + "W" : "未标价"; }, "txt"],
+    ["玩法", function (r) { return esc(r.tab); }, "txt"],
+    ["类型", function (r) { return esc(r.cat); }, "txt"],
+    ["改枪码", function (r) { return esc(r.code); }, "code"],
+  ];
+  function openCompare() {
+    var rs = state.cmp.map(function (id) { return byId[id]; }).filter(Boolean);
+    if (!rs.length) return;
+    var ps = rs.map(function (r) { return r.price == null ? null : r.price; })
+               .filter(function (p) { return p != null; });
+    var minP = ps.length ? Math.min.apply(null, ps) : null;
+    var maxP = ps.length ? Math.max.apply(null, ps) : null;
+    var html = '<div class="modal" id="modal"><div class="modal-in">' +
+      '<h2>方案对比<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+      '<table class="cmp"><tbody>' +
+      CMP_ROWS.map(function (row) {
+        return "<tr><th>" + row[0] + "</th>" + rs.map(function (r) {
+          var v = row[1](r);
+          var cls = row[2] === "code" ? "" : ' class="txt"';
+          if (row[0] === "价格" && r.price != null && minP !== maxP) {
+            if (r.price === minP) v = '<span class="best">' + v + " ↓最低</span>";
+            else if (r.price === maxP) v = v + " ↑最高";
+          }
+          return "<td" + cls + ">" + v + "</td>";
+        }).join("") + "</tr>";
+      }).join("") +
+      '<tr><th>操作</th>' + rs.map(function (r) {
+        return '<td class="txt"><button class="copy" data-code="' + esc(r.code) + '">复制码</button></td>';
+      }).join("") + "</tr>" +
+      "</tbody></table></div></div>";
+    $("#modalHost").innerHTML = html;
+    $("#modalClose").onclick = closeModal;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+    state.cmpOpen = true; writeHash("replace");
+  }
+  function closeModal() {
+    $("#modalHost").innerHTML = "";
+    state.cmpOpen = false; writeHash("replace");
+  }
+
+  // ---------- 新增改枪码 ----------
+  // 从枪械详情页进入时传 fixedGun：枪名锁定，只填这一把枪的码
+  function openAddForm(fixedGun) {
+    if (!API) { showToast("当前是只读模式，还没配后端", false); return; }
+    var opts = (D.modes || []).map(function (m) {
+      return '<option value="' + esc(m) + '">' + esc(m) + "</option>";
+    }).join("");
+    var gunField = fixedGun
+      ? '<label><b>枪械</b><span class="fixed-gun">' + esc(fixedGun) + "</span>" +
+        '<span class="hint">已锁定为当前这把枪，新码会直接并进它下面的方案列表</span></label>'
+      : '<label><b>枪械名 *</b><input id="f-gun" maxlength="24" placeholder="例如 M14射手步枪" /></label>';
+    $("#modalHost").innerHTML =
+      '<div class="modal" id="modal"><div class="modal-in" style="max-width:540px">' +
+      "<h2>" + (fixedGun ? "给「" + esc(fixedGun) + "」添加改枪码" : "新增改枪码") +
+        '<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+      '<div class="form-grid">' +
+        gunField +
+        '<label><b>改装名 / 价位</b><input id="f-build" maxlength="40" placeholder="例如 45w满改倍镜（可不填）" /></label>' +
+        '<label><b>玩法 *</b><select id="f-tab">' + opts + "</select></label>" +
+        '<label><b>改枪码 *</b><input id="f-code" maxlength="32" placeholder="例如 6L6JE9S01SD6JA3I74O3I" />' +
+          '<span class="hint">只填游戏里复制出来的那一串，不要带「枪械-玩法-」前缀和横杠</span></label>' +
+        '<label><b>新建人名字 *</b><input id="f-author" maxlength="16" placeholder="填你的名字或游戏 ID" /></label>' +
+        '<div class="form-err" id="f-err"></div>' +
+        '<div class="form-actions">' +
+          '<button class="btn" id="f-cancel">取消</button>' +
+          '<button class="btn primary" id="f-submit">提交</button>' +
+        "</div>" +
+      "</div></div></div>";
+    $("#modalClose").onclick = closeModal;
+    $("#f-cancel").onclick = closeModal;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+
+    $("#f-submit").onclick = function () {
+      var btn = $("#f-submit"), err = $("#f-err");
+      var gunInput = $("#f-gun");
+      var payload = {
+        gun: fixedGun || (gunInput ? gunInput.value.trim() : ""),
+        build: $("#f-build").value.trim(),
+        tab: $("#f-tab").value,
+        code: $("#f-code").value.trim(),
+        author: $("#f-author").value.trim()
+      };
+      err.textContent = "";
+      if (!payload.gun || !payload.code || !payload.author) {
+        err.textContent = "枪械名、改枪码、新建人名字 三项必填";
+        return;
+      }
+      if (!/^[0-9A-Za-z]{8,32}$/.test(payload.code)) {
+        err.textContent = "改枪码格式看起来不对（应为 8–32 位字母数字）";
+        return;
+      }
+      var dup = ALL.filter(function (r) { return r.code === payload.code; })[0];
+      if (dup) { err.textContent = "这条码已经在列表里了（" + dup.gun + "）"; return; }
+
+      btn.disabled = true; btn.textContent = "提交中…";
+      apiPost("/api/add", payload)
+        .then(function () { return apiGetChanges(); })
+        .then(function () {
+          closeModal(); render();
+          showToast("已提交，感谢 " + payload.author + "！");
+        })
+        .catch(function (e) {
+          err.textContent = (e && e.message) || "提交失败，稍后再试";
+          btn.disabled = false; btn.textContent = "提交";
+        });
+    };
+    setTimeout(function () {
+      var el = $("#f-gun") || $("#f-build");
+      if (el) el.focus();
+    }, 40);
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { if ($("#modal")) closeModal(); else if (state.gun) closeGun(); }
+  });
+
+  // ---------- actions ----------
+  function openGun(gun) { state.gun = gun; writeHash("push"); render(); window.scrollTo(0, 0); }
+  function closeGun() { state.gun = ""; writeHash("push"); render(); window.scrollTo(0, 0); }
+
+  function toggleFav(id) {
+    if (favs.has(id)) favs.delete(id); else favs.add(id);
+    saveFavs(); render();
+  }
+  function toggleCmp(id) {
+    var i = state.cmp.indexOf(id);
+    if (i >= 0) state.cmp.splice(i, 1);
+    else if (state.cmp.length >= 3) { showToast("最多同时对比 3 套", false); return; }
+    else state.cmp.push(id);
+    render();
+  }
+  function gunRecords(gun) {
+    return filterRecords().filter(function (r) { return r.gun === gun; });
+  }
+  function toggleFavGun(gun) {
+    var items = gunRecords(gun);
+    var allFav = items.length > 0 && items.every(function (r) { return favs.has(r.id); });
+    items.forEach(function (r) { if (allFav) favs.delete(r.id); else favs.add(r.id); });
+    saveFavs(); render();
+  }
+
+  // ---------- events ----------
+  $("#cats").addEventListener("click", function (e) {
+    var el = e.target.closest(".pill"); if (!el) return;
+    state.cat = el.dataset.cat || "";
+    state.gun = "";
+    render();
+  });
+  $("#sort").addEventListener("change", function (e) { state.sort = e.target.value; render(); });
+  $("#noPrice").addEventListener("change", function (e) { state.noPrice = e.target.checked; render(); });
+  $("#favOnly").addEventListener("change", function (e) { state.favOnly = e.target.checked; render(); });
+  $("#showInv").addEventListener("change", function (e) { state.showInvalid = e.target.checked; render(); });
+  function onPrice() {
+    var a = Number($("#pmin").value), b = Number($("#pmax").value);
+    if (a > b) { if (this && this.id === "pmin") b = a; else a = b; }
+    state.min = a; state.max = b;
+    $("#pmin").value = a; $("#pmax").value = b;
+    $("#pval").textContent = a + "w – " + b + "w";
+    render();
+  }
+  $("#pmin").addEventListener("input", onPrice);
+  $("#pmax").addEventListener("input", onPrice);
+  $("#share").addEventListener("click", function () {
+    copyText(hashUrl().abs).then(function () { showToast("链接已复制，含当前筛选"); },
+      function () { showToast("复制失败", false); });
+  });
+  $("#reset").addEventListener("click", function () {
+    var cmp = state.cmp;
+    state = defaults(); state.cmp = cmp;
+    syncControls(); render();
+  });
+  $("#brand").addEventListener("click", function () { if (state.gun) closeGun(); });
+  $("#tabs").addEventListener("click", function (e) {
+    var el = e.target.closest(".tab"); if (!el) return;
+    var t = el.dataset.tab;
+    if (t === "__fav") state.favOnly = !state.favOnly;
+    else state.tab = t;
+    state.gun = "";
+    syncControls(); render();
+  });
+  $("#cmpOpen").addEventListener("click", openCompare);
+  $("#cmpClear").addEventListener("click", function () { state.cmp = []; render(); });
+
+  document.addEventListener("click", function (e) {
+    var copyBtn = e.target.closest(".copy");
+    if (copyBtn) {
+      copyText(copyBtn.dataset.code).then(function () {
+        copyBtn.classList.add("done");
+        var old = copyBtn.textContent; copyBtn.textContent = "✓";
+        setTimeout(function () { copyBtn.classList.remove("done"); copyBtn.textContent = old; }, 1100);
+        showToast("已复制 " + copyBtn.dataset.code.slice(-6));
+      }, function () { showToast("复制失败，请手动选择", false); });
+      return;
+    }
+    if (e.target.closest("#back")) { closeGun(); return; }
+
+    var act = e.target.closest("[data-act]");
+    if (act) {
+      var a = act.dataset.act;
+      var holder = act.closest("[data-gun]");
+      var gun = holder ? holder.dataset.gun : state.gun;
+      if (a === "fav") { toggleFav(act.closest("[data-id]").dataset.id); return; }
+      if (a === "cmp") { toggleCmp(act.closest("[data-id]").dataset.id); return; }
+      if (a === "flag") {
+        var rec = byId[act.closest("[data-id]").dataset.id];
+        if (!rec) return;
+        var next = rec.invalid ? "valid" : "invalid";
+        act.disabled = true;
+        apiPost("/api/flag", { target_id: rec.id, status: next })
+          .then(function () { return apiGetChanges(); })
+          .then(function () {
+            render();
+            showToast(next === "invalid" ? "已标记为失效" : "已恢复");
+          })
+          .catch(function (e) {
+            act.disabled = false;
+            showToast((e && e.message) || "操作失败", false);
+          });
+        return;
+      }
+      if (a === "favgun") { toggleFavGun(gun); return; }
+      if (a === "addhere") { openAddForm(gun); return; }
+      if (a === "copygun") {
+        var items = gunRecords(gun);
+        if (!items.length) { showToast("当前筛选下没有可复制的方案", false); return; }
+        copyText(items.map(function (r) { return r.code; }).join("\n")).then(function () {
+          showToast("已复制 " + gun + " 的 " + items.length + " 个改枪码");
+        }, function () { showToast("复制失败", false); });
+        return;
+      }
+      return;
+    }
+
+    var card = e.target.closest(".gun-card");
+    if (card) { openGun(card.dataset.gun); }
+  });
+
+  // ---------- boot ----------
+  function syncControls() {
+    $("#sort").value = state.sort;
+    $("#noPrice").checked = state.noPrice;
+    $("#favOnly").checked = state.favOnly;
+    $("#showInv").checked = state.showInvalid;
+    $("#pmin").value = state.min; $("#pmax").value = state.max;
+    $("#pval").textContent = state.min + "w – " + state.max + "w";
+  }
+
+  $("#sub").textContent = "共 " + BASE.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
+  $("#foot-note").textContent = D.footerNote || "";
+  $("#foot-copy").textContent = D.copyright || "";
+  $("#foot-stats").textContent = "收录 " + ALL.length + " 个改枪码 / " +
+    new Set(ALL.map(function (r) { return r.gun; })).size + " 把枪械；" +
+    D.modes.map(function (m) {
+      return m + " " + ALL.filter(function (r) { return r.tab === m; }).length;
+    }).join(" · ");
+
+  var notices = (D.notices || []).filter(function (n) { return n && n.length > 3; });
+  if (notices.length) {
+    $("#notice").hidden = false;
+    $("#notice-list").innerHTML = notices.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("");
+  }
+  var cats = [];
+
+  $("#pmin").min = G_MIN; $("#pmin").max = G_MAX; $("#pmin").step = 1;
+  $("#pmax").min = G_MIN; $("#pmax").max = G_MAX; $("#pmax").step = 1;
+
+  readHash();
+  rebuildAll();
+  syncControls();
+  render();
+  if (state.cmpOpen && state.cmp.length) openCompare();
+  window.addEventListener("popstate", applyHash);
+
+  // 回到顶部按钮
+  var toTop = $("#toTop");
+  function onScroll() { toTop.classList.toggle("on", window.scrollY > 620); }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  toTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
+  onScroll();
+
+  if (API) {
+    apiGetChanges().then(function (ok) {
+      if (!ok) showToast("后端连不上，暂时只读", false);
+      render();
+    });
+  } else {
+    $("#foot-note").textContent = (D.footerNote || "") + "　当前为只读模式（未配置编辑后端）。";
+  }
+})();
+</script>
+</body>
+</html>
