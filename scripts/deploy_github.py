@@ -85,7 +85,8 @@ def collect_files():
         if not path.is_file():
             continue
         rel = path.relative_to(ROOT)
-        if any(part in SKIP_DIRS for part in rel.parts):
+        # skip tooling/scratch dirs (dist, _chk, __pycache__, ...)
+        if any(part in SKIP_DIRS or part.startswith("_") for part in rel.parts):
             continue
         if path.name in SKIP_FILES:
             continue
