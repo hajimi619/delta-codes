@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-base="/">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>页面不存在 · 哈基米工具箱</title>
+<link rel="stylesheet" href="/assets/theme.css" id="css" />
+<script>
+  /* GitHub Pages 镜像是 /delta-codes/ 子目录，自定义域名在根目录。
+     404 页可能在任何路径深度被返回，所以这里统一把根路径算出来。 */
+  (function () {
+    var m = location.pathname.match(/^\/(delta-codes)\//);
+    var base = m ? "/" + m[1] + "/" : "/";
+    document.documentElement.setAttribute("data-base", base);
+    if (base !== "/") {
+      document.getElementById("css").href = base + "assets/theme.css";
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+      if (base !== "/") {
+        var links = document.querySelectorAll("a[href^='/']");
+        for (var i = 0; i < links.length; i++) {
+          links[i].setAttribute("href", base + links[i].getAttribute("href").slice(1));
+        }
+      }
+      var s = document.createElement("script");
+      s.src = base + "assets/site.js";
+      document.body.appendChild(s);
+    });
+  })();
+</script>
+<style>
+  .oops{max-width:560px;margin:70px auto;padding:34px 30px;border-radius:26px;text-align:center;
+    background:linear-gradient(150deg,rgba(255,255,255,.82),rgba(255,255,255,.52) 50%,rgba(255,255,255,.7));
+    border:1px solid rgba(255,255,255,.95);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:var(--inset),var(--shadow)}
+  .oops .big{font-size:64px;font-weight:800;line-height:1;letter-spacing:2px;
+    background:linear-gradient(120deg,#ffb066,#e2700a 50%,#6b5ea8);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .oops h1{margin:14px 0 8px;font-size:20px}
+  .oops p{margin:0 0 22px;font-size:13.5px;color:var(--dim);line-height:1.8}
+  .oops .acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="/">
+      <div class="mark">哈</div>
+      <div>
+        <h1>哈基米工具箱</h1>
+        <div class="sub">自己用得上，就顺手做出来</div>
+      </div>
+    </a>
+  </div>
+  <nav class="fnav" id="siteNav"></nav>
+</header>
+
+<div class="wrap">
+  <div class="oops">
+    <div class="big">404</div>
+    <h1>这个页面不存在</h1>
+    <p>地址可能打错了，或者这个功能还没做出来。<br />回首页看看现在有哪些工具。</p>
+    <div class="acts">
+      <a class="btn primary" href="/">← 回首页</a>
+      <a class="btn" href="/delta-codes/">去改枪码库</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
