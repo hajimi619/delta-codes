@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""把 docs/index.html + docs/data.js + 枪械图 打包成一个自包含的 HTML 文件。
+"""把 docs/delta-codes/ 打包成一个自包含的 HTML 文件。
 
 方便：单文件发给别人、离线打开、或传到只支持单文件的地方。
 """
@@ -11,7 +11,7 @@ import mimetypes
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DOCS = ROOT / "docs"
+DOCS = ROOT / "docs" / "delta-codes"
 INDEX = DOCS / "index.html"
 DATA = DOCS / "data.js"
 GUNS = DOCS / "img" / "guns"
