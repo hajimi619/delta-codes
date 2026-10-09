@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "codes.json"
 OUT = ROOT / "docs" / "data.js"
 CONFIG = ROOT / "config.json"
+GUN_IMG = ROOT / "data" / "gun-images.json"
 
 OWNER = "哈基米"
 SITE_NAME = "三角洲行动 · 改枪码库"
@@ -81,6 +82,12 @@ def main() -> int:
             modes.append(rec["tab"])
 
     prices = [r["price"] for r in records if r["price"] is not None]
+    gun_images = {}
+    if GUN_IMG.is_file():
+        try:
+            gun_images = json.loads(GUN_IMG.read_text(encoding="utf-8-sig"))
+        except Exception as exc:
+            print(f"[warn] gun-images.json 读不了，枪械图将缺失: {exc}")
     api_base = ""
     if CONFIG.is_file():
         try:
@@ -91,6 +98,7 @@ def main() -> int:
     payload = {
         "source": data["source"],
         "apiBase": api_base,
+        "gunImages": gun_images,
         "siteName": SITE_NAME,
         "footerNote": FOOTER_NOTE,
         "copyright": f"© {datetime.date.today().year} {OWNER}",
