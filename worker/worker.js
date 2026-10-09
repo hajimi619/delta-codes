@@ -11,11 +11,31 @@
  * 基础数据也还在，重新抓一次就恢复。
  */
 
-const ALLOWED_ORIGINS = [
-  "https://hajimi619.github.io",
-  "http://localhost:8080",
-  "http://127.0.0.1:8080",
-];
+/**
+ * 允许跨域的来源：
+ *   - 自有域名（含任意子域）  hajimiovo.top / www.hajimiovo.top / ...
+ *   - Cloudflare Pages 预览域  *.delta-codes.pages.dev
+ *   - GitHub Pages 镜像        hajimi619.github.io
+ *   - 本地调试                 localhost / 127.0.0.1 / file:// (Origin: null)
+ */
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (origin === "null") return true; // 本地直接打开 html 文件
+  let host;
+  try {
+    host = new URL(origin).hostname;
+  } catch (e) {
+    return false;
+  }
+  return (
+    host === "hajimiovo.top" ||
+    host.endsWith(".hajimiovo.top") ||
+    host === "hajimi619.github.io" ||
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host.endsWith(".delta-codes.pages.dev")
+  );
+}
 
 // 与前端 / build_site.py 保持一致的玩法列表
 const MODES = ["烽火地带", "全面战场", "烽火高操速T0", "黑潮爆破"];
@@ -25,8 +45,7 @@ const MAX_PER_IP_PER_HOUR = 30;
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
-  // file:// 打开时 Origin 是字面量 "null"
-  const allow = origin === "null" || ALLOWED_ORIGINS.includes(origin) ? origin || "*" : ALLOWED_ORIGINS[0];
+  const allow = isAllowedOrigin(origin) ? origin || "*" : "https://hajimiovo.top";
   return {
     "Access-Control-Allow-Origin": allow,
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
