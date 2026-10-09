@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "codes.json"
 OUT = ROOT / "docs" / "data.js"
+CONFIG = ROOT / "config.json"
 
 OWNER = "哈基米"
 SITE_NAME = "三角洲行动 · 改枪码库"
@@ -80,8 +81,16 @@ def main() -> int:
             modes.append(rec["tab"])
 
     prices = [r["price"] for r in records if r["price"] is not None]
+    api_base = ""
+    if CONFIG.is_file():
+        try:
+            # 记事本 / PowerShell 存出来的 json 常带 BOM
+            api_base = (json.loads(CONFIG.read_text(encoding="utf-8-sig")).get("apiBase") or "").rstrip("/")
+        except Exception as exc:
+            print(f"[warn] config.json 读不了，按只读模式处理: {exc}")
     payload = {
         "source": data["source"],
+        "apiBase": api_base,
         "siteName": SITE_NAME,
         "footerNote": FOOTER_NOTE,
         "copyright": f"© {datetime.date.today().year} {OWNER}",
