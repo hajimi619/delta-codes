@@ -47,14 +47,46 @@ delta-codes/
 │  ├─ data.js                由 build_site.py 生成的数据包（window.DELTA_DATA）
 │  └─ .nojekyll
 ├─ data/
-│  └─ codes.json             抓取结果（原始记录，含来源 tab / 行列号）
+│  └─ codes.json             抓取结果（基础数据，含来源 tab / 行列号）
+├─ worker/                   ← 在线编辑后端（Cloudflare Worker + D1）
+│  ├─ worker.js              接口代码
+│  ├─ schema.sql             数据库结构
+│  └─ README.md              部署指南（点点点 + 粘贴，约 5 分钟）
+├─ config.json               配置：apiBase 填 Worker 地址；留空 = 只读模式
 ├─ scripts/
 │  ├─ fetch_codes.py         从腾讯文档抓取并解析 → data/codes.json
-│  └─ build_site.py          data/codes.json → docs/data.js（清洗 + 补 id/价格）
+│  ├─ build_site.py          data/codes.json → docs/data.js（清洗 + 补 id/价格）
+│  ├─ build_singlefile.py    打包成单文件 dist/delta-codes.html
+│  └─ deploy_github.py       纯 REST API 部署到 GitHub Pages（不需要 git）
 ├─ preview/                  截图
 └─ .github/workflows/
    └─ refresh-codes.yml      在 GitHub 上手动触发一次数据刷新（可选定时）
 ```
+
+## 在线编辑（可选，默认关闭）
+
+站点默认是**只读**的。要开启"所有人都能新增 / 标记失效改枪码"，需要一个后端来存改动——
+GitHub Pages 是纯静态的，没有地方写数据。
+
+后端用的是 **Cloudflare Worker + D1**（免费额度足够），部署步骤见
+[worker/README.md](worker/README.md)，全程点点点和粘贴，约 5 分钟。
+
+部署完把 Worker 地址填进 `config.json`：
+
+```json
+{ "apiBase": "https://delta-codes-api.你的子域.workers.dev" }
+```
+
+然后重新 `build_site.py` 再部署，页面上就会出现 **「+ 新增改枪码」** 和每条的 **「标记失效」** 按钮。
+
+**设计上刻意做了两层保护：**
+
+1. **删除 = 标记失效**，不是真删。码还在，只是折叠 + 显示"已失效"，任何人可点 ↺ 恢复。
+2. **基础 347 条不在数据库里**，而是躺在仓库的 `data/codes.json`（有 git 历史）。
+   数据库只存"新增"和"失效标记"，所以**就算数据库被清空，基础数据一条不少**，
+   重跑一次 `fetch_codes.py` 就恢复。
+
+新增时会要求填 **新建人名字**，列表上会显示"由 XXX 添加"。
 
 ## 更新数据
 
