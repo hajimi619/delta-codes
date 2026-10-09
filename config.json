@@ -1,4 +1,1 @@
-{
-  "_comment": "apiBase 填 Cloudflare Worker 的地址，例如 https://delta-codes-api.你的子域.workers.dev ；留空则站点为只读模式。改完运行 scripts/build_site.py 再部署。",
-  "apiBase": ""
-}
+{"apiBase": "https://api.hajimiovo.top"}
