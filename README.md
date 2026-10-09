@@ -1,10 +1,15 @@
-# 三角洲行动 · 改枪码库
+# 哈基米工具箱 · 三角洲行动改枪码库
 
-> **🌐 在线访问：<https://hajimiovo.top/>**
-> 手机、电脑直接打开，无需登录，所有人都能新增 / 标记失效改枪码。
+> **🌐 站点首页：<https://hajimiovo.top/>**
+> **🔫 改枪码工具：<https://hajimiovo.top/delta-codes/>**
 >
-> 镜像：<https://hajimi619.github.io/delta-codes/> · 仓库：<https://github.com/hajimi619/delta-codes>
+> 手机、电脑直接打开，无需登录，所有人都能新增 / 标记失效改枪码。
+> 镜像：<https://hajimi619.github.io/delta-codes/delta-codes/> · 仓库：<https://github.com/hajimi619/delta-codes>
 > 接口：<https://api.hajimiovo.top/api/changes>
+
+本站是一个**多功能的个人工具箱**，「三角洲改枪码库」只是其中第一个功能。
+骨架已经搭好：**加新功能 = 建一个文件夹 + 在 `docs/assets/site.js` 的数组里加一行**，
+首页卡片和每个页面顶部的切换导航都会自动生成。
 
 把一份公开的腾讯文档《三角洲行动改枪码合集》里的改枪码
 抓下来，做成一个能搜索、筛选、收藏、对比、一键复制的网页。
@@ -46,10 +51,16 @@
 ```
 delta-codes/
 ├─ docs/                     ← 发布目录（Cloudflare Pages + GitHub Pages 共用）
-│  ├─ index.html             网页本体（界面 + 交互）
-│  ├─ data.js                由 build_site.py 生成的数据包（window.DELTA_DATA）
-│  ├─ img/guns/*.webp        68 张枪械图
+│  ├─ index.html             站点首页：功能导航（卡片由 site.js 生成）
+│  ├─ assets/
+│  │  ├─ theme.css           共用主题：浅色液态玻璃 + 顶栏 + 按钮 + 弹窗 + 表单
+│  │  └─ site.js             功能注册表 FEATURES + 导航/首页卡片渲染
+│  ├─ delta-codes/           ← 功能①：三角洲改枪码库
+│  │  ├─ index.html          工具页（只写自己专属的样式）
+│  │  ├─ data.js             由 build_site.py 生成（window.DELTA_DATA）
+│  │  └─ img/guns/*.webp     68 张枪械图
 │  └─ .nojekyll
+│  └─ (以后的新功能)/         每个功能一个文件夹，互相独立
 ├─ data/
 │  ├─ codes.json             抓取结果（基础数据，含来源 tab / 行列号）
 │  └─ gun-images.json        枪名 → 图片文件名 的映射
@@ -62,8 +73,8 @@ delta-codes/
 ├─ config.json               配置：apiBase 填 Worker 地址；留空 = 只读模式
 ├─ scripts/
 │  ├─ fetch_codes.py         从腾讯文档抓取并解析 → data/codes.json
-│  ├─ extract_gun_images.py  从图鉴截图裁出每把枪 → docs/img/guns/*.webp
-│  ├─ build_site.py          data/*.json → docs/data.js（清洗 + 补 id/价格/图片）
+│  ├─ extract_gun_images.py  从图鉴截图裁出每把枪 → docs/delta-codes/img/guns/*.webp
+│  ├─ build_site.py          data/*.json → docs/delta-codes/data.js
 │  ├─ build_singlefile.py    打包成单文件 dist/delta-codes.html（图片内联）
 │  ├─ deploy_github.py       纯 REST API 部署到 GitHub Pages（不需要 git）
 │  └─ deploy_pages.ps1       部署 docs/ 到 Cloudflare Pages（走 wrangler）
@@ -71,6 +82,34 @@ delta-codes/
 └─ .github/workflows/
    └─ refresh-codes.yml      在 GitHub 上手动触发一次数据刷新（可选定时）
 ```
+
+## 怎么加一个新功能
+
+1. 建目录 `docs/<功能id>/`，放一个 `index.html`
+2. 头部引共用主题（注意层级）：
+   ```html
+   <html lang="zh-CN" data-base="../">     <!-- 让 site.js 能拼对链接 -->
+   <head>
+     <link rel="stylesheet" href="../assets/theme.css" />
+   </head>
+   <body>
+     <header class="top">
+       <div class="top-in"> …品牌 + 统计… </div>
+       <nav class="fnav" id="siteNav"></nav>   <!-- 自动生成功能切换 -->
+     </header>
+     …
+     <script src="../assets/site.js"></script>
+   </body>
+   ```
+3. 在 `docs/assets/site.js` 的 `FEATURES` 数组里加一条：
+   ```js
+   { id:"<功能id>", name:"功能名", desc:"一句话说明",
+     tags:["标签"], status:"online", icon:"★" }
+   ```
+4. 部署。首页卡片和所有页面的顶部导航会自动出现。
+
+共用样式已经包括：设计变量、七彩背景、顶栏、`.btn`、`.badge`、`.card`、
+`.modal`、`.toast`、`.totop`、`.form-grid`、`.empty`、`.hero`、`.fcard`。
 
 ## 枪械图是怎么来的
 
