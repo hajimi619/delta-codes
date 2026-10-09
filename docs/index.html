@@ -147,6 +147,28 @@
   .icon-btn:hover{color:var(--txt);border-color:var(--line-hi)}
   .icon-btn.star.on{color:var(--star);border-color:rgba(255,200,87,.45);background:rgba(255,200,87,.09)}
   .icon-btn.cmp.on{color:var(--accent);border-color:rgba(255,138,43,.5);background:rgba(255,138,43,.1)}
+  .icon-btn.flag:hover{color:var(--bad);border-color:rgba(255,107,107,.5)}
+  .icon-btn.flag.on{color:var(--ok);border-color:rgba(61,220,151,.45);background:rgba(61,220,151,.09)}
+
+  /* 已失效 / 用户新增 */
+  .build-item.invalid{opacity:.55;border-style:dashed}
+  .build-item.invalid .bi-code{text-decoration:line-through;text-decoration-color:var(--bad)}
+  .badge.author{color:var(--star);border-color:rgba(255,200,87,.3);background:rgba(255,200,87,.08)}
+  .badge.gone{color:var(--bad);border-color:rgba(255,107,107,.3);background:rgba(255,107,107,.08)}
+  .badge.mine{color:#c9a4ff;border-color:rgba(201,164,255,.3);background:rgba(201,164,255,.08)}
+
+  /* 新增表单 */
+  .form-grid{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+  .form-grid label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--dim)}
+  .form-grid label b{color:var(--accent2);font-weight:600}
+  .form-grid input,.form-grid select{padding:10px 12px;border-radius:9px;background:#0d131c;
+    border:1px solid var(--line);color:var(--txt);font-size:14px;outline:none;font-family:inherit}
+  .form-grid input:focus,.form-grid select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,138,43,.13)}
+  .form-grid .hint{font-size:11.5px;color:var(--dim2)}
+  .form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:6px}
+  .form-actions .btn{padding:10px 18px}
+  .btn.primary{background:linear-gradient(145deg,var(--accent),#e0700f);border-color:transparent;color:#1c1108;font-weight:700}
+  .form-err{color:var(--bad);font-size:13px;min-height:18px}
   .copy{flex:0 0 auto;border:1px solid var(--line-hi);background:#182231;color:var(--txt);
     border-radius:7px;padding:6px 12px;font-size:12.5px;cursor:pointer;transition:.15s;white-space:nowrap}
   .copy:hover{background:var(--accent);border-color:transparent;color:#1c1108;font-weight:700}
@@ -227,6 +249,7 @@
       </div>
       <label class="chk"><input type="checkbox" id="noPrice" checked /> 包含未标价</label>
       <label class="chk"><input type="checkbox" id="favOnly" /> 只看收藏</label>
+      <label class="chk" id="invWrap"><input type="checkbox" id="showInv" /> 显示已失效</label>
       <select id="sort">
         <option value="gun">按枪械名排序</option>
         <option value="price">按最低价从低到高</option>
@@ -234,6 +257,7 @@
         <option value="count">按方案数量排序</option>
       </select>
       <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn primary" id="addBtn" hidden>+ 新增改枪码</button>
         <button class="btn ghost" id="share">复制当前链接</button>
         <button class="btn ghost" id="reset">清空筛选</button>
       </div>
@@ -270,9 +294,15 @@
   "use strict";
   var D = window.DELTA_DATA || { records: [], modes: [], notices: [], total: 0,
     priceMin: 0, priceMax: 0 };
-  var ALL = D.records || [];
+  var BASE = D.records || [];   // 仓库里烘焙好的基础数据（只读）
+  var CHANGES = [];             // 从 Worker 拉回来的改动：新增 + 失效标记
+  var ALL = [];                 // 合并后的最终列表
+  var byId = {};
+  var API = String(D.apiBase || "").replace(/\/+$/, "");
+  var apiOnline = false;
   var FAV_KEY = "delta-codes-favs-v1";
   var G_MIN = D.priceMin || 0, G_MAX = D.priceMax || 0;
+  var PRICE_RE = /(\d+(?:\.\d+)?)\s*[wW万]/;
 
   // ---------- gun categories ----------
   // 注意顺序：先匹配更具体的名字，否则会被泛化分类抢走。
@@ -292,16 +322,71 @@
         if (gun.indexOf(CATS[i][1][j]) >= 0) return CATS[i][0];
     return "其他";
   }
-  ALL.forEach(function (r) { r.cat = catOf(r.gun); });
+  function priceOf(text) {
+    var m = PRICE_RE.exec(text || "");
+    return m ? parseFloat(m[1]) : null;
+  }
 
-  var byId = {};
-  ALL.forEach(function (r) { byId[r.id] = r; });
+  /** 基础数据 + 改动 = 最终列表 */
+  function rebuildAll() {
+    var flag = {};
+    CHANGES.forEach(function (c) { if (c.type === "flag" && c.target_id) flag[c.target_id] = c.status; });
+
+    var out = BASE.map(function (r) {
+      var c = {};
+      for (var k in r) c[k] = r[k];
+      c.invalid = flag[r.id] === "invalid";
+      c.author = "";
+      c.userAdded = false;
+      return c;
+    });
+    CHANGES.forEach(function (c) {
+      if (c.type !== "add") return;
+      var id = "user|" + c.id;
+      out.push({
+        id: id, code: c.code, gun: c.gun, build: c.build || "",
+        mode: c.mode || c.tab, tab: c.tab, price: priceOf(c.build),
+        author: c.author || "", userAdded: true,
+        invalid: flag[id] === "invalid"
+      });
+    });
+    out.forEach(function (r) { r.cat = catOf(r.gun); });
+    ALL = out;
+    byId = {};
+    ALL.forEach(function (r) { byId[r.id] = r; });
+  }
+
+  // ---------- 后端 ----------
+  function apiGetChanges() {
+    if (!API) { apiOnline = false; return Promise.resolve(false); }
+    return fetch(API + "/api/changes", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) {
+        CHANGES = (d && d.changes) || [];
+        apiOnline = true;
+        rebuildAll();
+        return true;
+      })
+      .catch(function () { apiOnline = false; rebuildAll(); return false; });
+  }
+  function apiPost(path, body) {
+    return fetch(API + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body || {})
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (!r.ok) throw new Error((d && d.error) || ("HTTP " + r.status));
+        return d;
+      });
+    });
+  }
 
   // ---------- state ----------
   function defaults() {
     return {
       tab: "", cat: "", sort: "gun",
-      min: G_MIN, max: G_MAX, noPrice: true, favOnly: false,
+      min: G_MIN, max: G_MAX, noPrice: true, favOnly: false, showInvalid: false,
       gun: "", cmp: [], cmpOpen: false
     };
   }
@@ -329,6 +414,7 @@
       if (p.has("max")) s.max = Number(p.get("max"));
       if (p.has("np")) s.noPrice = p.get("np") === "1";
       if (p.has("fav")) s.favOnly = p.get("fav") === "1";
+      if (p.has("inv")) s.showInvalid = p.get("inv") === "1";
       if (p.has("gun")) s.gun = p.get("gun");
       if (p.has("cmp")) s.cmp = p.get("cmp").split(",").filter(Boolean).slice(0, 3);
       if (p.has("cmpopen")) s.cmpOpen = p.get("cmpopen") === "1";
@@ -348,6 +434,7 @@
     if (state.max < G_MAX) p.set("max", String(state.max));
     if (!state.noPrice) p.set("np", "0");
     if (state.favOnly) p.set("fav", "1");
+    if (state.showInvalid) p.set("inv", "1");
     if (state.gun) p.set("gun", state.gun);
     if (state.cmp.length) p.set("cmp", state.cmp.join(","));
     if (state.cmp.length && state.cmpOpen) p.set("cmpopen", "1");
@@ -398,6 +485,7 @@
       if (state.tab && r.tab !== state.tab) return false;
       if (state.cat && r.cat !== state.cat) return false;
       if (state.favOnly && !favs.has(r.id)) return false;
+      if (!state.showInvalid && r.invalid) return false;
       var narrowed = state.min > G_MIN || state.max < G_MAX;
       if (narrowed) {
         if (r.price == null) { if (!state.noPrice) return false; }
@@ -445,6 +533,8 @@
     var range = g.min == null ? "未标价"
       : (g.min === g.max ? g.min + "W" : g.min + "w–" + g.max + "w");
     var preview = g.items.map(function (r) { return r.build || "未命名"; }).join(" · ");
+    var gone = g.items.filter(function (r) { return r.invalid; }).length;
+    var fresh = g.items.filter(function (r) { return r.userAdded; }).length;
     return '<article class="gun-card' + (g.allFav ? " fav" : "") + '" data-gun="' + esc(g.gun) + '">' +
       '<div class="gc-head">' +
         '<div class="gc-name">' + esc(g.gun) + "</div>" +
@@ -456,6 +546,8 @@
         '<span class="badge">' + esc(g.cat) + "</span>" +
         '<span class="badge">' + g.items.length + " 套</span>" +
         '<span class="badge price">' + range + "</span>" +
+        (gone ? '<span class="badge gone">' + gone + " 已失效</span>" : "") +
+        (fresh ? '<span class="badge mine">' + fresh + " 网友新增</span>" : "") +
         g.modes.map(function (m) { return '<span class="badge mode">' + esc(m) + "</span>"; }).join("") +
       "</div>" +
       '<div class="gc-preview">' + esc(preview) + "</div>" +
@@ -466,12 +558,17 @@
   // ---------- level 2 markup ----------
   function buildRow(r) {
     var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
-    return '<div class="build-item' + (isFav ? " fav" : "") + '" data-id="' + esc(r.id) + '">' +
+    var canEdit = !!API && apiOnline;
+    return '<div class="build-item' + (isFav ? " fav" : "") + (r.invalid ? " invalid" : "") +
+        '" data-id="' + esc(r.id) + '">' +
       '<div class="bi-left">' +
         '<div class="bi-build">' + (r.build ? esc(r.build) : '<span style="color:var(--dim2)">默认/未命名</span>') + "</div>" +
         '<div class="bi-sub">' +
           '<span class="badge price">' + priceText(r) + "</span>" +
           '<span class="badge mode">' + esc(r.tab) + "</span>" +
+          (r.invalid ? '<span class="badge gone">已失效</span>' : "") +
+          (r.userAdded ? '<span class="badge mine">网友新增</span>' : "") +
+          (r.author ? '<span class="badge author">由 ' + esc(r.author) + " 添加</span>" : "") +
         "</div>" +
       "</div>" +
       '<div class="bi-code">' + esc(r.code) + "</div>" +
@@ -479,6 +576,8 @@
         '<button class="icon-btn star' + (isFav ? " on" : "") + '" data-act="fav" title="收藏">' +
           (isFav ? "★" : "☆") + "</button>" +
         '<button class="icon-btn cmp' + (isCmp ? " on" : "") + '" data-act="cmp" title="加入对比">⇄</button>' +
+        (canEdit ? '<button class="icon-btn flag' + (r.invalid ? " on" : "") + '" data-act="flag" title="' +
+          (r.invalid ? "恢复这条码" : "标记为失效") + '">' + (r.invalid ? "↺" : "⊘") + "</button>" : "") +
         '<button class="copy" data-code="' + esc(r.code) + '">复制</button>' +
       "</div>" +
       "</div>";
@@ -553,6 +652,7 @@
     var groups = sortGroups(groupByGun(rows));
     $("#s-guns").textContent = groups.length;
     $("#s-codes").textContent = rows.length;
+    $("#s-total").textContent = ALL.length;
     renderTabs();
     renderCats();
 
@@ -653,6 +753,68 @@
     $("#modalHost").innerHTML = "";
     state.cmpOpen = false; writeHash("replace");
   }
+
+  // ---------- 新增改枪码 ----------
+  function openAddForm() {
+    if (!API) { showToast("当前是只读模式，还没配后端", false); return; }
+    var opts = (D.modes || []).map(function (m) {
+      return '<option value="' + esc(m) + '">' + esc(m) + "</option>";
+    }).join("");
+    $("#modalHost").innerHTML =
+      '<div class="modal" id="modal"><div class="modal-in" style="max-width:540px">' +
+      '<h2>新增改枪码<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+      '<div class="form-grid">' +
+        '<label><b>枪械名 *</b><input id="f-gun" maxlength="24" placeholder="例如 M14射手步枪" /></label>' +
+        '<label><b>改装名 / 价位</b><input id="f-build" maxlength="40" placeholder="例如 45w满改倍镜（可不填）" /></label>' +
+        '<label><b>玩法 *</b><select id="f-tab">' + opts + "</select></label>" +
+        '<label><b>改枪码 *</b><input id="f-code" maxlength="32" placeholder="例如 6L6JE9S01SD6JA3I74O3I" />' +
+          '<span class="hint">只填游戏里复制出来的那一串，不要带「枪械-玩法-」前缀和横杠</span></label>' +
+        '<label><b>新建人名字 *</b><input id="f-author" maxlength="16" placeholder="填你的名字或游戏 ID" /></label>' +
+        '<div class="form-err" id="f-err"></div>' +
+        '<div class="form-actions">' +
+          '<button class="btn" id="f-cancel">取消</button>' +
+          '<button class="btn primary" id="f-submit">提交</button>' +
+        "</div>" +
+      "</div></div></div>";
+    $("#modalClose").onclick = closeModal;
+    $("#f-cancel").onclick = closeModal;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+
+    $("#f-submit").onclick = function () {
+      var btn = $("#f-submit"), err = $("#f-err");
+      var payload = {
+        gun: $("#f-gun").value.trim(),
+        build: $("#f-build").value.trim(),
+        tab: $("#f-tab").value,
+        code: $("#f-code").value.trim(),
+        author: $("#f-author").value.trim()
+      };
+      err.textContent = "";
+      if (!payload.gun || !payload.code || !payload.author) {
+        err.textContent = "枪械名、改枪码、新建人名字 三项必填";
+        return;
+      }
+      if (!/^[0-9A-Za-z]{8,32}$/.test(payload.code)) {
+        err.textContent = "改枪码格式看起来不对（应为 8–32 位字母数字）";
+        return;
+      }
+      var dup = ALL.filter(function (r) { return r.code === payload.code; })[0];
+      if (dup) { err.textContent = "这条码已经在列表里了（" + dup.gun + "）"; return; }
+
+      btn.disabled = true; btn.textContent = "提交中…";
+      apiPost("/api/add", payload)
+        .then(function () { return apiGetChanges(); })
+        .then(function () {
+          closeModal(); render();
+          showToast("已提交，感谢 " + payload.author + "！");
+        })
+        .catch(function (e) {
+          err.textContent = (e && e.message) || "提交失败，稍后再试";
+          btn.disabled = false; btn.textContent = "提交";
+        });
+    };
+    setTimeout(function () { var el = $("#f-gun"); if (el) el.focus(); }, 40);
+  }
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") { if ($("#modal")) closeModal(); else if (state.gun) closeGun(); }
   });
@@ -692,6 +854,8 @@
   $("#sort").addEventListener("change", function (e) { state.sort = e.target.value; render(); });
   $("#noPrice").addEventListener("change", function (e) { state.noPrice = e.target.checked; render(); });
   $("#favOnly").addEventListener("change", function (e) { state.favOnly = e.target.checked; render(); });
+  $("#showInv").addEventListener("change", function (e) { state.showInvalid = e.target.checked; render(); });
+  $("#addBtn").addEventListener("click", openAddForm);
   function onPrice() {
     var a = Number($("#pmin").value), b = Number($("#pmax").value);
     if (a > b) { if (this && this.id === "pmin") b = a; else a = b; }
@@ -743,6 +907,23 @@
       var gun = holder ? holder.dataset.gun : state.gun;
       if (a === "fav") { toggleFav(act.closest("[data-id]").dataset.id); return; }
       if (a === "cmp") { toggleCmp(act.closest("[data-id]").dataset.id); return; }
+      if (a === "flag") {
+        var rec = byId[act.closest("[data-id]").dataset.id];
+        if (!rec) return;
+        var next = rec.invalid ? "valid" : "invalid";
+        act.disabled = true;
+        apiPost("/api/flag", { target_id: rec.id, status: next })
+          .then(function () { return apiGetChanges(); })
+          .then(function () {
+            render();
+            showToast(next === "invalid" ? "已标记为失效" : "已恢复");
+          })
+          .catch(function (e) {
+            act.disabled = false;
+            showToast((e && e.message) || "操作失败", false);
+          });
+        return;
+      }
       if (a === "favgun") { toggleFavGun(gun); return; }
       if (a === "copygun") {
         var items = gunRecords(gun);
@@ -764,12 +945,12 @@
     $("#sort").value = state.sort;
     $("#noPrice").checked = state.noPrice;
     $("#favOnly").checked = state.favOnly;
+    $("#showInv").checked = state.showInvalid;
     $("#pmin").value = state.min; $("#pmax").value = state.max;
     $("#pval").textContent = state.min + "w – " + state.max + "w";
   }
 
-  $("#s-total").textContent = ALL.length;
-  $("#sub").textContent = "共 " + ALL.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
+  $("#sub").textContent = "共 " + BASE.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
   $("#foot-note").textContent = D.footerNote || "";
   $("#foot-copy").textContent = D.copyright || "";
   $("#foot-stats").textContent = "收录 " + ALL.length + " 个改枪码 / " +
@@ -788,9 +969,22 @@
   $("#pmin").min = G_MIN; $("#pmin").max = G_MAX; $("#pmin").step = 1;
   $("#pmax").min = G_MIN; $("#pmax").max = G_MAX; $("#pmax").step = 1;
 
-  readHash(); syncControls(); render();
+  readHash();
+  rebuildAll();
+  $("#addBtn").hidden = !API;
+  syncControls();
+  render();
   if (state.cmpOpen && state.cmp.length) openCompare();
   window.addEventListener("popstate", applyHash);
+
+  if (API) {
+    apiGetChanges().then(function (ok) {
+      if (!ok) showToast("后端连不上，暂时只读", false);
+      render();
+    });
+  } else {
+    $("#foot-note").textContent = (D.footerNote || "") + "　当前为只读模式（未配置编辑后端）。";
+  }
 })();
 </script>
 </body>
