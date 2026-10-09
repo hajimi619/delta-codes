@@ -20,7 +20,7 @@
 |---|---|
 | 玩法分类 | 顶部标签：全部 / 烽火地带 / 全面战场 / 烽火高操速T0 / 黑潮爆破（数字是**枪械把数**） |
 | 类型分类 | 第二排标签：**步枪（突击 + 战斗合并）25** / 冲锋枪 11 / 机枪 4 / 射手步枪 8 / **狙击步枪 6** / 霰弹枪 4 / 手枪 7 / 其他 2；不选时按类型**分块显示**，选了就只看这一类 |
-| 枪械卡片 | 一张卡一把枪：类型 / 套数 / 价格区间 / 玩法 / 方案名预览，右上角 ★ 整把收藏 |
+| 枪械卡片 | 一张卡一把枪：**枪械图** + 类型 / 套数 / 价格区间 / 玩法 / 方案名预览，右上角 ★ 整把收藏 |
 | 方案详情 | 点卡片进入，按价格从低到高列出每个价位：改装名 + 价格 + 玩法 + 改枪码 + 复制/收藏/对比 |
 | 价格筛选 | 双滑块按价格过滤（价格从"32w性价比"这类改装名里解析），可勾选是否包含未标价 |
 | 排序 | 按枪械名 / 最低价从低到高 / 最高价从高到低 / 方案数量 |
@@ -47,7 +47,10 @@ delta-codes/
 │  ├─ data.js                由 build_site.py 生成的数据包（window.DELTA_DATA）
 │  └─ .nojekyll
 ├─ data/
-│  └─ codes.json             抓取结果（基础数据，含来源 tab / 行列号）
+│  ├─ codes.json             抓取结果（基础数据，含来源 tab / 行列号）
+│  └─ gun-images.json        枪名 → 图片文件名 的映射
+├─ assets/
+│  └─ gun-screenshots/       游戏图鉴截图（枪械图的来源，13 张）
 ├─ worker/                   ← 在线编辑后端（Cloudflare Worker + D1）
 │  ├─ worker.js              接口代码
 │  ├─ schema.sql             数据库结构
@@ -55,12 +58,35 @@ delta-codes/
 ├─ config.json               配置：apiBase 填 Worker 地址；留空 = 只读模式
 ├─ scripts/
 │  ├─ fetch_codes.py         从腾讯文档抓取并解析 → data/codes.json
-│  ├─ build_site.py          data/codes.json → docs/data.js（清洗 + 补 id/价格）
-│  ├─ build_singlefile.py    打包成单文件 dist/delta-codes.html
+│  ├─ extract_gun_images.py  从图鉴截图裁出每把枪 → docs/img/guns/*.webp
+│  ├─ build_site.py          data/*.json → docs/data.js（清洗 + 补 id/价格/图片）
+│  ├─ build_singlefile.py    打包成单文件 dist/delta-codes.html（图片内联）
 │  └─ deploy_github.py       纯 REST API 部署到 GitHub Pages（不需要 git）
 ├─ preview/                  截图
 └─ .github/workflows/
    └─ refresh-codes.yml      在 GitHub 上手动触发一次数据刷新（可选定时）
+```
+
+## 枪械图是怎么来的
+
+原始素材是 13 张游戏内**枪械图鉴列表**截图（放在 `assets/gun-screenshots/`）。
+`scripts/extract_gun_images.py` 会自动把每把枪裁成独立小图：
+
+1. 图鉴每行固定高约 **89px**，行内**左上角是白色枪名文字**、下方才是枪身
+2. 先用「左上角近白文字」定位每一行，行距用等差数列拟合（比按高度均分稳）
+3. 再取标题下方的窗口，用**边缘强度**找枪的轮廓外接框——
+   背景是平滑渐变几乎没有边缘，枪有清晰轮廓，所以这个判据比"和背景色做差"可靠得多
+4. 图鉴里被**选中**的那一项有一圈近白色高亮边框，会按
+   「贯穿整行/整列 + 亮度 > 200」识别出来，连同两侧的抗锯齿一起剔除
+
+输出 68 张 WebP（每把枪约 1.5 KB，**合计 105 KB**），页面用 CSS 径向遮罩把图片边缘
+淡出，融进卡片背景。
+
+重新生成：
+
+```powershell
+& $py scripts\extract_gun_images.py
+& $py scripts\build_site.py
 ```
 
 ## 在线编辑（可选，默认关闭）
