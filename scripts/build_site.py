@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import datetime
 import json
 import re
 from pathlib import Path
@@ -12,6 +13,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "codes.json"
 OUT = ROOT / "docs" / "data.js"
+
+OWNER = "哈基米"
+SITE_NAME = "三角洲行动 · 改枪码库"
+FOOTER_NOTE = "本站为个人整理的改枪码检索工具，与游戏官方无关；改枪码随游戏版本变动，以游戏内实际情况为准。"
+SITE_NOTICE = ("改枪码失效通常是同一套码用的人太多触发游戏机制限制，不是改法本身有问题。"
+               "遇到失效可以换个方案，或过一段时间再试。")
 
 PRICE_RE = re.compile(r"(\d+(?:\.\d+)?)\s*[wW万]")
 
@@ -50,12 +57,8 @@ def price_of(build: str) -> float | None:
 def main() -> int:
     data = json.loads(SRC.read_text(encoding="utf-8"))
     records = []
-    notices = []
     for tab in data["tabs"]:
         label = tab["label"]
-        for n in tab.get("notices", []):
-            if n not in notices:
-                notices.append(n)
         for rec in tab["records"]:
             build = clean_build(rec.get("build", ""), rec.get("gun", ""))
             records.append(
@@ -79,10 +82,12 @@ def main() -> int:
     prices = [r["price"] for r in records if r["price"] is not None]
     payload = {
         "source": data["source"],
-        "generatedFrom": "GALI的改枪码合集 (腾讯文档)",
+        "siteName": SITE_NAME,
+        "footerNote": FOOTER_NOTE,
+        "copyright": f"© {datetime.date.today().year} {OWNER}",
         "total": len(records),
         "modes": modes,
-        "notices": notices,
+        "notices": [SITE_NOTICE],
         "priceMin": int(min(prices)) if prices else 0,
         "priceMax": int(max(prices)) + 1 if prices else 0,
         "withPrice": len(prices),
