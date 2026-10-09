@@ -67,10 +67,21 @@ def call(method: str, path: str, token: str, body=None, ok=(200, 201, 204), atte
                 payload = {"raw": raw}
             if e.code in ok:
                 return e.code, payload
-            # 5xx / rate limit are worth retrying, 4xx are not
+            msg = str(payload.get("message", ""))
+            # GitHub's secondary rate limit shows up as 403, and sometimes as a
+            # confusing 400 "malformed request". Both need a long cool-off.
+            abuse = ("secondary rate limit" in msg or "rate limit" in msg
+                     or "malformed request" in msg or "abuse" in msg.lower())
             if e.code >= 500 or e.code == 429:
                 last = f"HTTP {e.code}"
-                time.sleep(2 + 3 * attempt)
+                time.sleep(3 + 4 * attempt)
+                continue
+            if abuse and attempt < attempts - 1:
+                wait = 30 + 30 * attempt
+                print(f"   [~] rate limited, waiting {wait}s before retry "
+                      f"({attempt + 1}/{attempts})")
+                time.sleep(wait)
+                last = f"HTTP {e.code} {msg[:60]}"
                 continue
             return e.code, payload
         except RETRYABLE as e:
@@ -128,30 +139,34 @@ def main() -> int:
     login = me["login"]
     print(f"[ok] authenticated as {login}")
 
-    # ---- create or reuse the repo ----
-    status, repo = call(
-        "POST", "/user/repos", token,
-        {
-            "name": args.repo,
-            "description": args.description,
-            "private": bool(args.private),
-            "has_issues": False,
-            "has_wiki": False,
-            "has_projects": False,
-        },
-        ok=(201,),
-    )
-    if status == 201:
-        print(f"[ok] created repo {login}/{args.repo}")
-    elif status == 422:
-        status2, repo = call("GET", f"/repos/{login}/{args.repo}", token)
-        if status2 != 200:
-            print(f"[x] repo exists but cannot read it ({status2})", file=sys.stderr)
-            return 4
+    # ---- reuse the repo if it is already there, otherwise create it ----
+    status, repo = call("GET", f"/repos/{login}/{args.repo}", token, ok=(200, 404))
+    if status == 200:
         print(f"[=] repo {login}/{args.repo} already exists, reusing it")
     else:
-        print(f"[x] create repo failed ({status}): {repo.get('message')}", file=sys.stderr)
-        return 4
+        status, repo = call(
+            "POST", "/user/repos", token,
+            {
+                "name": args.repo,
+                "description": args.description,
+                "private": bool(args.private),
+                "has_issues": False,
+                "has_wiki": False,
+                "has_projects": False,
+            },
+            ok=(201, 422),
+        )
+        if status == 201:
+            print(f"[ok] created repo {login}/{args.repo}")
+        elif status == 422:
+            status2, repo = call("GET", f"/repos/{login}/{args.repo}", token)
+            if status2 != 200:
+                print(f"[x] repo exists but cannot read it ({status2})", file=sys.stderr)
+                return 4
+            print(f"[=] repo {login}/{args.repo} already exists, reusing it")
+        else:
+            print(f"[x] create repo failed ({status}): {repo.get('message')}", file=sys.stderr)
+            return 4
 
     # ---- upload every changed file through the Contents API ----
     branch = repo.get("default_branch") or "main"
@@ -192,6 +207,8 @@ def main() -> int:
         else:
             failed += 1
             print(f"   [!] {posix}: {st} {res.get('message')}")
+        # stay well under GitHub's content-creation rate limit
+        time.sleep(1.5)
     print(f"[ok] uploaded {uploaded}, unchanged {skipped}" + (f", failed {failed}" if failed else ""))
 
     # ---- enable Pages from /docs ----
