@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>三角洲行动 · 改枪码库</title>
-<meta name="description" content="三角洲行动改枪码检索库：烽火地带 / 全面战场 / 黑潮爆破，支持搜索、价格筛选、收藏与对比。" />
+<meta name="description" content="三角洲行动改枪码检索库：按枪械浏览，烽火地带 / 全面战场 / 黑潮爆破，支持搜索、价格筛选、收藏与对比。" />
 <style>
   :root{
     --bg:#0b0f14; --bg2:#111823; --card:#151d29; --card-hi:#1b2635;
@@ -32,7 +32,7 @@
   header.top{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);
     background:rgba(11,15,20,.85);border-bottom:1px solid var(--line)}
   .top-in{max-width:1240px;margin:0 auto;padding:14px 18px 12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .brand{display:flex;align-items:center;gap:11px;min-width:0;cursor:pointer}
   .mark{width:38px;height:38px;flex:0 0 38px;border-radius:10px;
     background:linear-gradient(145deg,var(--accent),#d85f10);display:grid;place-items:center;
     font-weight:800;font-size:19px;color:#20130a;box-shadow:0 6px 20px rgba(255,138,43,.28)}
@@ -81,50 +81,61 @@
   .tab.on{background:linear-gradient(145deg,var(--accent),#e0700f);border-color:transparent;color:#1c1108;font-weight:700}
   .tab .n{opacity:.65;font-size:12px;margin-left:5px;font-family:var(--mono)}
 
-  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
-  .card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
-    border-radius:13px;padding:13px 14px;display:flex;flex-direction:column;gap:9px;
-    transition:.15s;position:relative;overflow:hidden}
-  .card::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent);opacity:0;transition:.15s}
-  .card:hover{border-color:var(--line-hi);transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.34)}
-  .card:hover::after{opacity:1}
-  .card.fav{border-color:rgba(255,200,87,.35)}
-  .card.fav::after{background:var(--star);opacity:1}
-  .card-h{display:flex;align-items:flex-start;gap:8px}
-  .gun{font-weight:700;font-size:15.5px;letter-spacing:.2px}
-  .build{font-size:13px;color:var(--accent2);margin-top:2px}
-  .card-tools{margin-left:auto;display:flex;gap:5px;flex:0 0 auto}
-  .icon-btn{width:29px;height:29px;border-radius:8px;background:#182231;border:1px solid var(--line);
+  /* ---------- level 1: gun cards ---------- */
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(285px,1fr))}
+  .gun-card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:13px;padding:14px 15px;display:flex;flex-direction:column;gap:9px;
+    transition:.15s;position:relative;overflow:hidden;cursor:pointer}
+  .gun-card::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent);opacity:0;transition:.15s}
+  .gun-card:hover{border-color:var(--line-hi);transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.34)}
+  .gun-card:hover::after{opacity:1}
+  .gun-card.fav{border-color:rgba(255,200,87,.35)}
+  .gun-card.fav::after{background:var(--star);opacity:1}
+  .gc-head{display:flex;align-items:center;gap:8px}
+  .gc-name{font-weight:700;font-size:17px;letter-spacing:.2px}
+  .gc-head .spacer{flex:1}
+  .gc-badges{display:flex;gap:6px;flex-wrap:wrap}
+  .badge{font-size:11px;padding:3px 8px;border-radius:6px;background:#1d2836;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .badge.price{color:var(--ok);border-color:rgba(61,220,151,.28);background:rgba(61,220,151,.08)}
+  .badge.mode{color:#9dc4ff;border-color:rgba(157,196,255,.24);background:rgba(157,196,255,.07)}
+  .gc-preview{font-size:12.5px;color:var(--dim2);line-height:1.6;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em}
+  .gc-go{font-size:12.5px;color:var(--accent2);font-weight:600;margin-top:auto}
+
+  /* ---------- level 2: gun detail ---------- */
+  .detail-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px;margin-bottom:12px}
+  .back{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:9px;
+    background:var(--card);border:1px solid var(--line);color:var(--dim);font-size:13.5px;cursor:pointer;transition:.15s}
+  .back:hover{border-color:var(--line-hi);color:var(--txt)}
+  .detail-head .title{font-size:21px;font-weight:800;letter-spacing:.3px}
+  .detail-head .meta{font-size:12.5px;color:var(--dim2);margin-top:2px}
+  .detail-head .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+  .builds{display:flex;flex-direction:column;gap:8px}
+  .build-item{display:flex;align-items:center;gap:12px;
+    background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:12px;padding:11px 14px;transition:.15s}
+  .build-item:hover{border-color:var(--line-hi)}
+  .build-item.fav{border-color:rgba(255,200,87,.35)}
+  .bi-left{flex:0 0 190px;min-width:0}
+  .bi-build{font-size:14.5px;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bi-sub{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+  .bi-code{flex:1;min-width:0;font-family:var(--mono);font-size:13.5px;letter-spacing:.4px;color:#cfe3ff;
+    background:#0d131c;border:1px solid var(--line);border-radius:8px;padding:8px 11px;
+    overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+  .bi-code::-webkit-scrollbar{display:none}
+  .bi-acts{flex:0 0 auto;display:flex;gap:6px;align-items:center}
+  .icon-btn{width:30px;height:30px;border-radius:8px;background:#182231;border:1px solid var(--line);
     color:var(--dim2);cursor:pointer;display:grid;place-items:center;font-size:15px;line-height:1;transition:.15s;padding:0}
   .icon-btn:hover{color:var(--txt);border-color:var(--line-hi)}
   .icon-btn.star.on{color:var(--star);border-color:rgba(255,200,87,.45);background:rgba(255,200,87,.09)}
   .icon-btn.cmp.on{color:var(--accent);border-color:rgba(255,138,43,.5);background:rgba(255,138,43,.1)}
-  .badges{display:flex;gap:6px;flex-wrap:wrap}
-  .badge{font-size:11px;padding:3px 8px;border-radius:6px;background:#1d2836;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
-  .badge.price{color:var(--ok);border-color:rgba(61,220,151,.28);background:rgba(61,220,151,.08)}
-  .badge.mode{color:#9dc4ff;border-color:rgba(157,196,255,.24);background:rgba(157,196,255,.07)}
-  .code-row{display:flex;align-items:center;gap:8px;background:#0d131c;border:1px solid var(--line);border-radius:9px;padding:8px 10px}
-  .code{font-family:var(--mono);font-size:13px;letter-spacing:.4px;color:#cfe3ff;
-    overflow-x:auto;white-space:nowrap;flex:1;scrollbar-width:none}
-  .code::-webkit-scrollbar{display:none}
   .copy{flex:0 0 auto;border:1px solid var(--line-hi);background:#182231;color:var(--txt);
-    border-radius:7px;padding:5px 11px;font-size:12.5px;cursor:pointer;transition:.15s;white-space:nowrap}
+    border-radius:7px;padding:6px 12px;font-size:12.5px;cursor:pointer;transition:.15s;white-space:nowrap}
   .copy:hover{background:var(--accent);border-color:transparent;color:#1c1108;font-weight:700}
   .copy.done{background:var(--ok);border-color:transparent;color:#062015;font-weight:700}
-
-  .gun-group{border:1px solid var(--line);border-radius:13px;background:rgba(17,24,35,.55);overflow:hidden;margin-bottom:10px}
-  .gun-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
-  .gun-head:hover{background:rgba(255,255,255,.02)}
-  .gun-head .name{font-weight:700;font-size:15.5px}
-  .gun-head .cnt{font-size:12px;color:var(--dim2);font-family:var(--mono)}
-  .gun-head .acts{margin-left:auto;display:flex;gap:7px}
-  .gun-body{border-top:1px solid var(--line);padding:10px 14px 13px;display:flex;flex-direction:column;gap:8px}
-  .mini{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:7px 0;border-bottom:1px dashed rgba(36,50,68,.7)}
-  .mini:last-child{border-bottom:0}
-  .mini .b-label{font-size:13px;color:var(--accent2);min-width:104px;flex:0 1 auto}
-  .mini .b-code{font-family:var(--mono);font-size:12.5px;color:#cfe3ff;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
-  .mini .b-code::-webkit-scrollbar{display:none}
-  .mini .spacer{flex:1}
 
   .empty{text-align:center;padding:70px 20px;color:var(--dim2)}
   .empty b{display:block;font-size:16px;color:var(--dim);margin-bottom:6px}
@@ -154,16 +165,20 @@
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,80px);background:var(--ok);color:#062015;
     font-weight:700;padding:10px 20px;border-radius:10px;transition:.25s;opacity:0;pointer-events:none;z-index:80;font-size:14px}
   .toast.on{transform:translate(-50%,0);opacity:1}
-  @media (max-width:560px){
+  @media (max-width:620px){
     .brand h1{font-size:15px} .stats{width:100%;margin-left:0}
-    .mini .b-label{min-width:0}
+    .detail-head .acts{margin-left:0;width:100%}
+    .build-item{flex-wrap:wrap;gap:9px}
+    .bi-left{flex:1 1 100%}
+    .bi-code{flex:1 1 100%;order:3}
+    .bi-acts{order:2;margin-left:auto}
   }
 </style>
 </head>
 <body>
 <header class="top">
   <div class="top-in">
-    <div class="brand">
+    <div class="brand" id="brand">
       <div class="mark">Δ</div>
       <div>
         <h1>三角洲行动 · 改枪码库</h1>
@@ -171,9 +186,9 @@
       </div>
     </div>
     <div class="stats">
-      <div class="stat">显示 <b id="s-show">0</b></div>
-      <div class="stat">收录 <b id="s-total">0</b></div>
       <div class="stat">枪械 <b id="s-guns">0</b></div>
+      <div class="stat">改枪码 <b id="s-codes">0</b></div>
+      <div class="stat">收录 <b id="s-total">0</b></div>
     </div>
   </div>
 </header>
@@ -194,11 +209,11 @@
       </div>
       <select id="cat"><option value="">全部类型</option></select>
       <select id="sort">
-        <option value="gun">按枪械排序</option>
-        <option value="price">价格从低到高</option>
-        <option value="pricedesc">价格从高到低</option>
+        <option value="gun">按枪械名排序</option>
+        <option value="price">按最低价从低到高</option>
+        <option value="pricedesc">按最高价从高到低</option>
+        <option value="count">按方案数量排序</option>
       </select>
-      <button class="btn" id="viewBtn" title="切换卡片/按枪械分组">按枪械分组</button>
     </div>
     <div class="row">
       <div class="price-box">
@@ -217,8 +232,12 @@
   </div>
 
   <div class="tabs" id="tabs"></div>
-  <div id="list" class="grid"></div>
-  <div id="grouped" hidden></div>
+
+  <!-- level 1 -->
+  <div id="guns" class="grid"></div>
+  <!-- level 2 -->
+  <div id="detail" hidden></div>
+
   <div id="empty" class="empty" hidden><b>没有匹配的改枪码</b>换个关键词，或点「清空筛选」</div>
 
   <footer>
@@ -267,41 +286,52 @@
   }
   ALL.forEach(function (r) { r.cat = catOf(r.gun); });
 
+  var byId = {};
+  ALL.forEach(function (r) { byId[r.id] = r; });
+
   // ---------- state ----------
-  var state = {
-    q: "", tab: "", cat: "", sort: "gun",
-    min: G_MIN, max: G_MAX, noPrice: true, favOnly: false,
-    view: "cards", cmp: [], cmpOpen: false, open: {}
-  };
+  function defaults() {
+    return {
+      q: "", tab: "", cat: "", sort: "gun",
+      min: G_MIN, max: G_MAX, noPrice: true, favOnly: false,
+      gun: "", cmp: [], cmpOpen: false
+    };
+  }
+  var state = defaults();
+
   var favs = new Set();
   try {
     var raw = localStorage.getItem(FAV_KEY);
     if (raw) JSON.parse(raw).forEach(function (id) { favs.add(id); });
   } catch (e) { /* storage disabled */ }
-
   function saveFavs() {
-    try { localStorage.setItem(FAV_KEY, JSON.stringify([].concat(Array.from(favs)))); } catch (e) {}
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(favs))); } catch (e) {}
   }
 
   // ---------- url <-> state ----------
   function readHash() {
+    var s = defaults();
     var h = location.hash.replace(/^#/, "");
-    if (!h) return;
-    var p = new URLSearchParams(h);
-    if (p.has("q")) state.q = p.get("q");
-    if (p.has("tab")) state.tab = p.get("tab");
-    if (p.has("cat")) state.cat = p.get("cat");
-    if (p.has("sort")) state.sort = p.get("sort");
-    if (p.has("min")) state.min = Number(p.get("min"));
-    if (p.has("max")) state.max = Number(p.get("max"));
-    if (p.has("np")) state.noPrice = p.get("np") === "1";
-    if (p.has("fav")) state.favOnly = p.get("fav") === "1";
-    if (p.has("view")) state.view = p.get("view");
-    if (p.has("cmp")) state.cmp = p.get("cmp").split(",").filter(Boolean).slice(0, 3);
-    if (p.has("cmpopen")) state.cmpOpen = p.get("cmpopen") === "1";
-    if (p.has("open")) p.get("open").split(",").filter(Boolean).forEach(function (g) { state.open[g] = 1; });
+    if (h) {
+      var p = new URLSearchParams(h);
+      if (p.has("q")) s.q = p.get("q");
+      if (p.has("tab")) s.tab = p.get("tab");
+      if (p.has("cat")) s.cat = p.get("cat");
+      if (p.has("sort")) s.sort = p.get("sort");
+      if (p.has("min")) s.min = Number(p.get("min"));
+      if (p.has("max")) s.max = Number(p.get("max"));
+      if (p.has("np")) s.noPrice = p.get("np") === "1";
+      if (p.has("fav")) s.favOnly = p.get("fav") === "1";
+      if (p.has("gun")) s.gun = p.get("gun");
+      if (p.has("cmp")) s.cmp = p.get("cmp").split(",").filter(Boolean).slice(0, 3);
+      if (p.has("cmpopen")) s.cmpOpen = p.get("cmpopen") === "1";
+    }
+    s.min = Math.max(G_MIN, Math.min(G_MAX, s.min));
+    s.max = Math.max(G_MIN, Math.min(G_MAX, s.max));
+    if (s.min > s.max) s.min = s.max;
+    state = s;
   }
-  function writeHash(replace) {
+  function hashUrl() {
     var p = new URLSearchParams();
     if (state.q) p.set("q", state.q);
     if (state.tab) p.set("tab", state.tab);
@@ -311,15 +341,21 @@
     if (state.max < G_MAX) p.set("max", String(state.max));
     if (!state.noPrice) p.set("np", "0");
     if (state.favOnly) p.set("fav", "1");
-    if (state.view !== "cards") p.set("view", state.view);
+    if (state.gun) p.set("gun", state.gun);
     if (state.cmp.length) p.set("cmp", state.cmp.join(","));
     if (state.cmp.length && state.cmpOpen) p.set("cmpopen", "1");
-    var open = Object.keys(state.open);
-    if (open.length) p.set("open", open.join(","));
-    var url = location.pathname + location.search + (p.toString() ? "#" + p.toString() : "");
-    if (replace !== false) history.replaceState(null, "", url);
-    return location.origin + location.pathname + location.search + (p.toString() ? "#" + p.toString() : "");
+    var qs = p.toString();
+    return { rel: location.pathname + location.search + (qs ? "#" + qs : ""),
+             abs: location.origin + location.pathname + location.search + (qs ? "#" + qs : "") };
   }
+  // mode: "replace" (filter tweaks) | "push" (进入/退出枪械详情) | "none"
+  function writeHash(mode) {
+    var u = hashUrl();
+    if (mode === "push") history.pushState(null, "", u.rel);
+    else if (mode !== "none") history.replaceState(null, "", u.rel);
+    return u.abs;
+  }
+  function applyHash() { readHash(); syncControls(); render(); }
 
   // ---------- helpers ----------
   var $ = function (s) { return document.querySelector(s); };
@@ -347,13 +383,11 @@
       } catch (e) { rej(e); }
     });
   }
+  function priceText(r) { return r.price != null ? r.price + "W" : "未标价"; }
 
   // ---------- filtering ----------
-  var byId = {};
-  ALL.forEach(function (r) { byId[r.id] = r; });
-
-  function filtered() {
-    var rows = ALL.filter(function (r) {
+  function filterRecords() {
+    return ALL.filter(function (r) {
       if (state.tab && r.tab !== state.tab) return false;
       if (state.cat && r.cat !== state.cat) return false;
       if (state.favOnly && !favs.has(r.id)) return false;
@@ -369,79 +403,102 @@
       }
       return true;
     });
-    rows.sort(function (a, b) {
-      if (state.sort === "price") return (a.price == null ? 1e9 : a.price) - (b.price == null ? 1e9 : b.price);
-      if (state.sort === "pricedesc") return (b.price == null ? -1 : b.price) - (a.price == null ? -1 : a.price);
-      return a.gun.localeCompare(b.gun, "zh") ||
-        (b.price == null ? -1 : b.price) - (a.price == null ? -1 : a.price) ||
-        a.id.localeCompare(b.id);
-    });
-    return rows;
   }
 
-  // ---------- card html ----------
-  function badges(r) {
-    return '<div class="badges">' +
-      (r.price != null ? '<span class="badge price">' + r.price + "W</span>" : "") +
-      '<span class="badge">' + esc(r.cat) + "</span>" +
-      '<span class="badge mode">' + esc(r.tab) + "</span>" +
-      "</div>";
+  function groupByGun(rows) {
+    var map = {}, order = [];
+    rows.forEach(function (r) {
+      if (!map[r.gun]) { map[r.gun] = []; order.push(r.gun); }
+      map[r.gun].push(r);
+    });
+    return order.map(function (gun) {
+      var items = map[gun].slice().sort(function (a, b) {
+        return (a.price == null ? 1e9 : a.price) - (b.price == null ? 1e9 : b.price) ||
+          a.build.localeCompare(b.build, "zh");
+      });
+      var prices = items.map(function (r) { return r.price; }).filter(function (p) { return p != null; });
+      var modes = [];
+      items.forEach(function (r) { if (modes.indexOf(r.tab) < 0) modes.push(r.tab); });
+      return {
+        gun: gun, items: items, modes: modes,
+        cat: items[0].cat,
+        min: prices.length ? Math.min.apply(null, prices) : null,
+        max: prices.length ? Math.max.apply(null, prices) : null,
+        allFav: items.every(function (r) { return favs.has(r.id); })
+      };
+    });
   }
-  function card(r) {
-    var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
-    return '<article class="card' + (isFav ? " fav" : "") + '" data-id="' + esc(r.id) + '">' +
-      '<div class="card-h"><div style="min-width:0">' +
-        '<div class="gun">' + esc(r.gun) + "</div>" +
-        (r.build ? '<div class="build">' + esc(r.build) + "</div>" : "") +
+
+  function sortGroups(groups) {
+    groups.sort(function (a, b) {
+      if (state.sort === "count") return b.items.length - a.items.length || a.gun.localeCompare(b.gun, "zh");
+      if (state.sort === "price") return (a.min == null ? 1e9 : a.min) - (b.min == null ? 1e9 : b.min);
+      if (state.sort === "pricedesc") return (b.max == null ? -1 : b.max) - (a.max == null ? -1 : a.max);
+      return a.gun.localeCompare(b.gun, "zh");
+    });
+    return groups;
+  }
+
+  // ---------- level 1 markup ----------
+  function gunCard(g) {
+    var range = g.min == null ? "未标价"
+      : (g.min === g.max ? g.min + "W" : g.min + "w–" + g.max + "w");
+    var preview = g.items.map(function (r) { return r.build || "未命名"; }).join(" · ");
+    return '<article class="gun-card' + (g.allFav ? " fav" : "") + '" data-gun="' + esc(g.gun) + '">' +
+      '<div class="gc-head">' +
+        '<div class="gc-name">' + esc(g.gun) + "</div>" +
+        '<div class="spacer"></div>' +
+        '<button class="icon-btn star' + (g.allFav ? " on" : "") + '" data-act="favgun" title="收藏这把枪的全部方案">' +
+          (g.allFav ? "★" : "☆") + "</button>" +
       "</div>" +
-      '<div class="card-tools">' +
-        '<button class="icon-btn star' + (isFav ? " on" : "") + '" data-act="fav" title="收藏">' +
-          (isFav ? "★" : "☆") + "</button>" +
-        '<button class="icon-btn cmp' + (isCmp ? " on" : "") + '" data-act="cmp" title="加入对比">⇄</button>' +
-      "</div></div>" +
-      badges(r) +
-      '<div class="code-row"><div class="code" title="' + esc(r.code) + '">' + esc(r.code) + "</div>" +
-        '<button class="copy" data-code="' + esc(r.code) + '">复制</button></div>' +
+      '<div class="gc-badges">' +
+        '<span class="badge">' + esc(g.cat) + "</span>" +
+        '<span class="badge">' + g.items.length + " 套</span>" +
+        '<span class="badge price">' + range + "</span>" +
+        g.modes.map(function (m) { return '<span class="badge mode">' + esc(m) + "</span>"; }).join("") +
+      "</div>" +
+      '<div class="gc-preview">' + esc(preview) + "</div>" +
+      '<div class="gc-go">查看 ' + g.items.length + " 个价位的改枪码 →</div>" +
       "</article>";
   }
 
-  function groupHtml(rows) {
-    var groups = {}, order = [];
-    rows.forEach(function (r) {
-      if (!groups[r.gun]) { groups[r.gun] = []; order.push(r.gun); }
-      groups[r.gun].push(r);
-    });
-    order.sort(function (a, b) { return a.localeCompare(b, "zh"); });
-    return order.map(function (gun) {
-      var items = groups[gun];
-      var open = !!state.open[gun];
-      var anyFav = items.some(function (r) { return favs.has(r.id); });
-      return '<section class="gun-group" data-gun="' + esc(gun) + '">' +
-        '<div class="gun-head" data-act="toggle">' +
-          '<span style="color:var(--dim2)">' + (open ? "▾" : "▸") + "</span>" +
-          '<span class="name">' + esc(gun) + "</span>" +
-          '<span class="cnt">' + items.length + " 套" +
-            (anyFav ? ' · <span style="color:var(--star)">★</span>' : "") + "</span>" +
-          '<span class="acts">' +
-            '<button class="btn" data-act="copygun" style="padding:6px 11px">复制全部</button>' +
-            '<button class="btn" data-act="favgun" style="padding:6px 11px">' +
-              (anyFav ? "取消收藏" : "收藏全部") + "</button>" +
-          "</span>" +
+  // ---------- level 2 markup ----------
+  function buildRow(r) {
+    var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
+    return '<div class="build-item' + (isFav ? " fav" : "") + '" data-id="' + esc(r.id) + '">' +
+      '<div class="bi-left">' +
+        '<div class="bi-build">' + (r.build ? esc(r.build) : '<span style="color:var(--dim2)">默认/未命名</span>') + "</div>" +
+        '<div class="bi-sub">' +
+          '<span class="badge price">' + priceText(r) + "</span>" +
+          '<span class="badge mode">' + esc(r.tab) + "</span>" +
         "</div>" +
-        (open ? '<div class="gun-body">' + items.map(function (r) {
-          return '<div class="mini">' +
-            '<span class="b-label">' + (r.build ? esc(r.build) : '<span style="color:var(--dim2)">未命名</span>') + "</span>" +
-            (r.price != null ? '<span class="badge price">' + r.price + "W</span>" : "") +
-            '<span class="badge mode">' + esc(r.tab) + "</span>" +
-            '<span class="b-code">' + esc(r.code) + "</span>" +
-            '<span class="spacer"></span>' +
-            '<button class="icon-btn star' + (favs.has(r.id) ? " on" : "") + '" data-act="fav" data-id="' + esc(r.id) + '">' +
-              (favs.has(r.id) ? "★" : "☆") + "</button>" +
-            '<button class="copy" data-code="' + esc(r.code) + '">复制</button>' +
-          "</div>";
-        }).join("") + "</div>" : "") +
-      "</section>";
-    }).join("");
+      "</div>" +
+      '<div class="bi-code">' + esc(r.code) + "</div>" +
+      '<div class="bi-acts">' +
+        '<button class="icon-btn star' + (isFav ? " on" : "") + '" data-act="fav" title="收藏">' +
+          (isFav ? "★" : "☆") + "</button>" +
+        '<button class="icon-btn cmp' + (isCmp ? " on" : "") + '" data-act="cmp" title="加入对比">⇄</button>' +
+        '<button class="copy" data-code="' + esc(r.code) + '">复制</button>' +
+      "</div>" +
+      "</div>";
+  }
+  function detailHtml(g, filteredCount) {
+    return '<div class="detail-head">' +
+        '<button class="back" id="back">← 返回全部枪械</button>' +
+        "<div>" +
+          '<div class="title">' + esc(g.gun) + "</div>" +
+          '<div class="meta">' + esc(g.cat) + " · " + g.items.length + " 套方案 · 价格 " +
+            (g.min == null ? "未标价" : (g.min === g.max ? g.min + "W" : g.min + "w–" + g.max + "w")) +
+            (filteredCount > g.items.length ? "（筛选后 " + g.items.length + " 套 / 全部 " + filteredCount + " 套）" : "") +
+          "</div>" +
+        "</div>" +
+        '<div class="acts">' +
+          '<button class="btn" data-act="copygun">复制全部 ' + g.items.length + " 个码</button>" +
+          '<button class="btn' + (g.allFav ? " on" : "") + '" data-act="favgun">' +
+            (g.allFav ? "★ 已收藏" : "☆ 收藏全部") + "</button>" +
+        "</div>" +
+      "</div>" +
+      '<div class="builds">' + g.items.map(buildRow).join("") + "</div>";
   }
 
   // ---------- render ----------
@@ -461,24 +518,31 @@
   }
 
   function render() {
-    var rows = filtered();
-    $("#s-show").textContent = rows.length;
+    var rows = filterRecords();
+    var groups = sortGroups(groupByGun(rows));
+    $("#s-guns").textContent = groups.length;
+    $("#s-codes").textContent = rows.length;
     renderTabs();
 
-    var cards = $("#list"), grouped = $("#grouped");
-    if (state.view === "guns") {
-      cards.hidden = true; cards.innerHTML = "";
-      grouped.hidden = false;
-      grouped.innerHTML = groupHtml(rows);
-    } else {
-      grouped.hidden = true; grouped.innerHTML = "";
-      cards.hidden = false;
-      cards.innerHTML = rows.map(card).join("");
+    var gunsEl = $("#guns"), detailEl = $("#detail");
+    var current = null;
+    if (state.gun) {
+      for (var i = 0; i < groups.length; i++) if (groups[i].gun === state.gun) { current = groups[i]; break; }
     }
-    $("#empty").hidden = rows.length > 0;
-    $("#viewBtn").textContent = state.view === "guns" ? "卡片视图" : "按枪械分组";
+
+    if (current) {
+      var allForGun = ALL.filter(function (r) { return r.gun === current.gun; }).length;
+      gunsEl.hidden = true; gunsEl.innerHTML = "";
+      detailEl.hidden = false;
+      detailEl.innerHTML = detailHtml(current, allForGun);
+    } else {
+      detailEl.hidden = true; detailEl.innerHTML = "";
+      gunsEl.hidden = false;
+      gunsEl.innerHTML = groups.map(gunCard).join("");
+    }
+    $("#empty").hidden = groups.length > 0;
     renderCmpBar();
-    writeHash();
+    writeHash("replace");
   }
 
   function renderCmpBar() {
@@ -493,7 +557,7 @@
   }
 
   // ---------- compare modal ----------
-  var ROWS = [
+  var CMP_ROWS = [
     ["枪械", function (r) { return esc(r.gun); }, "txt"],
     ["改装", function (r) { return r.build ? esc(r.build) : "—"; }, "txt"],
     ["价格", function (r) { return r.price != null ? r.price + "W" : "未标价"; }, "txt"],
@@ -504,18 +568,20 @@
   function openCompare() {
     var rs = state.cmp.map(function (id) { return byId[id]; }).filter(Boolean);
     if (!rs.length) return;
-    var minP = Math.min.apply(null, rs.map(function (r) { return r.price == null ? Infinity : r.price; }));
-    var maxP = Math.max.apply(null, rs.map(function (r) { return r.price == null ? -Infinity : r.price; }));
+    var ps = rs.map(function (r) { return r.price == null ? null : r.price; })
+               .filter(function (p) { return p != null; });
+    var minP = ps.length ? Math.min.apply(null, ps) : null;
+    var maxP = ps.length ? Math.max.apply(null, ps) : null;
     var html = '<div class="modal" id="modal"><div class="modal-in">' +
       '<h2>方案对比<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
-      "<table class=\"cmp\"><tbody>" +
-      ROWS.map(function (row) {
+      '<table class="cmp"><tbody>' +
+      CMP_ROWS.map(function (row) {
         return "<tr><th>" + row[0] + "</th>" + rs.map(function (r) {
           var v = row[1](r);
-          var cls = row[2] === "code" ? "" : " class=\"txt\"";
-          if (row[0] === "价格" && rs.length > 1 && r.price != null) {
-            if (r.price === minP && minP !== maxP) v = '<span class="best">' + v + " ↓最低</span>";
-            else if (r.price === maxP && minP !== maxP) v = v + " ↑最高";
+          var cls = row[2] === "code" ? "" : ' class="txt"';
+          if (row[0] === "价格" && r.price != null && minP !== maxP) {
+            if (r.price === minP) v = '<span class="best">' + v + " ↓最低</span>";
+            else if (r.price === maxP) v = v + " ↑最高";
           }
           return "<td" + cls + ">" + v + "</td>";
         }).join("") + "</tr>";
@@ -527,55 +593,19 @@
     $("#modalHost").innerHTML = html;
     $("#modalClose").onclick = closeModal;
     $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
-    state.cmpOpen = true;
-    writeHash();
+    state.cmpOpen = true; writeHash("replace");
   }
   function closeModal() {
     $("#modalHost").innerHTML = "";
-    state.cmpOpen = false;
-    writeHash();
+    state.cmpOpen = false; writeHash("replace");
   }
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { if ($("#modal")) closeModal(); else if (state.gun) closeGun(); }
+  });
 
-  // ---------- events ----------
-  $("#q").addEventListener("input", function (e) { state.q = e.target.value.trim(); render(); });
-  $("#cat").addEventListener("change", function (e) { state.cat = e.target.value; render(); });
-  $("#sort").addEventListener("change", function (e) { state.sort = e.target.value; render(); });
-  $("#noPrice").addEventListener("change", function (e) { state.noPrice = e.target.checked; render(); });
-  $("#favOnly").addEventListener("change", function (e) { state.favOnly = e.target.checked; render(); });
-  $("#viewBtn").addEventListener("click", function () {
-    state.view = state.view === "guns" ? "cards" : "guns"; render();
-  });
-  function onPrice() {
-    var a = Number($("#pmin").value), b = Number($("#pmax").value);
-    if (a > b) { if (this && this.id === "pmin") b = a; else a = b; }
-    state.min = a; state.max = b;
-    $("#pmin").value = a; $("#pmax").value = b;
-    $("#pval").textContent = a + "w – " + b + "w";
-    render();
-  }
-  $("#pmin").addEventListener("input", onPrice);
-  $("#pmax").addEventListener("input", onPrice);
-  $("#share").addEventListener("click", function () {
-    var url = writeHash(false);
-    copyText(url).then(function () { showToast("链接已复制，含当前筛选条件"); },
-      function () { showToast("复制失败", false); });
-  });
-  $("#reset").addEventListener("click", function () {
-    state.q = ""; state.tab = ""; state.cat = ""; state.sort = "gun";
-    state.min = G_MIN; state.max = G_MAX; state.noPrice = true; state.favOnly = false;
-    state.cmp = []; state.open = {};
-    syncControls(); render();
-  });
-  $("#tabs").addEventListener("click", function (e) {
-    var el = e.target.closest(".tab"); if (!el) return;
-    var t = el.dataset.tab;
-    if (t === "__fav") { state.favOnly = !state.favOnly; }
-    else { state.tab = t; }
-    syncControls(); render();
-  });
-  $("#cmpOpen").addEventListener("click", openCompare);
-  $("#cmpClear").addEventListener("click", function () { state.cmp = []; render(); });
+  // ---------- actions ----------
+  function openGun(gun) { state.gun = gun; writeHash("push"); render(); window.scrollTo(0, 0); }
+  function closeGun() { state.gun = ""; writeHash("push"); render(); window.scrollTo(0, 0); }
 
   function toggleFav(id) {
     if (favs.has(id)) favs.delete(id); else favs.add(id);
@@ -588,12 +618,54 @@
     else state.cmp.push(id);
     render();
   }
+  function gunRecords(gun) {
+    return filterRecords().filter(function (r) { return r.gun === gun; });
+  }
+  function toggleFavGun(gun) {
+    var items = gunRecords(gun);
+    var allFav = items.length > 0 && items.every(function (r) { return favs.has(r.id); });
+    items.forEach(function (r) { if (allFav) favs.delete(r.id); else favs.add(r.id); });
+    saveFavs(); render();
+  }
+
+  // ---------- events ----------
+  $("#q").addEventListener("input", function (e) { state.q = e.target.value.trim(); render(); });
+  $("#cat").addEventListener("change", function (e) { state.cat = e.target.value; render(); });
+  $("#sort").addEventListener("change", function (e) { state.sort = e.target.value; render(); });
+  $("#noPrice").addEventListener("change", function (e) { state.noPrice = e.target.checked; render(); });
+  $("#favOnly").addEventListener("change", function (e) { state.favOnly = e.target.checked; render(); });
+  function onPrice() {
+    var a = Number($("#pmin").value), b = Number($("#pmax").value);
+    if (a > b) { if (this && this.id === "pmin") b = a; else a = b; }
+    state.min = a; state.max = b;
+    $("#pmin").value = a; $("#pmax").value = b;
+    $("#pval").textContent = a + "w – " + b + "w";
+    render();
+  }
+  $("#pmin").addEventListener("input", onPrice);
+  $("#pmax").addEventListener("input", onPrice);
+  $("#share").addEventListener("click", function () {
+    copyText(hashUrl().abs).then(function () { showToast("链接已复制，含当前筛选"); },
+      function () { showToast("复制失败", false); });
+  });
+  $("#reset").addEventListener("click", function () {
+    var cmp = state.cmp;
+    state = defaults(); state.cmp = cmp;
+    syncControls(); render();
+  });
+  $("#brand").addEventListener("click", function () { if (state.gun) closeGun(); });
+  $("#tabs").addEventListener("click", function (e) {
+    var el = e.target.closest(".tab"); if (!el) return;
+    var t = el.dataset.tab;
+    if (t === "__fav") state.favOnly = !state.favOnly;
+    else state.tab = t;
+    state.gun = "";
+    syncControls(); render();
+  });
+  $("#cmpOpen").addEventListener("click", openCompare);
+  $("#cmpClear").addEventListener("click", function () { state.cmp = []; render(); });
 
   document.addEventListener("click", function (e) {
-    var star = e.target.closest('[data-act="fav"]');
-    if (star) { toggleFav(star.dataset.id || star.closest("[data-id]").dataset.id); return; }
-    var cmp = e.target.closest('[data-act="cmp"]');
-    if (cmp) { toggleCmp(cmp.closest("[data-id]").dataset.id); return; }
     var copyBtn = e.target.closest(".copy");
     if (copyBtn) {
       copyText(copyBtn.dataset.code).then(function () {
@@ -604,23 +676,29 @@
       }, function () { showToast("复制失败，请手动选择", false); });
       return;
     }
-    var gunBtn = e.target.closest("[data-act]");
-    if (gunBtn) {
-      var group = gunBtn.closest(".gun-group"); if (!group) return;
-      var gun = group.dataset.gun;
-      var act = gunBtn.dataset.act;
-      var items = filtered().filter(function (r) { return r.gun === gun; });
-      if (act === "toggle") { state.open[gun] = state.open[gun] ? 0 : 1; render(); }
-      else if (act === "copygun") {
+    if (e.target.closest("#back")) { closeGun(); return; }
+
+    var act = e.target.closest("[data-act]");
+    if (act) {
+      var a = act.dataset.act;
+      var holder = act.closest("[data-gun]");
+      var gun = holder ? holder.dataset.gun : state.gun;
+      if (a === "fav") { toggleFav(act.closest("[data-id]").dataset.id); return; }
+      if (a === "cmp") { toggleCmp(act.closest("[data-id]").dataset.id); return; }
+      if (a === "favgun") { toggleFavGun(gun); return; }
+      if (a === "copygun") {
+        var items = gunRecords(gun);
+        if (!items.length) { showToast("当前筛选下没有可复制的方案", false); return; }
         copyText(items.map(function (r) { return r.code; }).join("\n")).then(function () {
           showToast("已复制 " + gun + " 的 " + items.length + " 个改枪码");
         }, function () { showToast("复制失败", false); });
-      } else if (act === "favgun") {
-        var allFav = items.every(function (r) { return favs.has(r.id); });
-        items.forEach(function (r) { if (allFav) favs.delete(r.id); else favs.add(r.id); });
-        saveFavs(); render();
+        return;
       }
+      return;
     }
+
+    var card = e.target.closest(".gun-card");
+    if (card) { openGun(card.dataset.gun); }
   });
 
   // ---------- boot ----------
@@ -635,7 +713,6 @@
   }
 
   $("#s-total").textContent = ALL.length;
-  $("#s-guns").textContent = new Set(ALL.map(function (r) { return r.gun; })).size;
   $("#sub").textContent = "共 " + ALL.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
   $("#foot-note").textContent = D.footerNote || "";
   $("#foot-copy").textContent = D.copyright || "";
@@ -660,14 +737,9 @@
   $("#pmin").min = G_MIN; $("#pmin").max = G_MAX; $("#pmin").step = 1;
   $("#pmax").min = G_MIN; $("#pmax").max = G_MAX; $("#pmax").step = 1;
 
-  readHash();
-  state.min = Math.max(G_MIN, Math.min(G_MAX, state.min));
-  state.max = Math.max(G_MIN, Math.min(G_MAX, state.max));
-  if (state.min > state.max) state.min = state.max;
-  syncControls();
-  render();
+  readHash(); syncControls(); render();
   if (state.cmpOpen && state.cmp.length) openCompare();
-  window.addEventListener("hashchange", function () { readHash(); syncControls(); render(); });
+  window.addEventListener("popstate", applyHash);
 })();
 </script>
 </body>
