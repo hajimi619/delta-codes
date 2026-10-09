@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scrape GALI's Delta Force (三角洲行动) gun-mod code sheet from Tencent Docs.
+"""Scrape the Delta Force (三角洲行动) gun-mod code sheet from Tencent Docs.
 
 Tencent Docs serves a zlib-compressed protobuf blob for each sheet. There is no
 official API, so this module:
@@ -217,11 +217,10 @@ def build_grid(shared: list[str], cells: list) -> tuple[dict, list[str]]:
 def extract_tab(tab: str) -> dict:
     """Pull every gun-mod code out of one tab."""
     grid = {}
-    merged = []
     sheet_id = tab
     rows = cols = 0
     for sheet_id, rows, cols, shared, cells in parse_sheet(fetch_tab(tab)):
-        grid, merged = build_grid(shared, cells)
+        grid, _merged = build_grid(shared, cells)
         break
 
     records: list[dict] = []
@@ -266,20 +265,8 @@ def extract_tab(tab: str) -> dict:
         "sheetId": sheet_id,
         "rows": rows,
         "cols": cols,
-        "notices": _clean_notices(merged),
         "records": records,
     }
-
-
-def _clean_notices(merged: list[str]) -> list[str]:
-    seen, out = set(), []
-    for text in merged:
-        t = text.strip()
-        if len(t) < 4 or t in seen:
-            continue
-        seen.add(t)
-        out.append(t)
-    return out
 
 
 def main() -> int:
