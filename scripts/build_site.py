@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Turn data/codes.json into docs/data.js consumed by docs/index.html.
+"""Turn data/codes.json into docs/delta-codes/data.js consumed by the delta-codes page.
 
-`docs/` is the GitHub Pages publish root.
+`docs/` is the publish root (Cloudflare Pages + GitHub Pages); each feature lives in its own subfolder.
 """
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "codes.json"
-OUT = ROOT / "docs" / "data.js"
+OUT = ROOT / "docs" / "delta-codes" / "data.js"
 CONFIG = ROOT / "config.json"
 GUN_IMG = ROOT / "data" / "gun-images.json"
 
