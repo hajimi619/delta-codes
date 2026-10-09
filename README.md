@@ -1,5 +1,8 @@
 # 三角洲行动 · 改枪码库
 
+> **🌐 在线访问：<https://hajimi619.github.io/delta-codes/>**
+> 手机、电脑直接打开，无需登录。仓库：<https://github.com/hajimi619/delta-codes>
+
 把 GALI 的腾讯文档《[GALI的改枪码合集](https://docs.qq.com/sheet/DUmZJeER0dmNTSVRP)》里的改枪码
 抓下来，做成一个能搜索、筛选、收藏、对比、一键复制的网页。
 
