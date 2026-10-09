@@ -7,10 +7,11 @@
 <meta name="description" content="三角洲行动改枪码检索库：按枪械浏览，烽火地带 / 全面战场 / 黑潮爆破，支持搜索、价格筛选、收藏与对比。" />
 <style>
   :root{
-    --bg:#0b0f14; --bg2:#111823; --card:#151d29; --card-hi:#1b2635;
-    --line:#243244; --line-hi:#33475f;
-    --txt:#e8eef6; --dim:#8fa3bb; --dim2:#61748c;
+    --bg:#080c11; --bg2:#0f1620; --card:#141d2a; --card-hi:#1b2635;
+    --line:#22303f; --line-hi:#35485e;
+    --txt:#e9eff7; --dim:#8ea3bb; --dim2:#5f7189;
     --accent:#ff8a2b; --accent2:#ffb765; --ok:#3ddc97; --star:#ffc857; --bad:#ff6b6b;
+    --cyan:#57d9e8;
     --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
   }
   *{box-sizing:border-box}
@@ -18,29 +19,54 @@
   html,body{margin:0;padding:0}
   body{
     background:
-      radial-gradient(1200px 600px at 15% -10%, #16233a 0%, transparent 60%),
-      radial-gradient(900px 500px at 110% 0%, #2a1a0d 0%, transparent 55%),
+      radial-gradient(1100px 560px at 12% -12%, #17263c 0%, transparent 62%),
+      radial-gradient(880px 500px at 112% -4%, #33200c 0%, transparent 58%),
       var(--bg);
     color:var(--txt);
-    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
-    min-height:100vh;
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+    min-height:100vh;-webkit-font-smoothing:antialiased;
   }
+  /* 战术网格底纹 */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(rgba(120,170,220,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(120,170,220,.05) 1px,transparent 1px);
+    background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(ellipse 115% 72% at 50% -8%,#000 8%,transparent 74%);
+    mask-image:radial-gradient(ellipse 115% 72% at 50% -8%,#000 8%,transparent 74%);
+  }
+  ::selection{background:rgba(255,138,43,.32)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:#0a0e13}
+  ::-webkit-scrollbar-thumb{background:#26374a;border-radius:6px;border:2px solid #0a0e13}
+  ::-webkit-scrollbar-thumb:hover{background:#35485e}
+  @keyframes cardIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   a{color:var(--accent2)}
   button{font-family:inherit}
-  .wrap{max-width:1240px;margin:0 auto;padding:0 18px 120px}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 18px 120px;position:relative;z-index:1}
 
-  header.top{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);
-    background:rgba(11,15,20,.85);border-bottom:1px solid var(--line)}
-  .top-in{max-width:1240px;margin:0 auto;padding:14px 18px 12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:11px;min-width:0;cursor:pointer}
-  .mark{width:38px;height:38px;flex:0 0 38px;border-radius:10px;
-    background:linear-gradient(145deg,var(--accent),#d85f10);display:grid;place-items:center;
-    font-weight:800;font-size:19px;color:#20130a;box-shadow:0 6px 20px rgba(255,138,43,.28)}
-  .brand h1{margin:0;font-size:17px;letter-spacing:.3px;white-space:nowrap}
-  .brand .sub{font-size:12px;color:var(--dim2);margin-top:1px}
+  header.top{position:sticky;top:0;z-index:30;backdrop-filter:blur(16px) saturate(1.25);
+    background:linear-gradient(180deg,rgba(8,12,17,.93),rgba(8,12,17,.78));
+    border-bottom:1px solid var(--line)}
+  header.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,138,43,.6),rgba(87,217,232,.28),transparent)}
+  .top-in{max-width:1240px;margin:0 auto;padding:15px 18px 13px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0;cursor:pointer}
+  .mark{width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    background:linear-gradient(145deg,#ffa04d,var(--accent) 46%,#d85f10);display:grid;place-items:center;
+    font-weight:800;font-size:20px;color:#20130a;
+    box-shadow:0 6px 20px rgba(255,138,43,.34),inset 0 1px 0 rgba(255,255,255,.35)}
+  .brand h1{margin:0;font-size:17.5px;letter-spacing:.4px;white-space:nowrap;
+    background:linear-gradient(92deg,#fff,#cfe0f2 60%,#9fb6cd);-webkit-background-clip:text;
+    background-clip:text;color:transparent}
+  .brand .sub{font-size:12px;color:var(--dim2);margin-top:2px}
   .stats{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-  .stat{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:6px 11px;font-size:12.5px;color:var(--dim);white-space:nowrap}
-  .stat b{color:var(--txt);font-size:14px;font-family:var(--mono)}
+  .stat{background:linear-gradient(180deg,#13202e,#0f1620);border:1px solid var(--line);border-radius:10px;
+    padding:7px 12px;font-size:12.5px;color:var(--dim2);white-space:nowrap;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+  .stat b{color:var(--txt);font-size:14.5px;font-family:var(--mono);margin-left:4px}
 
   .notice{margin:16px 0 0;border:1px solid var(--line);border-left:3px solid var(--accent);
     background:linear-gradient(90deg,rgba(255,138,43,.07),transparent 60%);
@@ -74,86 +100,139 @@
   .chk{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:13px;color:var(--dim)}
   .chk input{accent-color:var(--accent);cursor:pointer}
 
-  .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 10px}
-  .tab{padding:7px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);
-    color:var(--dim);font-size:13.5px;cursor:pointer;transition:.15s;user-select:none}
-  .tab:hover{border-color:var(--line-hi);color:var(--txt)}
-  .tab.on{background:linear-gradient(145deg,var(--accent),#e0700f);border-color:transparent;color:#1c1108;font-weight:700}
+  .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 10px}
+  .tab{padding:8px 15px;border-radius:999px;background:linear-gradient(180deg,#16202e,#111823);
+    border:1px solid var(--line);color:var(--dim);font-size:13.5px;cursor:pointer;
+    transition:transform .15s,border-color .15s,color .15s,box-shadow .15s;user-select:none}
+  .tab:hover{border-color:var(--line-hi);color:var(--txt);transform:translateY(-1px)}
+  .tab.on{background:linear-gradient(145deg,#ffa04d,var(--accent) 58%,#e0700f);border-color:transparent;
+    color:#1c1108;font-weight:700;box-shadow:0 4px 16px rgba(255,138,43,.3)}
   .tab .n{opacity:.65;font-size:12px;margin-left:5px;font-family:var(--mono)}
 
   /* category pills */
-  .chips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 14px}
-  .pill{padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);
-    color:var(--dim);font-size:13px;cursor:pointer;transition:.15s;user-select:none}
-  .pill:hover{border-color:var(--line-hi);color:var(--txt)}
-  .pill.on{background:#23324b;border-color:var(--line-hi);color:var(--txt);font-weight:600}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 15px}
+  .pill{padding:7px 13px;border-radius:999px;background:linear-gradient(180deg,#131d29,#0f1620);
+    border:1px solid var(--line);color:var(--dim);font-size:13px;cursor:pointer;
+    transition:transform .15s,border-color .15s,color .15s;user-select:none}
+  .pill:hover{border-color:var(--line-hi);color:var(--txt);transform:translateY(-1px)}
+  .pill.on{background:#1e2c3e;border-color:var(--line-hi);color:var(--txt);font-weight:600;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
   .pill .n{opacity:.6;font-size:11.5px;margin-left:5px;font-family:var(--mono)}
 
   /* category sections */
-  .cat-section{margin-bottom:24px}
+  .cat-section{margin-bottom:26px}
   .cat-section:last-child{margin-bottom:0}
-  .cat-title{display:flex;align-items:center;gap:9px;margin:0 0 11px;font-size:15px;font-weight:700;color:var(--txt)}
-  .cat-title::before{content:"";width:3px;height:16px;border-radius:2px;background:var(--accent)}
+  .cat-title{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:15.5px;font-weight:700;color:var(--txt)}
+  .cat-title::before{content:"";width:3px;height:17px;border-radius:2px;background:linear-gradient(180deg,var(--accent),#d85f10);
+    box-shadow:0 0 10px rgba(255,138,43,.55)}
   .cat-title .cnt{font-size:12px;color:var(--dim2);font-family:var(--mono);font-weight:400}
+  .cat-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 
   /* ---------- level 1: gun cards ---------- */
-  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(285px,1fr))}
-  .gun-card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
-    border-radius:13px;padding:14px 15px;display:flex;flex-direction:column;gap:9px;
-    transition:.15s;position:relative;overflow:hidden;cursor:pointer}
-  .gun-card::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent);opacity:0;transition:.15s}
-  .gun-card:hover{border-color:var(--line-hi);transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.34)}
+  .grid{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(288px,1fr))}
+  .gun-card{position:relative;overflow:hidden;padding:15px 16px 14px;
+    display:flex;flex-direction:column;gap:9px;cursor:pointer;
+    background:linear-gradient(180deg,#16202e 0%,#111823 100%);
+    border:1px solid var(--line);border-radius:14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 6px 18px rgba(0,0,0,.22);
+    transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+    animation:cardIn .26s ease both}
+  /* 左上角战术角标 */
+  .gun-card::before{content:"";position:absolute;top:-1px;left:-1px;width:18px;height:18px;
+    border-top:2px solid var(--accent);border-left:2px solid var(--accent);
+    border-top-left-radius:14px;opacity:.45;transition:.22s}
+  .gun-card::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent);
+    opacity:0;transition:.18s}
+  .gun-card:hover{transform:translateY(-3px);border-color:var(--line-hi);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 36px rgba(0,0,0,.44)}
+  .gun-card:hover::before{opacity:1;width:27px;height:27px}
   .gun-card:hover::after{opacity:1}
   .gun-card.fav{border-color:rgba(255,200,87,.35)}
-  .gun-card.fav::after{background:var(--star);opacity:1}
+  .gun-card.fav::before{border-color:var(--star);opacity:.95}
+  .gun-card.fav::after{background:var(--star);opacity:.85}
   .gc-head{display:flex;align-items:center;gap:8px}
   .gc-name{font-weight:700;font-size:17px;letter-spacing:.2px}
   .gc-head .spacer{flex:1}
   .gc-badges{display:flex;gap:6px;flex-wrap:wrap}
-  .badge{font-size:11px;padding:3px 8px;border-radius:6px;background:#1d2836;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .badge{font-size:11px;padding:3px 8px;border-radius:6px;background:#1a2432;border:1px solid var(--line);
+    color:var(--dim);white-space:nowrap;transition:.15s}
+  .badge.cat{font-weight:600}
   .badge.price{color:var(--ok);border-color:rgba(61,220,151,.28);background:rgba(61,220,151,.08)}
+  .badge.price.t-low{color:#3ddc97;border-color:rgba(61,220,151,.3);background:rgba(61,220,151,.09)}
+  .badge.price.t-mid{color:#ffc857;border-color:rgba(255,200,87,.3);background:rgba(255,200,87,.09)}
+  .badge.price.t-high{color:#ff8a5c;border-color:rgba(255,138,92,.34);background:rgba(255,138,92,.11)}
   .badge.mode{color:#9dc4ff;border-color:rgba(157,196,255,.24);background:rgba(157,196,255,.07)}
-  .gc-preview{font-size:12.5px;color:var(--dim2);line-height:1.6;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em}
-  .gc-go{font-size:12.5px;color:var(--accent2);font-weight:600;margin-top:auto}
+  .gc-preview{font-size:12.5px;color:var(--dim2);line-height:1.65;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em}
+  .gc-go{font-size:12.5px;color:var(--accent2);font-weight:600;margin-top:auto;
+    display:flex;align-items:center;gap:5px;transition:gap .18s}
+  .gun-card:hover .gc-go{gap:9px}
+  /* 价格带：这把枪在全局价格区间里的位置 */
+  .gc-pricebar{position:relative;height:5px;border-radius:3px;background:#0a1017;
+    border:1px solid var(--line);overflow:hidden;margin-top:7px}
+  .gc-pricebar i{position:absolute;top:0;bottom:0;border-radius:3px;
+    background:linear-gradient(90deg,var(--ok),var(--accent2) 55%,var(--accent));
+    box-shadow:0 0 10px rgba(255,138,43,.35)}
+  .gc-pricebar u{position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(255,255,255,.06) 22px 23px)}
   /* 枪械图：裁切自带蓝灰渐变底，用柔和遮罩让边缘融进卡片 */
-  .gc-img{height:66px;display:flex;align-items:center;justify-content:center;margin:-2px 0 2px}
-  .gc-img img{max-height:66px;max-width:100%;object-fit:contain;
+  .gc-img{position:relative;height:80px;display:flex;align-items:center;justify-content:center;margin:2px 0 5px}
+  .gc-img::before{content:"";position:absolute;inset:-6px 0 0;opacity:0;transition:opacity .22s;
+    background:radial-gradient(ellipse 58% 68% at 50% 62%,rgba(255,138,43,.2),transparent 70%)}
+  .gun-card:hover .gc-img::before{opacity:1}
+  .gc-img img{position:relative;z-index:1;max-height:80px;max-width:100%;object-fit:contain;
+    filter:drop-shadow(0 7px 12px rgba(0,0,0,.5));transition:transform .22s ease;
     -webkit-mask-image:radial-gradient(ellipse 68% 78% at 50% 50%, #000 38%, rgba(0,0,0,.55) 70%, transparent 99%);
     mask-image:radial-gradient(ellipse 68% 78% at 50% 50%, #000 38%, rgba(0,0,0,.55) 70%, transparent 99%)}
-  .dh-img{flex:0 0 auto;display:flex;align-items:center;justify-content:center;min-width:130px}
+  .gun-card:hover .gc-img img{transform:scale(1.05)}
+  .dh-img{flex:0 0 auto;display:flex;align-items:center;justify-content:center;min-width:130px;position:relative;z-index:1}
   .dh-img img{max-height:60px;max-width:200px;object-fit:contain;
+    filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));
     -webkit-mask-image:radial-gradient(ellipse 74% 84% at 50% 50%, #000 42%, rgba(0,0,0,.55) 74%, transparent 99%);
     mask-image:radial-gradient(ellipse 74% 84% at 50% 50%, #000 42%, rgba(0,0,0,.55) 74%, transparent 99%)}
 
   /* ---------- level 2: gun detail ---------- */
-  .detail-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-    background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
-    border-radius:14px;padding:14px 16px;margin-bottom:12px}
-  .back{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:9px;
-    background:var(--card);border:1px solid var(--line);color:var(--dim);font-size:13.5px;cursor:pointer;transition:.15s}
-  .back:hover{border-color:var(--line-hi);color:var(--txt)}
-  .detail-head .title{font-size:21px;font-weight:800;letter-spacing:.3px}
-  .detail-head .meta{font-size:12.5px;color:var(--dim2);margin-top:2px}
+  .detail-head{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:linear-gradient(180deg,#17212f,#111823);border:1px solid var(--line);
+    border-radius:16px;padding:16px 18px;margin-bottom:13px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 28px rgba(0,0,0,.3);
+    animation:cardIn .26s ease both}
+  .detail-head::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:linear-gradient(180deg,var(--accent),#d85f10);box-shadow:0 0 14px rgba(255,138,43,.5)}
+  .dh-bg{position:absolute;inset:-40% -10%;background-size:cover;background-position:center;
+    filter:blur(30px) saturate(1.5);opacity:.24;pointer-events:none}
+  .detail-head > *{position:relative;z-index:1}
+  .back{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;
+    background:rgba(20,29,42,.85);border:1px solid var(--line);color:var(--dim);font-size:13.5px;
+    cursor:pointer;transition:.15s;backdrop-filter:blur(6px)}
+  .back:hover{border-color:var(--line-hi);color:var(--txt);transform:translateX(-2px)}
+  .detail-head .title{font-size:23px;font-weight:800;letter-spacing:.4px}
+  .detail-head .meta{font-size:12.5px;color:var(--dim2);margin-top:3px;font-family:var(--mono)}
   .detail-head .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 
-  .builds{display:flex;flex-direction:column;gap:8px}
-  .build-item{display:flex;align-items:center;gap:12px;
-    background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
-    border-radius:12px;padding:11px 14px;transition:.15s}
-  .build-item:hover{border-color:var(--line-hi)}
+  .builds{display:flex;flex-direction:column;gap:9px}
+  .build-item{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;
+    background:linear-gradient(180deg,#141d2a,#101821);border:1px solid var(--line);
+    border-radius:12px;padding:12px 15px;transition:border-color .16s,transform .16s,box-shadow .16s;
+    animation:cardIn .26s ease both}
+  .build-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--tier,#243244);transition:.16s}
+  .build-item:hover{border-color:var(--line-hi);transform:translateX(3px);
+    box-shadow:0 8px 22px rgba(0,0,0,.3)}
   .build-item.fav{border-color:rgba(255,200,87,.35)}
-  .bi-left{flex:0 0 190px;min-width:0}
+  .bi-left{flex:0 0 200px;min-width:0}
   .bi-build{font-size:14.5px;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .bi-sub{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
-  .bi-code{flex:1;min-width:0;font-family:var(--mono);font-size:13.5px;letter-spacing:.4px;color:#cfe3ff;
-    background:#0d131c;border:1px solid var(--line);border-radius:8px;padding:8px 11px;
-    overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+  .bi-sub{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .bi-code{flex:1;min-width:0;font-family:var(--mono);font-size:13.5px;letter-spacing:.5px;color:#d3e6ff;
+    background:#0a1017;border:1px solid var(--line);border-radius:9px;padding:9px 12px;
+    overflow-x:auto;white-space:nowrap;scrollbar-width:none;transition:.16s}
+  .build-item:hover .bi-code{border-color:var(--line-hi);color:#eaf3ff}
   .bi-code::-webkit-scrollbar{display:none}
   .bi-acts{flex:0 0 auto;display:flex;gap:6px;align-items:center}
-  .icon-btn{width:30px;height:30px;border-radius:8px;background:#182231;border:1px solid var(--line);
-    color:var(--dim2);cursor:pointer;display:grid;place-items:center;font-size:15px;line-height:1;transition:.15s;padding:0}
-  .icon-btn:hover{color:var(--txt);border-color:var(--line-hi)}
+  .icon-btn{width:31px;height:31px;border-radius:9px;background:#182231;border:1px solid var(--line);
+    color:var(--dim2);cursor:pointer;display:grid;place-items:center;font-size:15px;line-height:1;
+    transition:.15s;padding:0}
+  .icon-btn:hover{color:var(--txt);border-color:var(--line-hi);transform:translateY(-1px)}
   .icon-btn.star.on{color:var(--star);border-color:rgba(255,200,87,.45);background:rgba(255,200,87,.09)}
   .icon-btn.cmp.on{color:var(--accent);border-color:rgba(255,138,43,.5);background:rgba(255,138,43,.1)}
   .icon-btn.flag:hover{color:var(--bad);border-color:rgba(255,107,107,.5)}
@@ -207,7 +286,15 @@
   table.cmp td.txt{font-family:inherit;font-size:13.5px}
   .best{color:var(--ok);font-weight:700}
 
-  footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim2);line-height:1.9}
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim2);line-height:2}
+  /* 回到顶部 */
+  .totop{position:fixed;right:20px;bottom:22px;z-index:45;width:44px;height:44px;border-radius:12px;
+    background:linear-gradient(180deg,#1c2736,#131d29);border:1px solid var(--line-hi);color:var(--txt);
+    font-size:18px;cursor:pointer;display:grid;place-items:center;
+    box-shadow:0 10px 26px rgba(0,0,0,.45);transition:opacity .22s,transform .22s,border-color .15s,color .15s;
+    opacity:0;transform:translateY(10px);pointer-events:none}
+  .totop.on{opacity:1;transform:none;pointer-events:auto}
+  .totop:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-2px)}
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,80px);background:var(--ok);color:#062015;
     font-weight:700;padding:10px 20px;border-radius:10px;transition:.25s;opacity:0;pointer-events:none;z-index:80;font-size:14px}
   .toast.on{transform:translate(-50%,0);opacity:1}
@@ -295,6 +382,7 @@
 </div>
 
 <div id="modalHost"></div>
+<button class="totop" id="toTop" title="回到顶部" aria-label="回到顶部">↑</button>
 <div class="toast" id="toast">已复制</div>
 
 <script src="data.js"></script>
@@ -334,6 +422,35 @@
   function priceOf(text) {
     var m = PRICE_RE.exec(text || "");
     return m ? parseFloat(m[1]) : null;
+  }
+
+  // ---------- 视觉：分类配色 / 价格分级 ----------
+  var CAT_COLOR = {
+    "步枪": "#ff9d4d", "冲锋枪": "#3ddc97", "机枪": "#7fb4ff",
+    "射手步枪": "#c9a4ff", "狙击步枪": "#ff8a5c", "霰弹枪": "#ffd166",
+    "手枪": "#57d9e8", "其他": "#8ea3bb"
+  };
+  function catColor(c) { return CAT_COLOR[c] || "#8ea3bb"; }
+  function priceTier(p) {
+    if (p == null) return "";
+    if (p <= 25) return "t-low";
+    if (p <= 55) return "t-mid";
+    return "t-high";
+  }
+  function tierColor(p) {
+    if (p == null) return "#243244";
+    if (p <= 25) return "#3ddc97";
+    if (p <= 55) return "#ffc857";
+    return "#ff8a5c";
+  }
+  /** 这把枪的价格区间在全局 9w–104w 里的相对位置 */
+  function priceBarHTML(min, max) {
+    if (min == null) return "";
+    var span = Math.max(1, G_MAX - G_MIN);
+    var left = Math.max(0, Math.min(100, (min - G_MIN) / span * 100));
+    var width = Math.max(3.5, Math.min(100 - left, (max - min) / span * 100));
+    return '<div class="gc-pricebar" title="' + min + 'w – ' + max + 'w">' +
+      "<i style=\"left:" + left.toFixed(1) + "%;width:" + width.toFixed(1) + "%\"></i><u></u></div>";
   }
 
   // ---------- 枪械图 ----------
@@ -568,15 +685,17 @@
       "</div>" +
       gunImgTag(g.gun, "gc-img") +
       '<div class="gc-badges">' +
-        '<span class="badge">' + esc(g.cat) + "</span>" +
+        '<span class="badge cat" style="color:' + catColor(g.cat) + ";border-color:" + catColor(g.cat) +
+          '40;background:' + catColor(g.cat) + '14">' + esc(g.cat) + "</span>" +
         '<span class="badge">' + g.items.length + " 套</span>" +
-        '<span class="badge price">' + range + "</span>" +
+        '<span class="badge price ' + priceTier(g.min) + '">' + range + "</span>" +
         (gone ? '<span class="badge gone">' + gone + " 已失效</span>" : "") +
         (fresh ? '<span class="badge mine">' + fresh + " 网友新增</span>" : "") +
         g.modes.map(function (m) { return '<span class="badge mode">' + esc(m) + "</span>"; }).join("") +
       "</div>" +
+      priceBarHTML(g.min, g.max) +
       '<div class="gc-preview">' + esc(preview) + "</div>" +
-      '<div class="gc-go">查看 ' + g.items.length + " 个价位的改枪码 →</div>" +
+      '<div class="gc-go">查看 ' + g.items.length + " 个价位的改枪码 <span>→</span></div>" +
       "</article>";
   }
 
@@ -585,11 +704,11 @@
     var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
     var canEdit = !!API && apiOnline;
     return '<div class="build-item' + (isFav ? " fav" : "") + (r.invalid ? " invalid" : "") +
-        '" data-id="' + esc(r.id) + '">' +
+        '" style="--tier:' + tierColor(r.price) + '" data-id="' + esc(r.id) + '">' +
       '<div class="bi-left">' +
         '<div class="bi-build">' + (r.build ? esc(r.build) : '<span style="color:var(--dim2)">默认/未命名</span>') + "</div>" +
         '<div class="bi-sub">' +
-          '<span class="badge price">' + priceText(r) + "</span>" +
+          '<span class="badge price ' + priceTier(r.price) + '">' + priceText(r) + "</span>" +
           '<span class="badge mode">' + esc(r.tab) + "</span>" +
           (r.invalid ? '<span class="badge gone">已失效</span>' : "") +
           (r.userAdded ? '<span class="badge mine">网友新增</span>' : "") +
@@ -608,7 +727,9 @@
       "</div>";
   }
   function detailHtml(g, filteredCount) {
+    var bg = gunImgSrc(g.gun);
     return '<div class="detail-head">' +
+        (bg ? '<div class="dh-bg" style="background-image:url(\'' + esc(bg) + '\')"></div>' : "") +
         '<button class="back" id="back">← 返回全部枪械</button>' +
         gunImgTag(g.gun, "dh-img") +
         "<div>" +
@@ -1002,6 +1123,13 @@
   render();
   if (state.cmpOpen && state.cmp.length) openCompare();
   window.addEventListener("popstate", applyHash);
+
+  // 回到顶部按钮
+  var toTop = $("#toTop");
+  function onScroll() { toTop.classList.toggle("on", window.scrollY > 620); }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  toTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
+  onScroll();
 
   if (API) {
     apiGetChanges().then(function (ok) {
