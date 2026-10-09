@@ -180,7 +180,7 @@
 
 <div class="wrap">
   <details class="notice" id="notice" hidden>
-    <summary>使用须知（来自原表格）</summary>
+    <summary>使用须知</summary>
     <ul id="notice-list"></ul>
   </details>
 
@@ -223,8 +223,8 @@
 
   <footer>
     <div id="foot-stats"></div>
-    <div>数据来源：<a id="src" href="#" target="_blank" rel="noopener">原腾讯文档</a> · 由 GALI 整理维护，本站仅为便于检索的镜像。</div>
-    <div>改枪码失效多为游戏内使用人数过多导致；发现失效请到原文档/群里上报，以原文档为准。</div>
+    <div id="foot-note"></div>
+    <div id="foot-copy"></div>
   </footer>
 </div>
 
@@ -637,7 +637,8 @@
   $("#s-total").textContent = ALL.length;
   $("#s-guns").textContent = new Set(ALL.map(function (r) { return r.gun; })).size;
   $("#sub").textContent = "共 " + ALL.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
-  $("#src").href = D.source || "#";
+  $("#foot-note").textContent = D.footerNote || "";
+  $("#foot-copy").textContent = D.copyright || "";
   $("#foot-stats").textContent = "收录 " + ALL.length + " 个改枪码 / " +
     new Set(ALL.map(function (r) { return r.gun; })).size + " 把枪械；" +
     D.modes.map(function (m) {
