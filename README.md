@@ -3,7 +3,7 @@
 > **🌐 在线访问：<https://hajimi619.github.io/delta-codes/>**
 > 手机、电脑直接打开，无需登录。仓库：<https://github.com/hajimi619/delta-codes>
 
-把 GALI 的腾讯文档《[GALI的改枪码合集](https://docs.qq.com/sheet/DUmZJeER0dmNTSVRP)》里的改枪码
+把一份公开的腾讯文档《三角洲行动改枪码合集》里的改枪码
 抓下来，做成一个能搜索、筛选、收藏、对比、一键复制的网页。
 
 **收录 347 个改枪码 / 67 把枪 / 4 种玩法**（烽火地带 202 · 全面战场 86 · 烽火高操速T0 18 · 黑潮爆破 41）
@@ -119,4 +119,4 @@ Pages 随后自动重新发布）；想每天自动跑就把 `schedule` 的注�
 - 数据是**快照**：腾讯文档更新后需要重新跑一次脚本（或点一次 Action）。
 - 抓取用了固定分片参数（`endrow=60&block_end_row=255`）。如果某个 tab 突然抓不到数据，
   多半是腾讯改了分片参数，调 `scripts/fetch_codes.py` 里 `fetch_tab()` 的 query 即可。
-- 原表版权归 GALI 所有，本站只是便于检索的镜像；改枪码失效请以原文档为准。
+- 改枪码随游戏版本变动，遇到失效换一套或稍后再试即可。
