@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>三角洲行动 · 改枪码库</title>
+<meta name="description" content="三角洲行动改枪码检索库：烽火地带 / 全面战场 / 黑潮爆破，支持搜索、价格筛选、收藏与对比。" />
+<style>
+  :root{
+    --bg:#0b0f14; --bg2:#111823; --card:#151d29; --card-hi:#1b2635;
+    --line:#243244; --line-hi:#33475f;
+    --txt:#e8eef6; --dim:#8fa3bb; --dim2:#61748c;
+    --accent:#ff8a2b; --accent2:#ffb765; --ok:#3ddc97; --star:#ffc857; --bad:#ff6b6b;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #16233a 0%, transparent 60%),
+      radial-gradient(900px 500px at 110% 0%, #2a1a0d 0%, transparent 55%),
+      var(--bg);
+    color:var(--txt);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+    min-height:100vh;
+  }
+  a{color:var(--accent2)}
+  button{font-family:inherit}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 18px 120px}
+
+  header.top{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);
+    background:rgba(11,15,20,.85);border-bottom:1px solid var(--line)}
+  .top-in{max-width:1240px;margin:0 auto;padding:14px 18px 12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .mark{width:38px;height:38px;flex:0 0 38px;border-radius:10px;
+    background:linear-gradient(145deg,var(--accent),#d85f10);display:grid;place-items:center;
+    font-weight:800;font-size:19px;color:#20130a;box-shadow:0 6px 20px rgba(255,138,43,.28)}
+  .brand h1{margin:0;font-size:17px;letter-spacing:.3px;white-space:nowrap}
+  .brand .sub{font-size:12px;color:var(--dim2);margin-top:1px}
+  .stats{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .stat{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:6px 11px;font-size:12.5px;color:var(--dim);white-space:nowrap}
+  .stat b{color:var(--txt);font-size:14px;font-family:var(--mono)}
+
+  .notice{margin:16px 0 0;border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:linear-gradient(90deg,rgba(255,138,43,.07),transparent 60%);
+    border-radius:0 10px 10px 0;padding:10px 14px;font-size:13px;color:var(--dim)}
+  .notice summary{cursor:pointer;color:var(--accent2);font-weight:600;list-style:none}
+  .notice summary::-webkit-details-marker{display:none}
+  .notice summary::before{content:"⚠ "}
+  .notice ul{margin:9px 0 2px;padding-left:18px}
+  .notice li{margin:4px 0}
+
+  .panel{margin:18px 0 10px;background:rgba(17,24,35,.6);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .row + .row{margin-top:10px}
+  .search{position:relative;flex:1 1 260px;min-width:200px}
+  .search input{width:100%;padding:11px 14px 11px 38px;border-radius:10px;background:var(--card);
+    border:1px solid var(--line);color:var(--txt);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,138,43,.13)}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.5}
+  select{padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);
+    color:var(--txt);font-size:13.5px;outline:none;cursor:pointer}
+  select:focus{border-color:var(--accent)}
+  .btn{padding:10px 14px;border-radius:10px;background:var(--card);border:1px solid var(--line);
+    color:var(--dim);font-size:13.5px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn:hover{border-color:var(--line-hi);color:var(--txt)}
+  .btn.on{background:linear-gradient(145deg,var(--accent),#e0700f);border-color:transparent;color:#1c1108;font-weight:700}
+  .btn.ghost{background:transparent}
+
+  .price-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--dim)}
+  .price-box input[type=range]{width:130px;accent-color:var(--accent);cursor:pointer}
+  .price-val{font-family:var(--mono);color:var(--accent2);min-width:88px;text-align:center}
+  .chk{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:13px;color:var(--dim)}
+  .chk input{accent-color:var(--accent);cursor:pointer}
+
+  .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 16px}
+  .tab{padding:7px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);
+    color:var(--dim);font-size:13.5px;cursor:pointer;transition:.15s;user-select:none}
+  .tab:hover{border-color:var(--line-hi);color:var(--txt)}
+  .tab.on{background:linear-gradient(145deg,var(--accent),#e0700f);border-color:transparent;color:#1c1108;font-weight:700}
+  .tab .n{opacity:.65;font-size:12px;margin-left:5px;font-family:var(--mono)}
+
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
+  .card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:13px;padding:13px 14px;display:flex;flex-direction:column;gap:9px;
+    transition:.15s;position:relative;overflow:hidden}
+  .card::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent);opacity:0;transition:.15s}
+  .card:hover{border-color:var(--line-hi);transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.34)}
+  .card:hover::after{opacity:1}
+  .card.fav{border-color:rgba(255,200,87,.35)}
+  .card.fav::after{background:var(--star);opacity:1}
+  .card-h{display:flex;align-items:flex-start;gap:8px}
+  .gun{font-weight:700;font-size:15.5px;letter-spacing:.2px}
+  .build{font-size:13px;color:var(--accent2);margin-top:2px}
+  .card-tools{margin-left:auto;display:flex;gap:5px;flex:0 0 auto}
+  .icon-btn{width:29px;height:29px;border-radius:8px;background:#182231;border:1px solid var(--line);
+    color:var(--dim2);cursor:pointer;display:grid;place-items:center;font-size:15px;line-height:1;transition:.15s;padding:0}
+  .icon-btn:hover{color:var(--txt);border-color:var(--line-hi)}
+  .icon-btn.star.on{color:var(--star);border-color:rgba(255,200,87,.45);background:rgba(255,200,87,.09)}
+  .icon-btn.cmp.on{color:var(--accent);border-color:rgba(255,138,43,.5);background:rgba(255,138,43,.1)}
+  .badges{display:flex;gap:6px;flex-wrap:wrap}
+  .badge{font-size:11px;padding:3px 8px;border-radius:6px;background:#1d2836;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .badge.price{color:var(--ok);border-color:rgba(61,220,151,.28);background:rgba(61,220,151,.08)}
+  .badge.mode{color:#9dc4ff;border-color:rgba(157,196,255,.24);background:rgba(157,196,255,.07)}
+  .code-row{display:flex;align-items:center;gap:8px;background:#0d131c;border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+  .code{font-family:var(--mono);font-size:13px;letter-spacing:.4px;color:#cfe3ff;
+    overflow-x:auto;white-space:nowrap;flex:1;scrollbar-width:none}
+  .code::-webkit-scrollbar{display:none}
+  .copy{flex:0 0 auto;border:1px solid var(--line-hi);background:#182231;color:var(--txt);
+    border-radius:7px;padding:5px 11px;font-size:12.5px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .copy:hover{background:var(--accent);border-color:transparent;color:#1c1108;font-weight:700}
+  .copy.done{background:var(--ok);border-color:transparent;color:#062015;font-weight:700}
+
+  .gun-group{border:1px solid var(--line);border-radius:13px;background:rgba(17,24,35,.55);overflow:hidden;margin-bottom:10px}
+  .gun-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+  .gun-head:hover{background:rgba(255,255,255,.02)}
+  .gun-head .name{font-weight:700;font-size:15.5px}
+  .gun-head .cnt{font-size:12px;color:var(--dim2);font-family:var(--mono)}
+  .gun-head .acts{margin-left:auto;display:flex;gap:7px}
+  .gun-body{border-top:1px solid var(--line);padding:10px 14px 13px;display:flex;flex-direction:column;gap:8px}
+  .mini{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:7px 0;border-bottom:1px dashed rgba(36,50,68,.7)}
+  .mini:last-child{border-bottom:0}
+  .mini .b-label{font-size:13px;color:var(--accent2);min-width:104px;flex:0 1 auto}
+  .mini .b-code{font-family:var(--mono);font-size:12.5px;color:#cfe3ff;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+  .mini .b-code::-webkit-scrollbar{display:none}
+  .mini .spacer{flex:1}
+
+  .empty{text-align:center;padding:70px 20px;color:var(--dim2)}
+  .empty b{display:block;font-size:16px;color:var(--dim);margin-bottom:6px}
+
+  .cmpbar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:40;
+    background:rgba(21,29,41,.96);border:1px solid var(--line-hi);border-radius:14px;
+    padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    box-shadow:0 14px 40px rgba(0,0,0,.5);max-width:calc(100vw - 28px)}
+  .cmpbar .chip{font-size:12px;padding:5px 9px;border-radius:8px;background:#0d131c;border:1px solid var(--line);
+    color:var(--dim);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cmpbar .chip b{color:var(--txt)}
+
+  .modal{position:fixed;inset:0;z-index:60;background:rgba(5,8,12,.78);backdrop-filter:blur(3px);
+    display:flex;align-items:center;justify-content:center;padding:20px}
+  .modal-in{background:var(--bg2);border:1px solid var(--line-hi);border-radius:16px;max-width:1000px;
+    width:100%;max-height:86vh;overflow:auto;padding:18px 20px 22px}
+  .modal h2{margin:0 0 14px;font-size:17px;display:flex;align-items:center;gap:10px}
+  .modal h2 .x{margin-left:auto}
+  table.cmp{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.cmp th,table.cmp td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  table.cmp th{background:#0f1620;color:var(--dim);font-weight:600;white-space:nowrap;width:88px}
+  table.cmp td{font-family:var(--mono);font-size:12.5px;word-break:break-all}
+  table.cmp td.txt{font-family:inherit;font-size:13.5px}
+  .best{color:var(--ok);font-weight:700}
+
+  footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim2);line-height:1.9}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,80px);background:var(--ok);color:#062015;
+    font-weight:700;padding:10px 20px;border-radius:10px;transition:.25s;opacity:0;pointer-events:none;z-index:80;font-size:14px}
+  .toast.on{transform:translate(-50%,0);opacity:1}
+  @media (max-width:560px){
+    .brand h1{font-size:15px} .stats{width:100%;margin-left:0}
+    .mini .b-label{min-width:0}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="mark">Δ</div>
+      <div>
+        <h1>三角洲行动 · 改枪码库</h1>
+        <div class="sub" id="sub">加载中…</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat">显示 <b id="s-show">0</b></div>
+      <div class="stat">收录 <b id="s-total">0</b></div>
+      <div class="stat">枪械 <b id="s-guns">0</b></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <details class="notice" id="notice" hidden>
+    <summary>使用须知（来自原表格）</summary>
+    <ul id="notice-list"></ul>
+  </details>
+
+  <div class="panel">
+    <div class="row">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/>
+        </svg>
+        <input id="q" type="search" placeholder="搜索枪械 / 改装名 / 改枪码…" autocomplete="off" />
+      </div>
+      <select id="cat"><option value="">全部类型</option></select>
+      <select id="sort">
+        <option value="gun">按枪械排序</option>
+        <option value="price">价格从低到高</option>
+        <option value="pricedesc">价格从高到低</option>
+      </select>
+      <button class="btn" id="viewBtn" title="切换卡片/按枪械分组">按枪械分组</button>
+    </div>
+    <div class="row">
+      <div class="price-box">
+        <span>价格</span>
+        <input type="range" id="pmin" />
+        <span class="price-val" id="pval">—</span>
+        <input type="range" id="pmax" />
+      </div>
+      <label class="chk"><input type="checkbox" id="noPrice" checked /> 包含未标价</label>
+      <label class="chk"><input type="checkbox" id="favOnly" /> 只看收藏</label>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn ghost" id="share">复制当前链接</button>
+        <button class="btn ghost" id="reset">清空筛选</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="list" class="grid"></div>
+  <div id="grouped" hidden></div>
+  <div id="empty" class="empty" hidden><b>没有匹配的改枪码</b>换个关键词，或点「清空筛选」</div>
+
+  <footer>
+    <div id="foot-stats"></div>
+    <div>数据来源：<a id="src" href="#" target="_blank" rel="noopener">原腾讯文档</a> · 由 GALI 整理维护，本站仅为便于检索的镜像。</div>
+    <div>改枪码失效多为游戏内使用人数过多导致；发现失效请到原文档/群里上报，以原文档为准。</div>
+  </footer>
+</div>
+
+<div class="cmpbar" id="cmpbar" hidden>
+  <span style="font-size:13px;color:var(--dim)">对比</span>
+  <span id="cmpchips" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+  <button class="btn on" id="cmpOpen" style="padding:7px 12px">开始对比</button>
+  <button class="btn ghost" id="cmpClear" style="padding:7px 12px">清空</button>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast">已复制</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.DELTA_DATA || { records: [], modes: [], notices: [], total: 0,
+    priceMin: 0, priceMax: 0 };
+  var ALL = D.records || [];
+  var FAV_KEY = "delta-codes-favs-v1";
+  var G_MIN = D.priceMin || 0, G_MAX = D.priceMax || 0;
+
+  // ---------- gun categories ----------
+  var CATS = [
+    ["突击步枪", ["突击步枪"]],
+    ["战斗步枪", ["战斗步枪"]],
+    ["冲锋枪", ["冲锋枪"]],
+    ["机枪", ["机枪"]],
+    ["射手步枪", ["射手步枪", "精确射手"]],
+    ["狙击枪", ["狙击枪"]],
+    ["霰弹枪", ["霰弹枪"]],
+    ["手枪", ["手枪", "G18", "93R", "沙漠之鹰", "M1911", "左轮"]],
+  ];
+  function catOf(gun) {
+    for (var i = 0; i < CATS.length; i++)
+      for (var j = 0; j < CATS[i][1].length; j++)
+        if (gun.indexOf(CATS[i][1][j]) >= 0) return CATS[i][0];
+    return "其他";
+  }
+  ALL.forEach(function (r) { r.cat = catOf(r.gun); });
+
+  // ---------- state ----------
+  var state = {
+    q: "", tab: "", cat: "", sort: "gun",
+    min: G_MIN, max: G_MAX, noPrice: true, favOnly: false,
+    view: "cards", cmp: [], cmpOpen: false, open: {}
+  };
+  var favs = new Set();
+  try {
+    var raw = localStorage.getItem(FAV_KEY);
+    if (raw) JSON.parse(raw).forEach(function (id) { favs.add(id); });
+  } catch (e) { /* storage disabled */ }
+
+  function saveFavs() {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify([].concat(Array.from(favs)))); } catch (e) {}
+  }
+
+  // ---------- url <-> state ----------
+  function readHash() {
+    var h = location.hash.replace(/^#/, "");
+    if (!h) return;
+    var p = new URLSearchParams(h);
+    if (p.has("q")) state.q = p.get("q");
+    if (p.has("tab")) state.tab = p.get("tab");
+    if (p.has("cat")) state.cat = p.get("cat");
+    if (p.has("sort")) state.sort = p.get("sort");
+    if (p.has("min")) state.min = Number(p.get("min"));
+    if (p.has("max")) state.max = Number(p.get("max"));
+    if (p.has("np")) state.noPrice = p.get("np") === "1";
+    if (p.has("fav")) state.favOnly = p.get("fav") === "1";
+    if (p.has("view")) state.view = p.get("view");
+    if (p.has("cmp")) state.cmp = p.get("cmp").split(",").filter(Boolean).slice(0, 3);
+    if (p.has("cmpopen")) state.cmpOpen = p.get("cmpopen") === "1";
+    if (p.has("open")) p.get("open").split(",").filter(Boolean).forEach(function (g) { state.open[g] = 1; });
+  }
+  function writeHash(replace) {
+    var p = new URLSearchParams();
+    if (state.q) p.set("q", state.q);
+    if (state.tab) p.set("tab", state.tab);
+    if (state.cat) p.set("cat", state.cat);
+    if (state.sort !== "gun") p.set("sort", state.sort);
+    if (state.min > G_MIN) p.set("min", String(state.min));
+    if (state.max < G_MAX) p.set("max", String(state.max));
+    if (!state.noPrice) p.set("np", "0");
+    if (state.favOnly) p.set("fav", "1");
+    if (state.view !== "cards") p.set("view", state.view);
+    if (state.cmp.length) p.set("cmp", state.cmp.join(","));
+    if (state.cmp.length && state.cmpOpen) p.set("cmpopen", "1");
+    var open = Object.keys(state.open);
+    if (open.length) p.set("open", open.join(","));
+    var url = location.pathname + location.search + (p.toString() ? "#" + p.toString() : "");
+    if (replace !== false) history.replaceState(null, "", url);
+    return location.origin + location.pathname + location.search + (p.toString() ? "#" + p.toString() : "");
+  }
+
+  // ---------- helpers ----------
+  var $ = function (s) { return document.querySelector(s); };
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[<>&"]/g, function (c) {
+      return { "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c];
+    });
+  }
+  var toast = $("#toast"), toastTimer;
+  function showToast(msg, ok) {
+    toast.textContent = msg;
+    toast.style.background = ok === false ? "var(--bad)" : "var(--ok)";
+    toast.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("on"); }, 1500);
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (res, rej) {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.style.cssText = "position:fixed;top:-1000px";
+        document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); ta.remove(); res();
+      } catch (e) { rej(e); }
+    });
+  }
+
+  // ---------- filtering ----------
+  var byId = {};
+  ALL.forEach(function (r) { byId[r.id] = r; });
+
+  function filtered() {
+    var rows = ALL.filter(function (r) {
+      if (state.tab && r.tab !== state.tab) return false;
+      if (state.cat && r.cat !== state.cat) return false;
+      if (state.favOnly && !favs.has(r.id)) return false;
+      var narrowed = state.min > G_MIN || state.max < G_MAX;
+      if (narrowed) {
+        if (r.price == null) { if (!state.noPrice) return false; }
+        else if (r.price < state.min || r.price > state.max) return false;
+      }
+      if (state.q) {
+        var hay = (r.gun + " " + r.build + " " + r.code + " " + r.tab).toLowerCase();
+        var toks = state.q.toLowerCase().split(/\s+/);
+        for (var i = 0; i < toks.length; i++) if (toks[i] && hay.indexOf(toks[i]) < 0) return false;
+      }
+      return true;
+    });
+    rows.sort(function (a, b) {
+      if (state.sort === "price") return (a.price == null ? 1e9 : a.price) - (b.price == null ? 1e9 : b.price);
+      if (state.sort === "pricedesc") return (b.price == null ? -1 : b.price) - (a.price == null ? -1 : a.price);
+      return a.gun.localeCompare(b.gun, "zh") ||
+        (b.price == null ? -1 : b.price) - (a.price == null ? -1 : a.price) ||
+        a.id.localeCompare(b.id);
+    });
+    return rows;
+  }
+
+  // ---------- card html ----------
+  function badges(r) {
+    return '<div class="badges">' +
+      (r.price != null ? '<span class="badge price">' + r.price + "W</span>" : "") +
+      '<span class="badge">' + esc(r.cat) + "</span>" +
+      '<span class="badge mode">' + esc(r.tab) + "</span>" +
+      "</div>";
+  }
+  function card(r) {
+    var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
+    return '<article class="card' + (isFav ? " fav" : "") + '" data-id="' + esc(r.id) + '">' +
+      '<div class="card-h"><div style="min-width:0">' +
+        '<div class="gun">' + esc(r.gun) + "</div>" +
+        (r.build ? '<div class="build">' + esc(r.build) + "</div>" : "") +
+      "</div>" +
+      '<div class="card-tools">' +
+        '<button class="icon-btn star' + (isFav ? " on" : "") + '" data-act="fav" title="收藏">' +
+          (isFav ? "★" : "☆") + "</button>" +
+        '<button class="icon-btn cmp' + (isCmp ? " on" : "") + '" data-act="cmp" title="加入对比">⇄</button>' +
+      "</div></div>" +
+      badges(r) +
+      '<div class="code-row"><div class="code" title="' + esc(r.code) + '">' + esc(r.code) + "</div>" +
+        '<button class="copy" data-code="' + esc(r.code) + '">复制</button></div>' +
+      "</article>";
+  }
+
+  function groupHtml(rows) {
+    var groups = {}, order = [];
+    rows.forEach(function (r) {
+      if (!groups[r.gun]) { groups[r.gun] = []; order.push(r.gun); }
+      groups[r.gun].push(r);
+    });
+    order.sort(function (a, b) { return a.localeCompare(b, "zh"); });
+    return order.map(function (gun) {
+      var items = groups[gun];
+      var open = !!state.open[gun];
+      var anyFav = items.some(function (r) { return favs.has(r.id); });
+      return '<section class="gun-group" data-gun="' + esc(gun) + '">' +
+        '<div class="gun-head" data-act="toggle">' +
+          '<span style="color:var(--dim2)">' + (open ? "▾" : "▸") + "</span>" +
+          '<span class="name">' + esc(gun) + "</span>" +
+          '<span class="cnt">' + items.length + " 套" +
+            (anyFav ? ' · <span style="color:var(--star)">★</span>' : "") + "</span>" +
+          '<span class="acts">' +
+            '<button class="btn" data-act="copygun" style="padding:6px 11px">复制全部</button>' +
+            '<button class="btn" data-act="favgun" style="padding:6px 11px">' +
+              (anyFav ? "取消收藏" : "收藏全部") + "</button>" +
+          "</span>" +
+        "</div>" +
+        (open ? '<div class="gun-body">' + items.map(function (r) {
+          return '<div class="mini">' +
+            '<span class="b-label">' + (r.build ? esc(r.build) : '<span style="color:var(--dim2)">未命名</span>') + "</span>" +
+            (r.price != null ? '<span class="badge price">' + r.price + "W</span>" : "") +
+            '<span class="badge mode">' + esc(r.tab) + "</span>" +
+            '<span class="b-code">' + esc(r.code) + "</span>" +
+            '<span class="spacer"></span>' +
+            '<button class="icon-btn star' + (favs.has(r.id) ? " on" : "") + '" data-act="fav" data-id="' + esc(r.id) + '">' +
+              (favs.has(r.id) ? "★" : "☆") + "</button>" +
+            '<button class="copy" data-code="' + esc(r.code) + '">复制</button>' +
+          "</div>";
+        }).join("") + "</div>" : "") +
+      "</section>";
+    }).join("");
+  }
+
+  // ---------- render ----------
+  function renderTabs() {
+    var items = [["", "全部", ALL.length]].concat(D.modes.map(function (m) {
+      return [m, m, ALL.filter(function (r) { return r.tab === m; }).length];
+    }));
+    var html = items.map(function (it) {
+      return '<div class="tab' + (state.tab === it[0] ? " on" : "") + '" data-tab="' + esc(it[0]) + '">' +
+        esc(it[1]) + '<span class="n">' + it[2] + "</span></div>";
+    }).join("");
+    if (favs.size) {
+      html += '<div class="tab' + (state.favOnly ? " on" : "") + '" data-tab="__fav">★ 收藏' +
+        '<span class="n">' + favs.size + "</span></div>";
+    }
+    $("#tabs").innerHTML = html;
+  }
+
+  function render() {
+    var rows = filtered();
+    $("#s-show").textContent = rows.length;
+    renderTabs();
+
+    var cards = $("#list"), grouped = $("#grouped");
+    if (state.view === "guns") {
+      cards.hidden = true; cards.innerHTML = "";
+      grouped.hidden = false;
+      grouped.innerHTML = groupHtml(rows);
+    } else {
+      grouped.hidden = true; grouped.innerHTML = "";
+      cards.hidden = false;
+      cards.innerHTML = rows.map(card).join("");
+    }
+    $("#empty").hidden = rows.length > 0;
+    $("#viewBtn").textContent = state.view === "guns" ? "卡片视图" : "按枪械分组";
+    renderCmpBar();
+    writeHash();
+  }
+
+  function renderCmpBar() {
+    var bar = $("#cmpbar");
+    if (!state.cmp.length) { bar.hidden = true; $("#cmpchips").innerHTML = ""; return; }
+    bar.hidden = false;
+    $("#cmpchips").innerHTML = state.cmp.map(function (id) {
+      var r = byId[id];
+      return '<span class="chip"><b>' + esc(r ? r.gun : id) + "</b> " +
+        esc(r && r.build ? r.build : "") + "</span>";
+    }).join("");
+  }
+
+  // ---------- compare modal ----------
+  var ROWS = [
+    ["枪械", function (r) { return esc(r.gun); }, "txt"],
+    ["改装", function (r) { return r.build ? esc(r.build) : "—"; }, "txt"],
+    ["价格", function (r) { return r.price != null ? r.price + "W" : "未标价"; }, "txt"],
+    ["玩法", function (r) { return esc(r.tab); }, "txt"],
+    ["类型", function (r) { return esc(r.cat); }, "txt"],
+    ["改枪码", function (r) { return esc(r.code); }, "code"],
+  ];
+  function openCompare() {
+    var rs = state.cmp.map(function (id) { return byId[id]; }).filter(Boolean);
+    if (!rs.length) return;
+    var minP = Math.min.apply(null, rs.map(function (r) { return r.price == null ? Infinity : r.price; }));
+    var maxP = Math.max.apply(null, rs.map(function (r) { return r.price == null ? -Infinity : r.price; }));
+    var html = '<div class="modal" id="modal"><div class="modal-in">' +
+      '<h2>方案对比<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+      "<table class=\"cmp\"><tbody>" +
+      ROWS.map(function (row) {
+        return "<tr><th>" + row[0] + "</th>" + rs.map(function (r) {
+          var v = row[1](r);
+          var cls = row[2] === "code" ? "" : " class=\"txt\"";
+          if (row[0] === "价格" && rs.length > 1 && r.price != null) {
+            if (r.price === minP && minP !== maxP) v = '<span class="best">' + v + " ↓最低</span>";
+            else if (r.price === maxP && minP !== maxP) v = v + " ↑最高";
+          }
+          return "<td" + cls + ">" + v + "</td>";
+        }).join("") + "</tr>";
+      }).join("") +
+      '<tr><th>操作</th>' + rs.map(function (r) {
+        return '<td class="txt"><button class="copy" data-code="' + esc(r.code) + '">复制码</button></td>';
+      }).join("") + "</tr>" +
+      "</tbody></table></div></div>";
+    $("#modalHost").innerHTML = html;
+    $("#modalClose").onclick = closeModal;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+    state.cmpOpen = true;
+    writeHash();
+  }
+  function closeModal() {
+    $("#modalHost").innerHTML = "";
+    state.cmpOpen = false;
+    writeHash();
+  }
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+  // ---------- events ----------
+  $("#q").addEventListener("input", function (e) { state.q = e.target.value.trim(); render(); });
+  $("#cat").addEventListener("change", function (e) { state.cat = e.target.value; render(); });
+  $("#sort").addEventListener("change", function (e) { state.sort = e.target.value; render(); });
+  $("#noPrice").addEventListener("change", function (e) { state.noPrice = e.target.checked; render(); });
+  $("#favOnly").addEventListener("change", function (e) { state.favOnly = e.target.checked; render(); });
+  $("#viewBtn").addEventListener("click", function () {
+    state.view = state.view === "guns" ? "cards" : "guns"; render();
+  });
+  function onPrice() {
+    var a = Number($("#pmin").value), b = Number($("#pmax").value);
+    if (a > b) { if (this && this.id === "pmin") b = a; else a = b; }
+    state.min = a; state.max = b;
+    $("#pmin").value = a; $("#pmax").value = b;
+    $("#pval").textContent = a + "w – " + b + "w";
+    render();
+  }
+  $("#pmin").addEventListener("input", onPrice);
+  $("#pmax").addEventListener("input", onPrice);
+  $("#share").addEventListener("click", function () {
+    var url = writeHash(false);
+    copyText(url).then(function () { showToast("链接已复制，含当前筛选条件"); },
+      function () { showToast("复制失败", false); });
+  });
+  $("#reset").addEventListener("click", function () {
+    state.q = ""; state.tab = ""; state.cat = ""; state.sort = "gun";
+    state.min = G_MIN; state.max = G_MAX; state.noPrice = true; state.favOnly = false;
+    state.cmp = []; state.open = {};
+    syncControls(); render();
+  });
+  $("#tabs").addEventListener("click", function (e) {
+    var el = e.target.closest(".tab"); if (!el) return;
+    var t = el.dataset.tab;
+    if (t === "__fav") { state.favOnly = !state.favOnly; }
+    else { state.tab = t; }
+    syncControls(); render();
+  });
+  $("#cmpOpen").addEventListener("click", openCompare);
+  $("#cmpClear").addEventListener("click", function () { state.cmp = []; render(); });
+
+  function toggleFav(id) {
+    if (favs.has(id)) favs.delete(id); else favs.add(id);
+    saveFavs(); render();
+  }
+  function toggleCmp(id) {
+    var i = state.cmp.indexOf(id);
+    if (i >= 0) state.cmp.splice(i, 1);
+    else if (state.cmp.length >= 3) { showToast("最多同时对比 3 套", false); return; }
+    else state.cmp.push(id);
+    render();
+  }
+
+  document.addEventListener("click", function (e) {
+    var star = e.target.closest('[data-act="fav"]');
+    if (star) { toggleFav(star.dataset.id || star.closest("[data-id]").dataset.id); return; }
+    var cmp = e.target.closest('[data-act="cmp"]');
+    if (cmp) { toggleCmp(cmp.closest("[data-id]").dataset.id); return; }
+    var copyBtn = e.target.closest(".copy");
+    if (copyBtn) {
+      copyText(copyBtn.dataset.code).then(function () {
+        copyBtn.classList.add("done");
+        var old = copyBtn.textContent; copyBtn.textContent = "✓";
+        setTimeout(function () { copyBtn.classList.remove("done"); copyBtn.textContent = old; }, 1100);
+        showToast("已复制 " + copyBtn.dataset.code.slice(-6));
+      }, function () { showToast("复制失败，请手动选择", false); });
+      return;
+    }
+    var gunBtn = e.target.closest("[data-act]");
+    if (gunBtn) {
+      var group = gunBtn.closest(".gun-group"); if (!group) return;
+      var gun = group.dataset.gun;
+      var act = gunBtn.dataset.act;
+      var items = filtered().filter(function (r) { return r.gun === gun; });
+      if (act === "toggle") { state.open[gun] = state.open[gun] ? 0 : 1; render(); }
+      else if (act === "copygun") {
+        copyText(items.map(function (r) { return r.code; }).join("\n")).then(function () {
+          showToast("已复制 " + gun + " 的 " + items.length + " 个改枪码");
+        }, function () { showToast("复制失败", false); });
+      } else if (act === "favgun") {
+        var allFav = items.every(function (r) { return favs.has(r.id); });
+        items.forEach(function (r) { if (allFav) favs.delete(r.id); else favs.add(r.id); });
+        saveFavs(); render();
+      }
+    }
+  });
+
+  // ---------- boot ----------
+  function syncControls() {
+    $("#q").value = state.q;
+    $("#cat").value = state.cat;
+    $("#sort").value = state.sort;
+    $("#noPrice").checked = state.noPrice;
+    $("#favOnly").checked = state.favOnly;
+    $("#pmin").value = state.min; $("#pmax").value = state.max;
+    $("#pval").textContent = state.min + "w – " + state.max + "w";
+  }
+
+  $("#s-total").textContent = ALL.length;
+  $("#s-guns").textContent = new Set(ALL.map(function (r) { return r.gun; })).size;
+  $("#sub").textContent = "共 " + ALL.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
+  $("#src").href = D.source || "#";
+  $("#foot-stats").textContent = "收录 " + ALL.length + " 个改枪码 / " +
+    new Set(ALL.map(function (r) { return r.gun; })).size + " 把枪械；" +
+    D.modes.map(function (m) {
+      return m + " " + ALL.filter(function (r) { return r.tab === m; }).length;
+    }).join(" · ");
+
+  var notices = (D.notices || []).filter(function (n) { return n && n.length > 3; });
+  if (notices.length) {
+    $("#notice").hidden = false;
+    $("#notice-list").innerHTML = notices.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("");
+  }
+  var cats = [];
+  ALL.forEach(function (r) { if (cats.indexOf(r.cat) < 0) cats.push(r.cat); });
+  $("#cat").innerHTML = '<option value="">全部类型</option>' + cats.map(function (c) {
+    return '<option value="' + esc(c) + '">' + esc(c) + " (" +
+      ALL.filter(function (r) { return r.cat === c; }).length + ")</option>";
+  }).join("");
+
+  $("#pmin").min = G_MIN; $("#pmin").max = G_MAX; $("#pmin").step = 1;
+  $("#pmax").min = G_MIN; $("#pmax").max = G_MAX; $("#pmax").step = 1;
+
+  readHash();
+  state.min = Math.max(G_MIN, Math.min(G_MAX, state.min));
+  state.max = Math.max(G_MIN, Math.min(G_MAX, state.max));
+  if (state.min > state.max) state.min = state.max;
+  syncControls();
+  render();
+  if (state.cmpOpen && state.cmp.length) openCompare();
+  window.addEventListener("hashchange", function () { readHash(); syncControls(); render(); });
+})();
+</script>
+</body>
+</html>
