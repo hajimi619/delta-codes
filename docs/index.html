@@ -116,6 +116,15 @@
   .gc-preview{font-size:12.5px;color:var(--dim2);line-height:1.6;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em}
   .gc-go{font-size:12.5px;color:var(--accent2);font-weight:600;margin-top:auto}
+  /* 枪械图：裁切自带蓝灰渐变底，用柔和遮罩让边缘融进卡片 */
+  .gc-img{height:66px;display:flex;align-items:center;justify-content:center;margin:-2px 0 2px}
+  .gc-img img{max-height:66px;max-width:100%;object-fit:contain;
+    -webkit-mask-image:radial-gradient(ellipse 68% 78% at 50% 50%, #000 38%, rgba(0,0,0,.55) 70%, transparent 99%);
+    mask-image:radial-gradient(ellipse 68% 78% at 50% 50%, #000 38%, rgba(0,0,0,.55) 70%, transparent 99%)}
+  .dh-img{flex:0 0 auto;display:flex;align-items:center;justify-content:center;min-width:130px}
+  .dh-img img{max-height:60px;max-width:200px;object-fit:contain;
+    -webkit-mask-image:radial-gradient(ellipse 74% 84% at 50% 50%, #000 42%, rgba(0,0,0,.55) 74%, transparent 99%);
+    mask-image:radial-gradient(ellipse 74% 84% at 50% 50%, #000 42%, rgba(0,0,0,.55) 74%, transparent 99%)}
 
   /* ---------- level 2: gun detail ---------- */
   .detail-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
@@ -325,6 +334,21 @@
   function priceOf(text) {
     var m = PRICE_RE.exec(text || "");
     return m ? parseFloat(m[1]) : null;
+  }
+
+  // ---------- 枪械图 ----------
+  var GUN_IMG = D.gunImages || {};
+  function gunImgSrc(gun) {
+    var f = GUN_IMG[gun];
+    if (!f) return "";
+    var inline = (window.DELTA_INLINE_IMAGES || {})[f];
+    return inline || ("img/guns/" + f);
+  }
+  function gunImgTag(gun, cls) {
+    var src = gunImgSrc(gun);
+    if (!src) return "";
+    return '<div class="' + cls + '"><img loading="lazy" decoding="async" src="' + esc(src) +
+      '" alt="' + esc(gun) + '"></div>';
   }
 
   /** 基础数据 + 改动 = 最终列表 */
@@ -542,6 +566,7 @@
         '<button class="icon-btn star' + (g.allFav ? " on" : "") + '" data-act="favgun" title="收藏这把枪的全部方案">' +
           (g.allFav ? "★" : "☆") + "</button>" +
       "</div>" +
+      gunImgTag(g.gun, "gc-img") +
       '<div class="gc-badges">' +
         '<span class="badge">' + esc(g.cat) + "</span>" +
         '<span class="badge">' + g.items.length + " 套</span>" +
@@ -585,6 +610,7 @@
   function detailHtml(g, filteredCount) {
     return '<div class="detail-head">' +
         '<button class="back" id="back">← 返回全部枪械</button>' +
+        gunImgTag(g.gun, "dh-img") +
         "<div>" +
           '<div class="title">' + esc(g.gun) + "</div>" +
           '<div class="meta">' + esc(g.cat) + " · " + g.items.length + " 套方案 · 价格 " +
