@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import json
 import mimetypes
 import socket
@@ -31,6 +32,14 @@ SKIP_FILES = {".gh-token", ".DS_Store", "Thumbs.db"}
 
 # GitHub's TLS handshake from mainland China is flaky; retry transient failures.
 RETRYABLE = (urllib.error.URLError, ssl.SSLError, socket.timeout, ConnectionError, OSError)
+
+
+def git_blob_sha(data: bytes) -> str:
+    """Git blob hash of `data`, so we can compare against the Contents API sha."""
+    h = hashlib.sha1()
+    h.update(b"blob %d\0" % len(data))
+    h.update(data)
+    return h.hexdigest()
 
 
 def call(method: str, path: str, token: str, body=None, ok=(200, 201, 204), attempts=6):
@@ -143,21 +152,27 @@ def main() -> int:
         print(f"[x] create repo failed ({status}): {repo.get('message')}", file=sys.stderr)
         return 4
 
-    # ---- upload every file through the Contents API ----
+    # ---- upload every changed file through the Contents API ----
     branch = repo.get("default_branch") or "main"
-    uploaded = failed = 0
+    uploaded = skipped = failed = 0
     for rel, path in files:
         posix = rel.as_posix()
         raw = path.read_bytes()
-        body = {
-            "message": f"add {posix}",
-            "content": base64.b64encode(raw).decode("ascii"),
-        }
-        # existing file -> need its blob sha to overwrite
+        local_sha = git_blob_sha(raw)
+
+        # existing file -> same blob sha means nothing to do
         st, cur = call("GET", f"/repos/{login}/{args.repo}/contents/{posix}", token, ok=(200, 404))
         if st == 200 and isinstance(cur, dict) and cur.get("sha"):
+            if cur["sha"] == local_sha:
+                skipped += 1
+                continue
+
+        body = {
+            "message": f"{'update' if st == 200 else 'add'} {posix}",
+            "content": base64.b64encode(raw).decode("ascii"),
+        }
+        if st == 200 and isinstance(cur, dict) and cur.get("sha"):
             body["sha"] = cur["sha"]
-            body["message"] = f"update {posix}"
         if repo.get("size") or uploaded:
             body["branch"] = branch
 
@@ -176,7 +191,7 @@ def main() -> int:
         else:
             failed += 1
             print(f"   [!] {posix}: {st} {res.get('message')}")
-    print(f"[ok] uploaded {uploaded} files" + (f", {failed} failed" if failed else ""))
+    print(f"[ok] uploaded {uploaded}, unchanged {skipped}" + (f", failed {failed}" if failed else ""))
 
     # ---- enable Pages from /docs ----
     src = {"source": {"branch": branch, "path": "/docs"}}
