@@ -198,7 +198,9 @@ function findToken(req) {
   return m ? m[1].trim() : "";
 }
 
-/** 校验令牌；失败抛错 */
+/** 校验令牌；失败抛错
+    除了有效期，还要比对凭据版本 ver —— 这样改了用户名/密码之后，
+    所有旧令牌立刻失效，不用手动去清 tokens.json。 */
 function requireAdmin(req) {
   const t = findToken(req);
   if (!t) throw new Error("请先登录管理员");
@@ -208,6 +210,13 @@ function requireAdmin(req) {
     delete tokens[t];
     saveJson(TOKEN_FILE, tokens);
     throw new Error("登录已过期，请重新登录");
+  }
+  const a = loadAdmin();
+  if (!a || !a.username) throw new Error("服务器还没配置管理员账号");
+  if (a.ver && rec.ver !== a.ver) {
+    delete tokens[t];
+    saveJson(TOKEN_FILE, tokens);
+    throw new Error("管理员凭据已变更，请重新登录");
   }
   return rec.username;
 }
@@ -235,7 +244,12 @@ function adminLogin(body, req) {
 
   loginFails[ip] = [];
   const token = crypto.randomBytes(32).toString("hex");
-  tokens[token] = { username: username, expires: now + TOKEN_TTL_MS, created_at: new Date().toISOString() };
+  tokens[token] = {
+    username: username,
+    ver: a.ver || "",
+    expires: now + TOKEN_TTL_MS,
+    created_at: new Date().toISOString(),
+  };
   saveJson(TOKEN_FILE, tokens);
   return { ok: true, username: username, token: token, expires: tokens[token].expires };
 }
