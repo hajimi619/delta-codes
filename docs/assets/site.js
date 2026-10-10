@@ -140,7 +140,8 @@
 
     /* Service Worker：让第二次之后的访问直接从本地缓存打开。
        国内到 Cloudflare 的握手经常十几秒甚至超时，这一步收益最大。 */
-    if ("serviceWorker" in navigator && location.protocol === "https:") {
+    var localHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || localHost)) {
       var base = document.documentElement.getAttribute("data-base") || "./";
       navigator.serviceWorker.register(base + "sw.js", { scope: base })["catch"](function () {});
     }
