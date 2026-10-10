@@ -69,21 +69,25 @@ def main():
                 except Exception:
                     print(out)
             if args.menu or args.show:
+                # 注意：这段命令里不要用 % 格式化，里面的 % 会和 Python 的 % 运算打架
                 out = run(
-                    "python3 -c \"import json;m=json.load(open('%s'));"
-                    "print('菜单: %d 个菜系, %d 道菜' % (len(m['cuisines']), "
-                    "sum(len(c['dishes']) for c in m['cuisines'])))\" 2>/dev/null || echo '(菜单未配置)'"
-                    % MENU_FILE)
+                    "python3 -c \"import json;m=json.load(open('" + MENU_FILE + "'));"
+                    "n=sum(len(c['dishes']) for c in m['cuisines']);"
+                    "print('菜单: '+str(len(m['cuisines']))+' 个菜系, '+str(n)+' 道菜')\""
+                    " 2>/dev/null || echo '(菜单未配置)'")
                 print(out)
-            if not args.password and not args.generate:
-                return
 
+        # 「只推菜单」必须在上面那个 return 之前判断，否则永远走不到
         if args.menu and not args.password and not args.generate:
-            # 只推菜单
+            print("\n推送菜单…")
             sftp.put(str(LOCAL_MENU), MENU_FILE)
             print(run(f"chown www-data:www-data {MENU_FILE} && ls -la {MENU_FILE}"))
             print(run("systemctl restart hajimiovo-api && sleep 2 && systemctl is-active hajimiovo-api"))
-            print(run("journalctl -u hajimiovo-api -n 4 --no-pager | tail -2"))
+            print(run("journalctl -u hajimiovo-api -n 6 --no-pager | grep 餐馆 || true"))
+            print("\n[ok] 菜单已更新")
+            return
+
+        if args.show and not args.password and not args.generate:
             return
 
         if args.generate:
