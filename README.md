@@ -434,6 +434,72 @@ var API_ON  = CROSS_ORIGIN ? !!D.apiBase : true;   // 同源时一定有后端
 GitHub 镜像没有可用的后端（`api.hajimiovo.top` 已摘，而 https 页面调 http 接口会被
 浏览器按混合内容拦掉），所以 `config.json` 的 `apiBase` 留空 —— 镜像变成**只读浏览**版。
 
+## 基米餐馆（第二个板块）
+
+`docs/jimi-restaurant/` —— **15 个菜系、288 道菜**，选菜下单出小票。
+
+### 密码保护是**真的**
+
+进门要密码（当前 `0813`）。这条不是前端摆样子：
+
+```
+密码哈希  →  /var/lib/hajimiovo/restaurant.json         （scrypt，明文不落盘）
+菜单数据  →  /var/lib/hajimiovo/restaurant-menu.json    （34KB，只在服务器上）
+```
+
+**`docs/` 里一个字都没有** —— 不然看网页源码就把菜单拿到手了。已验证：
+
+| 探测 | 结果 |
+|---|---|
+| `/delta-codes/data.js` | 无任何菜名 |
+| `/restaurant/menu.json` | 404 |
+| `/jimi-restaurant/menu.json` | 404 |
+| `GET /api/restaurant/menu`（无令牌） | 401 请先输入密码 |
+
+流程：
+
+```
+POST /api/restaurant/unlock  {password}  →  {token}      单 IP 15 分钟最多错 6 次
+GET  /api/restaurant/menu    Bearer 令牌 →  菜单          令牌 12 小时有效
+```
+
+令牌同样带 `ver`：改了密码所有访客立刻失效。
+
+### 功能
+
+| | |
+|---|---|
+| 菜系 | 川粤鲁苏浙闽湘徽 + 东北菜 + 家常小炒 + 烧烤 + 火锅 + 小吃主食 + 汤羹 + 饮品甜品 |
+| 浏览 | 左侧菜系栏（手机上是横向胶囊）、菜名搜索、辣度筛选、🎲 随便来一个 |
+| 点菜 | 每道菜 ± 加减，底部购物车条实时显示「已点 N 样 · 合计 ¥X」 |
+| 下单 | 弹出一张**纸质小票**（带单号和时间），可一键复制成文字发群里 |
+| 记忆 | 购物车和登录状态都存 localStorage，刷新不丢 |
+
+> **下单是纯前端的**（用户选的「纯好玩，不用后端」），订单不落库、不产生任何实际交易，
+> 小票上也印着这句。要改成能存订单、后台看列表，加个接口就行。
+
+### 管理命令
+
+```powershell
+# 改密码（会顺手把菜单推上去，并让所有访客重新输密码）
+& $py scripts\set_restaurant.py --password 0813
+
+# 只更新菜单（改完 restaurant/build_menu.py 之后）
+& $py scripts\build_menu.py        # 1. 重新生成 restaurant/menu.json
+& $py scripts\set_restaurant.py --menu   # 2. 推到服务器
+
+# 看当前状态（不显示密码）
+& $py scripts\set_restaurant.py --show
+```
+
+菜单源数据在 `restaurant/build_menu.py` 里，改完跑一遍就重新生成 JSON。
+菜品参考：[八大菜系](https://cloud.kepuchina.cn/h5/detail?id=7250904674058797056)、
+[浙江名菜](https://www.meishichina.com/Eat/Culture/201712/524.html)、
+[湘菜](https://m.voc.com.cn/xhn/news/202606/32964760.html)、
+[闽菜](http://m.people.cn/n4/2021/0715/c1142-15092084.html)、
+[火锅菜品](https://www.6eat.com/ask_detail/263233)、
+[下饭菜 100 道](https://m.wenda.so.com/q/1662380556217093)
+
 ## 更新数据
 
 本地（推荐）：
