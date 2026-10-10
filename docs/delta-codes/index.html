@@ -220,6 +220,32 @@
   table.cmp td.txt{font-family:inherit;font-size:13.5px}
   .best{color:var(--ok);font-weight:700}
 
+  /* ---------- 管理员 ---------- */
+  .badge.admin{color:#6b4bb8;border-color:rgba(140,110,220,.34);background:rgba(220,208,255,.6)}
+  .badge.del{color:#b03333;border-color:rgba(214,69,69,.28);background:rgba(255,190,190,.55)}
+  .icon-btn.edit:hover{color:var(--accent);border-color:rgba(226,112,10,.55);background:rgba(255,214,170,.6)}
+  .icon-btn.del:hover{color:var(--bad);border-color:rgba(214,69,69,.55);background:rgba(255,190,190,.5)}
+  .build-item.deleted{opacity:.42;border-style:dotted}
+  .build-item.deleted .bi-code{text-decoration:line-through;text-decoration-thickness:2px}
+  #s-admin{cursor:pointer;font-family:inherit}
+  #s-admin.on{background:rgba(220,208,255,.55);border-color:rgba(140,110,220,.45)}
+  #s-admin b{color:var(--txt)}
+  .admin-tools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;border-radius:16px;
+    background:linear-gradient(120deg,rgba(186,166,255,.24),rgba(255,255,255,.7) 45%,rgba(255,255,255,.6));
+    border:1px solid rgba(255,255,255,.95);box-shadow:var(--inset),0 6px 18px rgba(20,40,65,.07);
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);align-items:center}
+  .admin-tools .who{font-size:13px;color:var(--dim);margin-right:auto}
+  .admin-tools .who b{color:var(--txt)}
+  .recycle{display:flex;flex-direction:column;gap:8px}
+  .recycle .item{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:12px;
+    background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.95);
+    box-shadow:inset 0 1px 0 #fff;flex-wrap:wrap}
+  .recycle .item .g{font-weight:600;min-width:110px}
+  .recycle .item .c{font-family:var(--mono);font-size:12.5px;color:var(--dim);flex:1;min-width:140px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .recycle .item .why{font-size:11.5px;color:var(--dim2)}
+  .recycle .empty-tip{text-align:center;color:var(--dim2);font-size:13px;padding:22px 0}
+
   @media (max-width:620px){
     .detail-head .acts{margin-left:0;width:100%}
     .build-item{flex-wrap:wrap;gap:9px}
@@ -248,6 +274,7 @@
       <div class="stat">改枪码 <b id="s-codes">0</b></div>
       <div class="stat">收录 <b id="s-total">0</b></div>
       <div class="stat" id="s-api" hidden>接口 <b>—</b></div>
+      <button class="stat" id="s-admin" title="管理员登录 / 管理面板">管理员 <b>登录</b></button>
     </div>
   </div>
   <nav class="fnav" id="siteNav"></nav>
@@ -285,6 +312,8 @@
       </div>
     </div>
   </div>
+
+  <div class="admin-tools" id="adminTools" hidden></div>
 
   <!-- level 1 -->
   <div id="guns"></div>
@@ -411,15 +440,20 @@
       '" alt="' + esc(gun) + '"></div>';
   }
 
-  /** 基础数据 + 改动 = 最终列表 */
+  /** 基础数据 + 改动 = 最终列表
+      改动类型：add 新增 / flag 标记失效 / edit 覆盖内容 / delete 隐藏（管理员） */
   function rebuildAll() {
-    var flag = {};
-    CHANGES.forEach(function (c) { if (c.type === "flag" && c.target_id) flag[c.target_id] = c.status; });
+    var flag = {}, edits = {}, deleted = {};
+    CHANGES.forEach(function (c) {
+      if (!c.target_id && c.type !== "add") return;
+      if (c.type === "flag") flag[c.target_id] = c.status;
+      else if (c.type === "edit") edits[c.target_id] = c;
+      else if (c.type === "delete") deleted[c.target_id] = c.status !== "valid";
+    });
 
     var out = BASE.map(function (r) {
       var c = {};
       for (var k in r) c[k] = r[k];
-      c.invalid = flag[r.id] === "invalid";
       c.author = "";
       c.userAdded = false;
       return c;
@@ -430,11 +464,24 @@
       out.push({
         id: id, code: c.code, gun: c.gun, build: c.build || "",
         mode: c.mode || c.tab, tab: c.tab, price: priceOf(c.build),
-        author: c.author || "", userAdded: true,
-        invalid: flag[id] === "invalid"
+        author: c.author || "", userAdded: true
       });
     });
-    out.forEach(function (r) { r.cat = catOf(r.gun); });
+
+    out.forEach(function (r) {
+      var e = edits[r.id];
+      if (e) {
+        if (e.gun) r.gun = e.gun;
+        if (e.build != null) { r.build = e.build; r.price = priceOf(e.build); }
+        if (e.tab) { r.tab = e.tab; r.mode = e.mode || e.tab; }
+        if (e.code) r.code = e.code;
+        r.edited = true;
+      }
+      r.invalid = flag[r.id] === "invalid";
+      r.deleted = !!deleted[r.id];
+      r.cat = catOf(r.gun);
+    });
+
     ALL = out;
     byId = {};
     ALL.forEach(function (r) { byId[r.id] = r; });
@@ -620,7 +667,7 @@
       if (state.tab && r.tab !== state.tab) return false;
       if (state.cat && r.cat !== state.cat) return false;
       if (state.favOnly && !favs.has(r.id)) return false;
-      if (!state.showInvalid && r.invalid) return false;
+      if (!state.showInvalid && (r.invalid || r.deleted)) return false;
       var narrowed = state.min > G_MIN || state.max < G_MAX;
       if (narrowed) {
         if (r.price == null) { if (!state.noPrice) return false; }
@@ -697,7 +744,9 @@
   function buildRow(r) {
     var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
     var canEdit = API_ON && apiOnline;
+    var adm = isAdmin();
     return '<div class="build-item' + (isFav ? " fav" : "") + (r.invalid ? " invalid" : "") +
+        (r.deleted ? " deleted" : "") +
         '" style="--tier:' + tierColor(r.price) + '" data-id="' + esc(r.id) + '">' +
       '<div class="bi-left">' +
         '<div class="bi-build">' + (r.build ? esc(r.build) : '<span style="color:var(--dim2)">默认/未命名</span>') + "</div>" +
@@ -705,6 +754,8 @@
           '<span class="badge price ' + priceTier(r.price) + '">' + priceText(r) + "</span>" +
           '<span class="badge mode">' + esc(r.tab) + "</span>" +
           (r.invalid ? '<span class="badge gone">已失效</span>' : "") +
+          (r.deleted ? '<span class="badge del">已删除</span>' : "") +
+          (r.edited ? '<span class="badge admin">已编辑</span>' : "") +
           (r.userAdded ? '<span class="badge mine">网友新增</span>' : "") +
           (r.author ? '<span class="badge author">由 ' + esc(r.author) + " 添加</span>" : "") +
         "</div>" +
@@ -717,6 +768,12 @@
         (canEdit ? '<button class="icon-btn flag' + (r.invalid ? " on" : "") + '" data-act="flag" title="' +
           (r.invalid ? "恢复这条码" : "标记为失效") + '">' + (r.invalid ? "↺" : "⊘") + "</button>" : "") +
         '<button class="copy" data-code="' + esc(r.code) + '">复制</button>' +
+        (adm ? '<button class="icon-btn edit" data-act="edit" title="编辑这条">✎</button>' : "") +
+        (adm ? (r.deleted
+            ? '<button class="icon-btn" data-act="undelete" title="恢复这条">↺</button>'
+            : (r.userAdded
+                ? '<button class="icon-btn del" data-act="purge" title="永久删除（不可恢复）">🗑</button>'
+                : '<button class="icon-btn del" data-act="del" title="隐藏这条（可恢复）">⊘</button>')) : "") +
       "</div>" +
       "</div>";
   }
@@ -1075,6 +1132,24 @@
       }
       if (a === "favgun") { toggleFavGun(gun); return; }
       if (a === "addhere") { openAddForm(gun); return; }
+      if (a === "edit") { openEditForm(act.closest("[data-id]").dataset.id); return; }
+      if (a === "del" || a === "undelete") {
+        var target = act.closest("[data-id]").dataset.id;
+        act.disabled = true;
+        adminPost("/api/admin/delete", { target_id: target, undo: a === "undelete" })
+          .then(function () { return adminAfterChange(a === "undelete" ? "已恢复显示" : "已隐藏（可在回收站恢复）"); })
+          ["catch"](function (e) { act.disabled = false; showToast(e.message || "操作失败", false); });
+        return;
+      }
+      if (a === "purge") {
+        var pid = act.closest("[data-id]").dataset.id;
+        if (!confirm("永久删除这条网友新增的改枪码？\n\n这会从数据库里物理移除，不可恢复。")) return;
+        act.disabled = true;
+        adminPost("/api/admin/purge", { target_id: pid })
+          .then(function () { return adminAfterChange("已永久删除"); })
+          ["catch"](function (e) { act.disabled = false; showToast(e.message || "操作失败", false); });
+        return;
+      }
       if (a === "copygun") {
         var items = gunRecords(gun);
         if (!items.length) { showToast("当前筛选下没有可复制的方案", false); return; }
@@ -1090,6 +1165,208 @@
     if (card) { openGun(card.dataset.gun); }
   });
 
+  // ---------- 管理员 ----------
+  var ADMIN_KEY = "delta-codes-admin-v1";
+  var adminToken = "";
+  var adminUser = "";
+  try { adminToken = localStorage.getItem(ADMIN_KEY) || ""; } catch (e) { adminToken = ""; }
+
+  function isAdmin() { return !!adminToken; }
+
+  function setAdminUI() {
+    var el = $("#s-admin");
+    if (!el) return;
+    if (!API_ON) { el.hidden = true; return; }
+    el.hidden = false;
+    el.classList.toggle("on", isAdmin());
+    el.querySelector("b").textContent = isAdmin() ? (adminUser || "已登录") : "登录";
+    var host = $("#adminTools");
+    if (host) {
+      host.hidden = !isAdmin();
+      if (isAdmin()) {
+        host.innerHTML =
+          '<span class="who">⚙ 管理员模式：<b>' + esc(adminUser) + "</b>" +
+          '　显示「已失效/已删除」才能看到隐藏内容</span>' +
+          '<button class="btn" id="adminRecycle">🗂 回收站</button>' +
+          '<button class="btn" id="adminClear">清除全部失效标记</button>' +
+          '<button class="btn ghost" id="adminLogout">退出</button>';
+      }
+    }
+  }
+
+  function adminHeaders() {
+    return { "Content-Type": "application/json", Authorization: "Bearer " + adminToken };
+  }
+  function adminPost(path, body) {
+    return fetch(API + path, {
+      method: "POST", headers: adminHeaders(), body: JSON.stringify(body || {}),
+    }).then(function (r) {
+      return r.json()["catch"](function () { return {}; }).then(function (d) {
+        if (!r.ok) throw new Error((d && d.error) || ("HTTP " + r.status));
+        return d;
+      });
+    });
+  }
+
+  function checkAdmin() {
+    if (!adminToken || !API_ON) { setAdminUI(); return Promise.resolve(false); }
+    return fetch(API + "/api/admin/me", { headers: { Authorization: "Bearer " + adminToken } })
+      .then(function (r) { if (!r.ok) throw new Error("bad"); return r.json(); })
+      .then(function (d) { adminUser = d.username; setAdminUI(); render(); return true; })
+      ["catch"](function () {
+        adminToken = ""; adminUser = "";
+        try { localStorage.removeItem(ADMIN_KEY); } catch (e) {}
+        setAdminUI(); return false;
+      });
+  }
+
+  function adminAfterChange(msg) {
+    return apiGetChanges().then(function () { render(); if (msg) showToast(msg); });
+  }
+
+  function openAdminLogin() {
+    $("#modalHost").innerHTML =
+      '<div class="modal" id="modal"><div class="modal-in" style="max-width:420px">' +
+      '<h2>管理员登录<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+      '<div class="form-grid">' +
+        '<label><b>用户名</b><input id="a-user" maxlength="32" autocomplete="username" /></label>' +
+        '<label><b>密码</b><input id="a-pass" type="password" maxlength="64" autocomplete="current-password" /></label>' +
+        '<div class="form-err" id="a-err"></div>' +
+        '<div class="form-actions"><button class="btn" id="a-cancel">取消</button>' +
+        '<button class="btn primary" id="a-go">登录</button></div>' +
+      "</div></div></div>";
+    $("#modalClose").onclick = closeModal;
+    $("#a-cancel").onclick = closeModal;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+    function go() {
+      var btn = $("#a-go"), err = $("#a-err");
+      var u = $("#a-user").value.trim(), p = $("#a-pass").value;
+      if (!u || !p) { err.textContent = "请填写用户名和密码"; return; }
+      btn.disabled = true; btn.textContent = "登录中…";
+      fetch(API + "/api/admin/login", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: u, password: p }),
+      }).then(function (r) {
+        return r.json()["catch"](function () { return {}; }).then(function (d) {
+          if (!r.ok) throw new Error((d && d.error) || "登录失败");
+          return d;
+        });
+      }).then(function (d) {
+        adminToken = d.token; adminUser = d.username;
+        try { localStorage.setItem(ADMIN_KEY, adminToken); } catch (e) {}
+        closeModal(); setAdminUI(); render();
+        showToast("已进入管理员模式");
+      })["catch"](function (e) {
+        err.textContent = (e && e.message) || "登录失败";
+        btn.disabled = false; btn.textContent = "登录";
+      });
+    }
+    $("#a-go").onclick = go;
+    $("#a-pass").addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
+    setTimeout(function () { var el = $("#a-user"); if (el) el.focus(); }, 40);
+  }
+
+  function adminLogout() {
+    adminPost("/api/admin/logout", {})["catch"](function () {});
+    adminToken = ""; adminUser = "";
+    try { localStorage.removeItem(ADMIN_KEY); } catch (e) {}
+    setAdminUI(); render();
+    showToast("已退出管理员模式");
+  }
+
+  /** 回收站：列出所有被隐藏 / 被标记失效的条目，可一键恢复 */
+  function openRecycle() {
+    var gone = ALL.filter(function (r) { return r.deleted || r.invalid; });
+    var rows = gone.map(function (r) {
+      var why = [];
+      if (r.deleted) why.push("已删除");
+      if (r.invalid) why.push("已失效");
+      return '<div class="item" data-id="' + esc(r.id) + '">' +
+        '<span class="g">' + esc(r.gun) + "</span>" +
+        '<span class="c">' + esc(r.code) + "</span>" +
+        '<span class="badge">' + esc(r.build || "未命名") + "</span>" +
+        '<span class="why">' + why.join(" + ") + "</span>" +
+        '<span style="margin-left:auto;display:flex;gap:6px">' +
+          (r.deleted ? '<button class="btn" data-r="undelete">恢复显示</button>' : "") +
+          (r.invalid ? '<button class="btn" data-r="unflag">清除失效</button>' : "") +
+        "</span></div>";
+    }).join("");
+    $("#modalHost").innerHTML =
+      '<div class="modal" id="modal"><div class="modal-in">' +
+      '<h2>回收站 · 共 ' + gone.length + ' 条<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+      '<p style="font-size:12.5px;color:var(--dim2);margin:0 0 14px">' +
+        "这里是被隐藏或被标记失效的改枪码。恢复后会立刻回到列表。" +
+        (gone.length ? "" : "　（当前没有）") + "</p>" +
+      '<div class="recycle">' + (rows || '<div class="empty-tip">干干净净，没有需要恢复的内容 🎉</div>') + "</div>" +
+      "</div></div>";
+    $("#modalClose").onclick = closeModal;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+    $("#modalHost").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-r]");
+      if (!btn) return;
+      var id = btn.closest(".item").dataset.id;
+      btn.disabled = true;
+      var act = btn.dataset.r === "undelete"
+        ? adminPost("/api/admin/delete", { target_id: id, undo: true })
+        : adminPost("/api/admin/clearflags", { target_id: id });
+      act.then(function () { return adminAfterChange("已恢复"); })
+        .then(function () { openRecycle(); })
+        ["catch"](function (err) { btn.disabled = false; showToast(err.message || "操作失败", false); });
+    });
+  }
+
+  /** 编辑任意一条（基础数据和网友新增都行），编辑内容会作为 edit 改动存下来 */
+  function openEditForm(id) {
+    var r = byId[id];
+    if (!r) return;
+    var opts = (D.modes || []).map(function (m) {
+      return '<option value="' + esc(m) + '"' + (m === r.tab ? " selected" : "") + ">" + esc(m) + "</option>";
+    }).join("");
+    $("#modalHost").innerHTML =
+      '<div class="modal" id="modal"><div class="modal-in" style="max-width:540px">' +
+      "<h2>编辑改枪码<span class=\"x\"><button class=\"btn\" id=\"modalClose\">关闭</button></span></h2>" +
+      '<div class="form-grid">' +
+        '<label><b>枪械名</b><input id="e-gun" maxlength="24" value="' + esc(r.gun) + '" /></label>' +
+        '<label><b>改装名 / 价位</b><input id="e-build" maxlength="40" value="' + esc(r.build || "") + '" /></label>' +
+        '<label><b>玩法</b><select id="e-tab">' + opts + "</select></label>" +
+        '<label><b>改枪码</b><input id="e-code" maxlength="32" value="' + esc(r.code) + '" /></label>' +
+        '<div class="hint">改枪码只填游戏里复制出来的那一串，不要带前缀和横杠。</div>' +
+        '<div class="form-err" id="e-err"></div>' +
+        '<div class="form-actions"><button class="btn" id="e-cancel">取消</button>' +
+        '<button class="btn primary" id="e-go">保存</button></div>' +
+      "</div></div></div>";
+    $("#modalClose").onclick = closeModal;
+    $("#e-cancel").onclick = closeModal;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+    $("#e-go").onclick = function () {
+      var btn = $("#e-go"), err = $("#e-err");
+      var body = {
+        target_id: id,
+        gun: $("#e-gun").value.trim(),
+        build: $("#e-build").value.trim(),
+        tab: $("#e-tab").value,
+        code: $("#e-code").value.trim(),
+      };
+      err.textContent = "";
+      if (!body.gun || !body.code) { err.textContent = "枪械名和改枪码不能为空"; return; }
+      btn.disabled = true; btn.textContent = "保存中…";
+      adminPost("/api/admin/edit", body)
+        .then(function () { return adminAfterChange("已保存"); })
+        .then(closeModal)
+        ["catch"](function (e) {
+          err.textContent = (e && e.message) || "保存失败";
+          btn.disabled = false; btn.textContent = "保存";
+        });
+    };
+  }
+
+  function adminClearAllFlags() {
+    if (!confirm("确定清除全部「已失效」标记吗？\n\n所有被标记失效的改枪码都会恢复正常，这个操作不可撤销。")) return;
+    adminPost("/api/admin/clearflags", {})
+      .then(function () { return adminAfterChange("已清除全部失效标记"); })
+      ["catch"](function (e) { showToast(e.message || "操作失败", false); });
+  }
+
   // ---------- boot ----------
   function syncControls() {
     $("#sort").value = state.sort;
@@ -1099,6 +1376,16 @@
     $("#pmin").value = state.min; $("#pmax").value = state.max;
     $("#pval").textContent = state.min + "w – " + state.max + "w";
   }
+
+  $("#s-admin").addEventListener("click", function () {
+    if (!API_ON) { showToast("没配后端，管理员功能不可用", false); return; }
+    if (isAdmin()) { openRecycle(); } else { openAdminLogin(); }
+  });
+  $("#modalHost").addEventListener("click", function (e) {
+    if (e.target.id === "adminLogout") { adminLogout(); return; }
+    if (e.target.id === "adminRecycle") { openRecycle(); return; }
+    if (e.target.id === "adminClear") { adminClearAllFlags(); return; }
+  });
 
   $("#sub").textContent = "共 " + BASE.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
   $("#foot-note").textContent = D.footerNote || "";
@@ -1136,6 +1423,8 @@
   if (API_ON) {
     apiGetChanges().then(function (ok) {
       if (!ok) showToast("后端连不上，暂时只读", false);
+      return checkAdmin();
+    }).then(function () {
       render();
     });
   } else {
