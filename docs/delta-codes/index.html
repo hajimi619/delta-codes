@@ -247,6 +247,7 @@
       <div class="stat">枪械 <b id="s-guns">0</b></div>
       <div class="stat">改枪码 <b id="s-codes">0</b></div>
       <div class="stat">收录 <b id="s-total">0</b></div>
+      <div class="stat" id="s-api" hidden>接口 <b>—</b></div>
     </div>
   </div>
   <nav class="fnav" id="siteNav"></nav>
@@ -432,17 +433,50 @@
   }
 
   // ---------- 后端 ----------
-  function apiGetChanges() {
-    if (!API) { apiOnline = false; return Promise.resolve(false); }
+  /* 线路不稳（国内到 Cloudflare 的 TLS 握手经常十几秒甚至超时），
+     所以：1) 失败自动重试一次  2) 在顶栏显示接口状态，
+     免得"连不上"被误当成"没人提交过" */
+  var apiWarned = false;
+  function setApiStat(state) {
+    var el = $("#s-api");
+    if (!el) return;
+    if (!API) { el.hidden = true; return; }
+    el.hidden = false;
+    var b = el.querySelector("b");
+    if (state === "online") {
+      el.style.color = ""; b.textContent = "已连接"; b.style.color = "var(--ok)";
+    } else if (state === "loading") {
+      el.style.color = ""; b.textContent = "连接中…"; b.style.color = "";
+    } else {
+      el.style.color = ""; b.textContent = "连不上"; b.style.color = "var(--bad)";
+    }
+  }
+  function apiGetChanges(tries) {
+    if (!API) { apiOnline = false; setApiStat("off"); return Promise.resolve(false); }
+    if (tries == null) { tries = 1; setApiStat("loading"); }
     return fetch(API + "/api/changes", { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function (d) {
         CHANGES = (d && d.changes) || [];
         apiOnline = true;
+        setApiStat("online");
         rebuildAll();
         return true;
       })
-      .catch(function () { apiOnline = false; rebuildAll(); return false; });
+      .catch(function () {
+        if (tries > 0) {
+          return new Promise(function (res) { setTimeout(res, 700); })
+            .then(function () { return apiGetChanges(tries - 1); });
+        }
+        apiOnline = false;
+        setApiStat("off");
+        rebuildAll();
+        if (!apiWarned) {
+          apiWarned = true;
+          showToast("接口暂时连不上，先按只读模式显示", false);
+        }
+        return false;
+      });
   }
   function apiPost(path, body) {
     return fetch(API + path, {
