@@ -243,6 +243,54 @@ Pages 的自定义域名，不值得折腾。）
 > 官方明确标注**不保障中国内地与香港之间的跨境质量**，晚高峰可能比 Cloudflare 还差。
 > 真要免备案又稳定，得上 CN2 GIA，那就 ¥350–700/年了 —— 不如备案划算。
 
+### 迁移到国内服务器（进行中）
+
+已经买了一台腾讯云轻量（南京，2核2G，¥192/年），并配好了整套环境：
+
+```
+119.45.171.242   （备案通过前先用 http://119.45.171.242:8080/ 访问）
+├─ /var/www/hajimiovo/          站点静态文件（由 deploy_server.py 上传）
+├─ /opt/hajimiovo-api/server.js 接口服务（Node，无任何 npm 依赖）
+├─ /var/lib/hajimiovo/changes.json  网友改动（JSON + 原子写入，替代 D1）
+├─ systemd: hajimiovo-api       守护进程，崩溃自动重启
+├─ nginx                        静态托管 + 反代 /api/*，gzip，缓存策略
+└─ /root/s3_golive.sh           备案通过后一键开 80/443 + 申请 HTTPS 证书
+```
+
+**实测速度对比**（同一时刻，两台机器）：
+
+| | **南京服务器** | Cloudflare（洛杉矶） |
+|---|---|---|
+| TCP 连接 | **17–36ms** | 296–558ms |
+| 首字节 | **33–86ms** | 4.1–14.7 秒 |
+| 总耗时 | **0.04–0.09 秒** | 15.6–25 秒 |
+
+**为什么后端不用 SQLite**：接口只需要存网友的几十条改动，用 JSON 文件 + 原子写入
+（先写 `.tmp` 再 `rename`，写入串行化）完全够用，**零 npm 依赖**，部署不会因为
+原生模块编译失败而卡住，备份就是复制一个文件。
+
+**部署命令**：
+
+```powershell
+# 站点
+& $py scripts\deploy_server.py
+# 站点 + 后端（改了 server.js 时）
+& $py scripts\deploy_server.py --api --reload-nginx
+```
+
+**备案通过后的切换步骤**：
+
+1. 腾讯云防火墙放行 TCP **80、443**（8080 可以关掉了）
+2. DNS 把 `hajimiovo.top` 指到 `119.45.171.242`
+   - 快：Cloudflare 里把 A 记录改成这个 IP，**代理关掉（灰云）**，几分钟生效
+   - 彻底：NS 改回腾讯云 DNSPod，1–2 小时生效
+3. SSH 上去跑 `/root/s3_golive.sh` —— 自动配 80/443 + 申请 Let's Encrypt 证书 + 设置自动续期
+4. 验证 `https://hajimiovo.top/`
+
+> 切换完成后 Cloudflare 的 Pages / Workers / D1 就都可以停用了。
+> 注意 `docs/sw.js` 里的 `VERSION` 要 bump 一次，否则老访客的 Service Worker
+> 会继续用云端缓存的旧文件。
+
 ## 更新数据
 
 本地（推荐）：
