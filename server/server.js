@@ -1,17 +1,25 @@
 /**
  * 哈基米工具箱 · 改枪码接口服务
  *
- * 从 Cloudflare Worker 版本 (worker/worker.js) 原样搬过来，逻辑完全一致，
- * 只把 D1 换成同目录下的一个 JSON 文件（原子写入 + 串行化，够这个量级用）。
+ *   端口: 默认 3001（nginx 反代 /api/*）
+ *   数据: /var/lib/hajimiovo/changes.json   网友改动
+ *         /var/lib/hajimiovo/admin.json     管理员凭据（由 set_admin.py 写入）
+ *         /var/lib/hajimiovo/tokens.json    登录令牌（重启不掉线）
  *
- *   端口: 默认 3001，被 nginx 反代到 /api/*
- *   数据: /var/lib/hajimiovo/changes.json
+ * 公开接口:
+ *   GET  /api/health
+ *   GET  /api/changes
+ *   POST /api/add             新增一个改枪码
+ *   POST /api/flag            标记失效 / 恢复
  *
- * 路由:
- *   GET  /api/health    健康检查
- *   GET  /api/changes   拉取全部改动（新增 + 失效标记）
- *   POST /api/add       新增一个改枪码
- *   POST /api/flag      标记失效 / 恢复
+ * 管理员接口（需 Authorization: Bearer <token>）:
+ *   POST /api/admin/login     {username, password} -> {token}
+ *   POST /api/admin/logout
+ *   GET  /api/admin/me
+ *   POST /api/admin/delete    {target_id, undo}   软删除 / 撤销删除（基础数据和网友新增都能删）
+ *   POST /api/admin/purge     {target_id}         永久删除（仅网友新增，物理移除）
+ *   POST /api/admin/edit      {target_id, gun, build, tab, mode, code}
+ *   POST /api/admin/clearflags{target_id}         清除失效标记（不给 target_id 就是全清）
  */
 "use strict";
 
@@ -23,70 +31,90 @@ const crypto = require("crypto");
 const PORT = parseInt(process.env.PORT || "3001", 10);
 const DATA_DIR = process.env.DATA_DIR || "/var/lib/hajimiovo";
 const STORE = path.join(DATA_DIR, "changes.json");
+const ADMIN_FILE = path.join(DATA_DIR, "admin.json");
+const TOKEN_FILE = path.join(DATA_DIR, "tokens.json");
 
 const MODES = ["烽火地带", "全面战场", "烽火高操速T0", "黑潮爆破"];
 const CODE_RE = /^[0-9A-Za-z]{8,32}$/;
 const MAX_PER_IP_PER_HOUR = 30;
-const MAX_BODY = 8 * 1024;
+const MAX_BODY = 16 * 1024;
+const TOKEN_TTL_MS = 30 * 24 * 3600 * 1000;   // 登录 30 天有效
+const LOGIN_MAX_FAIL = 8;                      // 单 IP 15 分钟内最多失败次数
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 
-/* 允许跨域的来源：自有域名 / GitHub 镜像 / 本地调试 */
+/* ---------------- CORS ---------------- */
+
 function isAllowedOrigin(origin) {
   if (!origin) return false;
   if (origin === "null") return true;
   let host;
-  try {
-    host = new URL(origin).hostname;
-  } catch (e) {
-    return false;
-  }
+  try { host = new URL(origin).hostname; } catch (e) { return false; }
   return (
-    host === "hajimiovo.top" ||
-    host.endsWith(".hajimiovo.top") ||
-    host === "hajimi619.github.io" ||
-    host === "localhost" ||
-    host === "127.0.0.1"
+    host === "hajimiovo.top" || host.endsWith(".hajimiovo.top") ||
+    host === "hajimi619.github.io" || host === "localhost" || host === "127.0.0.1"
   );
 }
 
-/* ---------------- 存储：JSON 文件 + 原子写入 ---------------- */
-
-let changes = [];
-let writeChain = Promise.resolve();
-
-function loadStore() {
-  try {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-    if (fs.existsSync(STORE)) {
-      const raw = fs.readFileSync(STORE, "utf8");
-      const parsed = JSON.parse(raw);
-      changes = Array.isArray(parsed) ? parsed : parsed.changes || [];
-    }
-  } catch (e) {
-    console.error("[store] 读取失败，从空开始:", e.message);
-    changes = [];
-  }
-  console.log(`[store] 载入 ${changes.length} 条改动  文件=${STORE}`);
+function corsHeaders(req) {
+  const origin = req.headers.origin || "";
+  const allow = isAllowedOrigin(origin) ? origin : "https://hajimiovo.top";
+  return {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type,Authorization",
+    "Access-Control-Max-Age": "86400",
+    Vary: "Origin",
+  };
 }
 
-/** 串行化写入，避免并发覆盖；先写临时文件再 rename，保证不会写坏 */
-function saveStore() {
+/* ---------------- 存储 ---------------- */
+
+let changes = [];
+let tokens = {};
+let loginFails = {};          // ipHash -> [时间戳]
+let writeChain = Promise.resolve();
+
+function loadJson(file, fallback) {
+  try {
+    if (!fs.existsSync(file)) return fallback;
+    const raw = fs.readFileSync(file, "utf8");
+    const d = JSON.parse(raw);
+    return d == null ? fallback : d;
+  } catch (e) {
+    console.error(`[store] 读取 ${file} 失败:`, e.message);
+    return fallback;
+  }
+}
+
+function saveJson(file, obj) {
   writeChain = writeChain.then(function () {
     return new Promise(function (resolve) {
-      const tmp = STORE + ".tmp";
-      const body = JSON.stringify({ changes: changes }, null, 0);
-      fs.writeFile(tmp, body, "utf8", function (err) {
-        if (err) {
-          console.error("[store] 写临时文件失败:", err.message);
-          return resolve();
-        }
-        fs.rename(tmp, STORE, function (err2) {
-          if (err2) console.error("[store] rename 失败:", err2.message);
+      const tmp = file + ".tmp";
+      fs.writeFile(tmp, JSON.stringify(obj), "utf8", function (err) {
+        if (err) { console.error("[store] 写失败:", err.message); return resolve(); }
+        fs.rename(tmp, file, function (e2) {
+          if (e2) console.error("[store] rename 失败:", e2.message);
           resolve();
         });
       });
     });
   });
   return writeChain;
+}
+
+function loadAll() {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  const cd = loadJson(STORE, { changes: [] });
+  changes = Array.isArray(cd) ? cd : cd.changes || [];
+  tokens = loadJson(TOKEN_FILE, {});
+  // 清掉过期令牌
+  const now = Date.now();
+  let n = 0;
+  Object.keys(tokens).forEach(function (t) {
+    if (!tokens[t] || tokens[t].expires < now) { delete tokens[t]; n++; }
+  });
+  console.log(`[store] 改动 ${changes.length} 条, 有效令牌 ${Object.keys(tokens).length} 个` + (n ? `（清理过期 ${n} 个）` : ""));
+  console.log(`[store] 管理员凭据: ${fs.existsSync(ADMIN_FILE) ? "已配置" : "❌ 未配置（跑 set_admin.py）"}`);
 }
 
 /* ---------------- 工具 ---------------- */
@@ -100,31 +128,14 @@ function clean(v, max) {
 }
 
 function hashIp(ip) {
-  return crypto
-    .createHash("sha256")
-    .update("delta-codes::" + ip)
-    .digest("hex")
-    .slice(0, 32);
+  return crypto.createHash("sha256").update("delta-codes::" + ip).digest("hex").slice(0, 32);
 }
 
 function clientIp(req) {
   const xff = req.headers["x-forwarded-for"];
   if (xff) return String(xff).split(",")[0].trim();
-  const real = req.headers["x-real-ip"];
-  if (real) return String(real).trim();
+  if (req.headers["x-real-ip"]) return String(req.headers["x-real-ip"]).trim();
   return (req.socket && req.socket.remoteAddress) || "0.0.0.0";
-}
-
-function corsHeaders(req) {
-  const origin = req.headers.origin || "";
-  const allow = isAllowedOrigin(origin) ? origin : "https://hajimiovo.top";
-  return {
-    "Access-Control-Allow-Origin": allow,
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400",
-    Vary: "Origin",
-  };
 }
 
 function sendJson(res, headers, status, obj) {
@@ -143,20 +154,13 @@ function readBody(req) {
     const chunks = [];
     req.on("data", function (c) {
       size += c.length;
-      if (size > MAX_BODY) {
-        reject(new Error("请求体过大"));
-        req.destroy();
-        return;
-      }
+      if (size > MAX_BODY) { reject(new Error("请求体过大")); req.destroy(); return; }
       chunks.push(c);
     });
     req.on("end", function () {
       if (!chunks.length) return resolve({});
-      try {
-        resolve(JSON.parse(Buffer.concat(chunks).toString("utf8")));
-      } catch (e) {
-        reject(new Error("JSON 格式不对"));
-      }
+      try { resolve(JSON.parse(Buffer.concat(chunks).toString("utf8"))); }
+      catch (e) { reject(new Error("JSON 格式不对")); }
     });
     req.on("error", reject);
   });
@@ -165,12 +169,78 @@ function readBody(req) {
 function assertUnderRateLimit(ipHash) {
   const since = Date.now() - 3600 * 1000;
   const n = changes.filter(function (c) {
-    return c.ip_hash === ipHash && Date.parse(c.created_at) > since;
+    return c.ip_hash === ipHash && c.type !== "edit" && c.type !== "delete" &&
+           Date.parse(c.created_at) > since;
   }).length;
   if (n >= MAX_PER_IP_PER_HOUR) throw new Error("操作太频繁了，请过一会儿再试");
 }
 
-/* ---------------- 业务 ---------------- */
+/* ---------------- 管理员鉴权 ---------------- */
+
+function loadAdmin() {
+  return loadJson(ADMIN_FILE, null);
+}
+
+function hashPassword(pwd, salt) {
+  return crypto.scryptSync(pwd, salt, 64).toString("hex");
+}
+
+function safeEqual(a, b) {
+  const ba = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  if (ba.length !== bb.length) return false;
+  return crypto.timingSafeEqual(ba, bb);
+}
+
+function findToken(req) {
+  const h = req.headers.authorization || "";
+  const m = /^Bearer\s+(.+)$/i.exec(h.trim());
+  return m ? m[1].trim() : "";
+}
+
+/** 校验令牌；失败抛错 */
+function requireAdmin(req) {
+  const t = findToken(req);
+  if (!t) throw new Error("请先登录管理员");
+  const rec = tokens[t];
+  if (!rec) throw new Error("登录已失效，请重新登录");
+  if (rec.expires < Date.now()) {
+    delete tokens[t];
+    saveJson(TOKEN_FILE, tokens);
+    throw new Error("登录已过期，请重新登录");
+  }
+  return rec.username;
+}
+
+function adminLogin(body, req) {
+  const a = loadAdmin();
+  if (!a || !a.username || !a.hash) throw new Error("服务器还没配置管理员账号");
+
+  const ip = hashIp(clientIp(req));
+  const now = Date.now();
+  loginFails[ip] = (loginFails[ip] || []).filter(function (t) { return now - t < LOGIN_WINDOW_MS; });
+  if (loginFails[ip].length >= LOGIN_MAX_FAIL) {
+    throw new Error("登录失败次数过多，请 15 分钟后再试");
+  }
+
+  const username = clean(body.username, 32);
+  const password = String(body.password || "");
+  if (!username || !password) throw new Error("请填写用户名和密码");
+
+  const ok = safeEqual(username, a.username) && safeEqual(hashPassword(password, a.salt), a.hash);
+  if (!ok) {
+    loginFails[ip].push(now);
+    throw new Error("用户名或密码不对");
+  }
+
+  loginFails[ip] = [];
+  const token = crypto.randomBytes(32).toString("hex");
+  tokens[token] = { username: username, expires: now + TOKEN_TTL_MS, created_at: new Date().toISOString() };
+  saveJson(TOKEN_FILE, tokens);
+  return { ok: true, username: username, token: token, expires: tokens[token].expires };
+}
+
+/* ---------------- 公开业务 ---------------- */
 
 function addCode(body, req) {
   const gun = clean(body.gun, 24);
@@ -187,18 +257,17 @@ function addCode(body, req) {
   const ipHash = hashIp(clientIp(req));
   assertUnderRateLimit(ipHash);
 
-  if (changes.some(function (c) { return c.code === code; })) {
+  if (changes.some(function (c) { return c.code === code && c.type === "add"; })) {
     throw new Error("这条改枪码已经有人提交过了");
   }
 
   const id = crypto.randomUUID();
-  const mode = tab === "烽火高操速T0" ? "烽火地带" : tab;
   changes.push({
     id: id, type: "add", target_id: null, status: "valid",
-    gun: gun, build: build, tab: tab, mode: mode, code: code,
-    author: author, created_at: new Date().toISOString(), ip_hash: ipHash,
+    gun: gun, build: build, tab: tab, mode: tab === "烽火高操速T0" ? "烽火地带" : tab,
+    code: code, author: author, created_at: new Date().toISOString(), ip_hash: ipHash,
   });
-  saveStore();
+  saveJson(STORE, { changes: changes });
   return { ok: true, id: "user|" + id };
 }
 
@@ -210,65 +279,167 @@ function flagCode(body, req) {
   const ipHash = hashIp(clientIp(req));
   assertUnderRateLimit(ipHash);
 
-  /* 同一个 IP 对同一条码只保留最新的一次标记 */
   changes = changes.filter(function (c) {
     return !(c.type === "flag" && c.target_id === targetId && c.ip_hash === ipHash);
   });
-
   const id = crypto.randomUUID();
   changes.push({
     id: id, type: "flag", target_id: targetId, status: status,
-    gun: null, build: null, tab: null, mode: null, code: null,
-    author: null, created_at: new Date().toISOString(), ip_hash: ipHash,
+    gun: null, build: null, tab: null, mode: null, code: null, author: null,
+    created_at: new Date().toISOString(), ip_hash: ipHash,
   });
-  saveStore();
+  saveJson(STORE, { changes: changes });
   return { ok: true, status: status };
+}
+
+/* ---------------- 管理员业务 ---------------- */
+
+/** target_id 可能是基础数据的 id（玩法|码），也可能是 user|<uuid> */
+function isUserRecord(targetId) {
+  return /^user\|/.test(targetId);
+}
+
+function adminDelete(body) {
+  const targetId = clean(body.target_id, 80);
+  if (!targetId) throw new Error("缺少目标");
+  const undo = !!body.undo;
+
+  changes = changes.filter(function (c) {
+    return !(c.type === "delete" && c.target_id === targetId);
+  });
+  changes.push({
+    id: crypto.randomUUID(), type: "delete", target_id: targetId,
+    status: undo ? "valid" : "deleted",
+    gun: null, build: null, tab: null, mode: null, code: null, author: null,
+    created_at: new Date().toISOString(), ip_hash: null,
+  });
+  saveJson(STORE, { changes: changes });
+  return { ok: true, deleted: !undo };
+}
+
+/** 永久删除：只对网友新增的内容生效，物理移除，不可恢复 */
+function adminPurge(body) {
+  const targetId = clean(body.target_id, 80);
+  if (!targetId) throw new Error("缺少目标");
+  if (!isUserRecord(targetId)) throw new Error("基础数据不能永久删除，只能隐藏");
+
+  const rawId = targetId.slice(5);
+  const before = changes.length;
+  changes = changes.filter(function (c) {
+    if (c.id === rawId) return false;                              // 那条 add 本身
+    if (c.target_id === targetId) return false;                    // 针对它的 flag/delete/edit
+    return true;
+  });
+  const removed = before - changes.length;
+  saveJson(STORE, { changes: changes });
+  return { ok: true, removed: removed };
+}
+
+function adminEdit(body) {
+  const targetId = clean(body.target_id, 80);
+  if (!targetId) throw new Error("缺少目标");
+
+  const patch = {
+    gun: clean(body.gun, 24),
+    build: clean(body.build, 40),
+    tab: clean(body.tab, 20),
+    mode: null,
+    code: String(body.code || "").trim(),
+  };
+  if (!patch.gun) throw new Error("枪械名不能为空");
+  if (MODES.indexOf(patch.tab) < 0) throw new Error("请选择玩法");
+  if (!CODE_RE.test(patch.code)) throw new Error("改枪码格式不对（8–32 位字母数字）");
+  patch.mode = patch.tab === "烽火高操速T0" ? "烽火地带" : patch.tab;
+
+  /* 同一个目标只保留最新的一次编辑 */
+  changes = changes.filter(function (c) {
+    return !(c.type === "edit" && c.target_id === targetId);
+  });
+  changes.push({
+    id: crypto.randomUUID(), type: "edit", target_id: targetId, status: "valid",
+    gun: patch.gun, build: patch.build, tab: patch.tab, mode: patch.mode,
+    code: patch.code, author: null,
+    created_at: new Date().toISOString(), ip_hash: null,
+  });
+  saveJson(STORE, { changes: changes });
+  return { ok: true, patch: patch };
+}
+
+/** 清除失效标记；不给 target_id 就全清 */
+function adminClearFlags(body) {
+  const targetId = body.target_id ? clean(body.target_id, 80) : "";
+  const before = changes.length;
+  changes = changes.filter(function (c) {
+    if (c.type !== "flag") return true;
+    if (!targetId) return false;
+    return c.target_id !== targetId;
+  });
+  const removed = before - changes.length;
+  saveJson(STORE, { changes: changes });
+  return { ok: true, removed: removed };
 }
 
 /* ---------------- HTTP ---------------- */
 
+function publicChanges() {
+  return changes
+    .filter(function (c) { return c.type !== "delete" || c.status !== "valid"; })  // 保留删除记录给前端
+    .map(function (c) {
+      return {
+        id: c.id, type: c.type, target_id: c.target_id, status: c.status,
+        gun: c.gun, build: c.build, tab: c.tab, mode: c.mode,
+        code: c.code, author: c.author, created_at: c.created_at,
+      };
+    });
+}
+
 const server = http.createServer(function (req, res) {
   const headers = corsHeaders(req);
-  const url = new URL(req.url, "http://localhost");
-  const p = url.pathname.replace(/\/+$/, "") || "/";
+  const p = (new URL(req.url, "http://localhost").pathname.replace(/\/+$/, "")) || "/";
 
-  if (req.method === "OPTIONS") {
-    res.writeHead(204, headers);
-    return res.end();
-  }
+  if (req.method === "OPTIONS") { res.writeHead(204, headers); return res.end(); }
 
   if (req.method === "GET") {
-    if (p === "/api/health" || p === "/" || p === "/health") {
+    if (p === "/" || p === "/health" || p === "/api/health") {
+      const a = loadAdmin();
       return sendJson(res, headers, 200, {
         ok: true, service: "delta-codes-api",
         records: changes.length, uptime: Math.round(process.uptime()),
+        admin_configured: !!(a && a.username),
       });
     }
-    if (p === "/api/changes") {
-      /* 对外不带 ip_hash */
-      const out = changes.map(function (c) {
-        return {
-          id: c.id, type: c.type, target_id: c.target_id, status: c.status,
-          gun: c.gun, build: c.build, tab: c.tab, mode: c.mode,
-          code: c.code, author: c.author, created_at: c.created_at,
-        };
-      });
-      return sendJson(res, headers, 200, { changes: out });
+    if (p === "/api/changes") return sendJson(res, headers, 200, { changes: publicChanges() });
+    if (p === "/api/admin/me") {
+      try {
+        const u = requireAdmin(req);
+        return sendJson(res, headers, 200, { ok: true, username: u });
+      } catch (e) {
+        return sendJson(res, headers, 401, { error: e.message });
+      }
     }
     return sendJson(res, headers, 404, { error: "接口不存在" });
   }
 
   if (req.method === "POST") {
-    if (p !== "/api/add" && p !== "/api/flag") {
-      return sendJson(res, headers, 404, { error: "接口不存在" });
-    }
+    const routes = {
+      "/api/add": function (b, r) { return addCode(b, r); },
+      "/api/flag": function (b, r) { return flagCode(b, r); },
+      "/api/admin/login": function (b, r) { return adminLogin(b, r); },
+      "/api/admin/logout": function (b, r) {
+        const t = findToken(r);
+        if (t && tokens[t]) { delete tokens[t]; saveJson(TOKEN_FILE, tokens); }
+        return { ok: true };
+      },
+      "/api/admin/delete": function (b, r) { requireAdmin(r); return adminDelete(b); },
+      "/api/admin/purge": function (b, r) { requireAdmin(r); return adminPurge(b); },
+      "/api/admin/edit": function (b, r) { requireAdmin(r); return adminEdit(b); },
+      "/api/admin/clearflags": function (b, r) { requireAdmin(r); return adminClearFlags(b); },
+    };
+    const fn = routes[p];
+    if (!fn) return sendJson(res, headers, 404, { error: "接口不存在" });
     readBody(req).then(function (body) {
-      try {
-        const r = p === "/api/add" ? addCode(body || {}, req) : flagCode(body || {}, req);
-        sendJson(res, headers, 200, r);
-      } catch (e) {
-        sendJson(res, headers, 400, { error: String((e && e.message) || e) });
-      }
+      try { sendJson(res, headers, 200, fn(body || {}, req)); }
+      catch (e) { sendJson(res, headers, 400, { error: String((e && e.message) || e) }); }
     }).catch(function (e) {
       sendJson(res, headers, 400, { error: String((e && e.message) || e) });
     });
@@ -278,7 +449,7 @@ const server = http.createServer(function (req, res) {
   sendJson(res, headers, 405, { error: "方法不支持" });
 });
 
-loadStore();
+loadAll();
 server.listen(PORT, "127.0.0.1", function () {
   console.log(`[api] 监听 127.0.0.1:${PORT}  (由 nginx 反代 /api/*)`);
 });
