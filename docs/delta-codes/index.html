@@ -321,7 +321,15 @@
   var CHANGES = [];             // 从 Worker 拉回来的改动：新增 + 失效标记
   var ALL = [];                 // 合并后的最终列表
   var byId = {};
-  var API = String(D.apiBase || "").replace(/\/+$/, "");
+  var API = (function () {
+    var abs = String(D.apiBase || "").replace(/\/+$/, "");
+    if (!abs) return "";
+    /* 自有域名下改走同源 /api（zone 里挂了 Worker 路由）：
+       省掉一次跨域 TCP + TLS 握手 —— 国内那一步经常要 1-10 秒。
+       其它域名（GitHub 镜像、本地文件）继续用绝对地址。 */
+    if (/(^|\.)hajimiovo\.top$/.test(location.hostname)) return "/api";
+    return abs;
+  })();
   var apiOnline = false;
   var FAV_KEY = "delta-codes-favs-v1";
   var G_MIN = D.priceMin || 0, G_MAX = D.priceMax || 0;
