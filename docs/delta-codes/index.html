@@ -225,6 +225,7 @@
   .badge.del{color:#b03333;border-color:rgba(214,69,69,.28);background:rgba(255,190,190,.55)}
   .icon-btn.edit:hover{color:var(--accent);border-color:rgba(226,112,10,.55);background:rgba(255,214,170,.6)}
   .icon-btn.del:hover{color:var(--bad);border-color:rgba(214,69,69,.55);background:rgba(255,190,190,.5)}
+  [data-act="purge"]{color:#c03434;border-color:rgba(214,69,69,.3)}
   .build-item.deleted{opacity:.42;border-style:dotted}
   .build-item.deleted .bi-code{text-decoration:line-through;text-decoration-thickness:2px}
   #s-admin{cursor:pointer;font-family:inherit}
@@ -771,9 +772,9 @@
         (adm ? '<button class="icon-btn edit" data-act="edit" title="编辑这条">✎</button>' : "") +
         (adm ? (r.deleted
             ? '<button class="icon-btn" data-act="undelete" title="恢复这条">↺</button>'
-            : (r.userAdded
-                ? '<button class="icon-btn del" data-act="purge" title="永久删除（不可恢复）">🗑</button>'
-                : '<button class="icon-btn del" data-act="del" title="隐藏这条（可恢复）">⊘</button>')) : "") +
+            : '<button class="icon-btn del" data-act="del" title="隐藏这条（回收站可恢复）">🗑</button>') : "") +
+        (adm && r.userAdded && !r.deleted
+            ? '<button class="icon-btn del" data-act="purge" title="永久删除（不可恢复）">✖</button>' : "") +
       "</div>" +
       "</div>";
   }
