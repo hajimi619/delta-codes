@@ -208,7 +208,12 @@
 
   var TOKEN_KEY = "jimi-restaurant-token-v1";
   var CART_KEY  = "jimi-restaurant-cart-v1";
-  var API = "";                                  // 同源，走 nginx 反代的 /api/*
+  /* 后端就在同一台服务器上，走 nginx 反代的 /api/*。
+     GitHub 镜像和本地打开的 html 没有后端（菜单只在服务器上），
+     所以那种情况直接给个提示，别让人对着转圈的按钮发呆。 */
+  var MIRROR = location.protocol === "file:" ||
+    /(^|\.)github\.io$/.test(location.hostname);
+  var API = "";
 
   var token = "";
   try { token = localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { token = ""; }
@@ -557,6 +562,15 @@
   if (window.SITE) {
     $("#foot-note").textContent = "菜单只在服务器上，没密码看不到。";
     $("#foot-copy").textContent = "© 2026 哈基米";
+  }
+  if (MIRROR) {
+    $("#gate").innerHTML =
+      '<div class="lock">🍚</div><h2>基米餐馆</h2>' +
+      '<p style="line-height:2">这是<b>备份镜像站</b>，没有后端<br>' +
+      "餐馆要密码才能进，只能在主站用<br><br>" +
+      '<a class="btn primary" href="http://119.45.171.242:8080/jimi-restaurant/" ' +
+      'style="display:inline-block;padding:12px 24px;text-decoration:none">去主站 →</a></p>';
+    return;
   }
   if (!token) {
     showGate("");
