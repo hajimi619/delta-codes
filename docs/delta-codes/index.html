@@ -322,15 +322,17 @@
   var CHANGES = [];             // 从 Worker 拉回来的改动：新增 + 失效标记
   var ALL = [];                 // 合并后的最终列表
   var byId = {};
+  /* 后端基地址。调用处统一是 fetch(API + "/api/xxx")，所以这里只放"前缀"：
+       - 自有域名：返回空串 → 变成 /api/xxx，同源，省掉一次跨域 TLS 握手
+       - 其它域名：返回 config.json 里配的绝对地址（GitHub 镜像、本地调试）
+     是否配了后端要单独判断，因为同源时 API 是空串（falsy）。 */
   var API = (function () {
     var abs = String(D.apiBase || "").replace(/\/+$/, "");
     if (!abs) return "";
-    /* 自有域名下改走同源 /api（zone 里挂了 Worker 路由）：
-       省掉一次跨域 TCP + TLS 握手 —— 国内那一步经常要 1-10 秒。
-       其它域名（GitHub 镜像、本地文件）继续用绝对地址。 */
-    if (/(^|\.)hajimiovo\.top$/.test(location.hostname)) return "/api";
+    if (/(^|\.)hajimiovo\.top$/.test(location.hostname)) return "";
     return abs;
   })();
+  var API_ON = !!(D.apiBase || "");
   var apiOnline = false;
   var FAV_KEY = "delta-codes-favs-v1";
   var G_MIN = D.priceMin || 0, G_MAX = D.priceMax || 0;
@@ -434,25 +436,41 @@
 
   // ---------- 后端 ----------
   /* 线路不稳（国内到 Cloudflare 的 TLS 握手经常十几秒甚至超时），
-     所以：1) 失败自动重试一次  2) 在顶栏显示接口状态，
+     所以：1) 失败自动重试  2) 在顶栏显示接口状态
+        3) 彻底失败后每 20 秒在后台自动重试，连上就自动恢复
      免得"连不上"被误当成"没人提交过" */
   var apiWarned = false;
+  var apiRetryTimer = null;
   function setApiStat(state) {
     var el = $("#s-api");
     if (!el) return;
-    if (!API) { el.hidden = true; return; }
+    if (!API_ON) { el.hidden = true; return; }
     el.hidden = false;
     var b = el.querySelector("b");
     if (state === "online") {
       el.style.color = ""; b.textContent = "已连接"; b.style.color = "var(--ok)";
     } else if (state === "loading") {
       el.style.color = ""; b.textContent = "连接中…"; b.style.color = "";
+    } else if (state === "retry") {
+      el.style.color = ""; b.textContent = "重试中…"; b.style.color = "var(--star)";
     } else {
       el.style.color = ""; b.textContent = "连不上"; b.style.color = "var(--bad)";
     }
   }
+  /** 连不上时每 20 秒自动重试一次，成功就自己恢复，不用刷新页面 */
+  function scheduleApiRetry() {
+    if (apiRetryTimer || !API_ON) return;
+    apiRetryTimer = setTimeout(function () {
+      apiRetryTimer = null;
+      setApiStat("retry");
+      apiGetChanges().then(function (ok) {
+        if (ok) showToast("接口已恢复连接");
+        else scheduleApiRetry();
+      });
+    }, 20000);
+  }
   function apiGetChanges(tries) {
-    if (!API) { apiOnline = false; setApiStat("off"); return Promise.resolve(false); }
+    if (!API_ON) { apiOnline = false; setApiStat("off"); return Promise.resolve(false); }
     if (tries == null) { tries = 1; setApiStat("loading"); }
     return fetch(API + "/api/changes", { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
@@ -460,12 +478,13 @@
         CHANGES = (d && d.changes) || [];
         apiOnline = true;
         setApiStat("online");
+        if (apiRetryTimer) { clearTimeout(apiRetryTimer); apiRetryTimer = null; }
         rebuildAll();
         return true;
       })
       .catch(function () {
         if (tries > 0) {
-          return new Promise(function (res) { setTimeout(res, 700); })
+          return new Promise(function (res) { setTimeout(res, 800); })
             .then(function () { return apiGetChanges(tries - 1); });
         }
         apiOnline = false;
@@ -473,8 +492,9 @@
         rebuildAll();
         if (!apiWarned) {
           apiWarned = true;
-          showToast("接口暂时连不上，先按只读模式显示", false);
+          showToast("接口暂时连不上，先按只读显示（每 20 秒自动重试）", false);
         }
+        scheduleApiRetry();
         return false;
       });
   }
@@ -670,7 +690,7 @@
   // ---------- level 2 markup ----------
   function buildRow(r) {
     var isFav = favs.has(r.id), isCmp = state.cmp.indexOf(r.id) >= 0;
-    var canEdit = !!API && apiOnline;
+    var canEdit = API_ON && apiOnline;
     return '<div class="build-item' + (isFav ? " fav" : "") + (r.invalid ? " invalid" : "") +
         '" style="--tier:' + tierColor(r.price) + '" data-id="' + esc(r.id) + '">' +
       '<div class="bi-left">' +
@@ -871,7 +891,7 @@
   // ---------- 新增改枪码 ----------
   // 从枪械详情页进入时传 fixedGun：枪名锁定，只填这一把枪的码
   function openAddForm(fixedGun) {
-    if (!API) { showToast("当前是只读模式，还没配后端", false); return; }
+    if (!API_ON) { showToast("当前是只读模式，还没配后端", false); return; }
     var opts = (D.modes || []).map(function (m) {
       return '<option value="' + esc(m) + '">' + esc(m) + "</option>";
     }).join("");
@@ -1107,7 +1127,7 @@
   toTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
   onScroll();
 
-  if (API) {
+  if (API_ON) {
     apiGetChanges().then(function (ok) {
       if (!ok) showToast("后端连不上，暂时只读", false);
       render();
