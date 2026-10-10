@@ -1,0 +1,108 @@
+{
+  "changes": [
+    {
+      "id": "d2355d34-0dcc-4105-8030-7e0164dd178b",
+      "type": "add",
+      "target_id": null,
+      "status": "valid",
+      "gun": "M14射手步枪",
+      "build": "链路测试",
+      "tab": "烽火地带",
+      "mode": "烽火地带",
+      "code": "TESTLINK12345678",
+      "author": "哈基米测试",
+      "created_at": "2026-10-09T09:58:06.099Z"
+    },
+    {
+      "id": "2d68ef62-5567-4b42-b2e9-2269bf4fdea7",
+      "type": "add",
+      "target_id": null,
+      "status": "valid",
+      "gun": "ak74u",
+      "build": "45",
+      "tab": "烽火地带",
+      "mode": "烽火地带",
+      "code": "aaaaaaaaaaaaa",
+      "author": "机密",
+      "created_at": "2026-10-09T10:19:38.902Z"
+    },
+    {
+      "id": "9e7042df-1eb0-4a76-aed3-7e3e95e71ec3",
+      "type": "flag",
+      "target_id": "user|2d68ef62-5567-4b42-b2e9-2269bf4fdea7",
+      "status": "invalid",
+      "gun": null,
+      "build": null,
+      "tab": null,
+      "mode": null,
+      "code": null,
+      "author": null,
+      "created_at": "2026-10-09T10:20:07.814Z"
+    },
+    {
+      "id": "68219662-c166-498a-b5a3-c0a532b84a2f",
+      "type": "add",
+      "target_id": null,
+      "status": "valid",
+      "gun": "AKS-74U突击步枪",
+      "build": "99w 流程验证",
+      "tab": "烽火地带",
+      "mode": "烽火地带",
+      "code": "VERIFYFLOW1234",
+      "author": "哈基米验证",
+      "created_at": "2026-10-09T10:32:24.919Z"
+    },
+    {
+      "id": "d083b642-0e1f-435b-99b2-ec94d0355db7",
+      "type": "add",
+      "target_id": null,
+      "status": "valid",
+      "gun": "AKS-74U突击步枪",
+      "build": "22",
+      "tab": "烽火地带",
+      "mode": "烽火地带",
+      "code": "444444444",
+      "author": "44",
+      "created_at": "2026-10-09T11:09:23.503Z"
+    },
+    {
+      "id": "dd0da66d-30a9-4ae4-ab23-f5d86d84070e",
+      "type": "flag",
+      "target_id": "user|d083b642-0e1f-435b-99b2-ec94d0355db7",
+      "status": "invalid",
+      "gun": null,
+      "build": null,
+      "tab": null,
+      "mode": null,
+      "code": null,
+      "author": null,
+      "created_at": "2026-10-09T11:09:33.992Z"
+    },
+    {
+      "id": "b721ca22-a746-4cdf-82f0-cdd5c0d1c50a",
+      "type": "flag",
+      "target_id": "黑潮爆破|6LEFE7801SD6JA3I74O3I",
+      "status": "invalid",
+      "gun": null,
+      "build": null,
+      "tab": null,
+      "mode": null,
+      "code": null,
+      "author": null,
+      "created_at": "2026-10-09T12:40:32.624Z"
+    },
+    {
+      "id": "69060bc8-27e6-4875-ad01-6a36cb2f240b",
+      "type": "add",
+      "target_id": null,
+      "status": "valid",
+      "gun": "AS Val突击步枪",
+      "build": "路径修复验证",
+      "tab": "烽火地带",
+      "mode": "烽火地带",
+      "code": "PATHFIX99887766",
+      "author": "哈基米",
+      "created_at": "2026-10-10T03:40:43.636Z"
+    }
+  ]
+}
