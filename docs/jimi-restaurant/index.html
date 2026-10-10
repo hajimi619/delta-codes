@@ -61,9 +61,8 @@
   .dish:hover{transform:translateY(-2px);box-shadow:var(--inset),0 12px 26px rgba(20,40,65,.1)}
   .dish.in{border-color:rgba(226,112,10,.42);background:linear-gradient(160deg,rgba(255,240,225,.9),rgba(255,255,255,.7))}
   .dish .top{display:flex;align-items:baseline;gap:8px}
+  .dish .top .badge{margin-left:auto}
   .dish .nm{font-weight:600;font-size:15px;letter-spacing:.2px}
-  .dish .pr{margin-left:auto;font-family:var(--mono);font-size:15px;font-weight:600;color:var(--accent2)}
-  .dish .pr small{font-size:11px;font-weight:400;color:var(--dim2)}
   .dish .ds{font-size:12px;color:var(--dim2);line-height:1.6;min-height:19px}
   .dish .foot{display:flex;align-items:center;gap:7px;margin-top:2px}
   .dish .sp{font-size:11px;letter-spacing:-1px}
@@ -89,24 +88,8 @@
   .cartbar .sep{width:1px;height:22px;background:rgba(20,40,65,.12)}
 
   /* ---------- 小票 ---------- */
-  .receipt{margin:0 auto;max-width:340px;padding:22px 20px 18px;border-radius:6px;color:#2b2b2b;
-    background:repeating-linear-gradient(0deg,#fffdf7,#fffdf7 26px,#fdfbf3 26px,#fdfbf3 27px);
-    box-shadow:0 10px 30px rgba(0,0,0,.16);font-family:var(--mono);font-size:12.5px;line-height:1.9;
-    position:relative}
-  .receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:9px;
-    background:radial-gradient(circle at 6px 0,transparent 5px,#fffdf7 5.5px) repeat-x;background-size:12px 9px}
-  .receipt::before{top:-8px;transform:rotate(180deg)}
-  .receipt::after{bottom:-8px}
-  .receipt h3{margin:0 0 3px;text-align:center;font-size:15px;letter-spacing:3px}
-  .receipt .sub{text-align:center;font-size:11px;color:#8a8a8a;margin-bottom:12px}
-  .receipt .ln{display:flex;gap:8px}
-  .receipt .ln .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .receipt .ln .q{color:#8a8a8a}
-  .receipt .ln .p{text-align:right;min-width:52px}
-  .receipt .dash{border-top:1px dashed #cfcfcf;margin:9px 0}
-  .receipt .tot{display:flex;font-size:15px;font-weight:700}
-  .receipt .tot .p{margin-left:auto}
-  .receipt .ty{text-align:center;margin-top:12px;font-size:11px;color:#8a8a8a;line-height:1.7}
+  #r-img{display:block;margin:0 auto}
+
   .empty-tip{text-align:center;padding:44px 0;color:var(--dim2);font-size:13.5px}
 
   @media (max-width:760px){
@@ -191,7 +174,7 @@
 </div>
 
 <div class="cartbar" id="cartbar" hidden>
-  <span class="sum">已点 <b id="c-count">0</b> 样 · 合计 <b id="c-total">¥0</b></span>
+  <span class="sum">已点 <b id="c-count">0</b> 样菜</span>
   <span class="sep"></span>
   <button class="btn ghost" id="c-clear" style="padding:8px 14px">清空</button>
   <button class="btn primary" id="c-order" style="padding:8px 18px">下单</button>
@@ -230,7 +213,6 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function money(n) { return "¥" + n; }
   function allDishes() {
     var out = [];
     (MENU ? MENU.cuisines : []).forEach(function (c) {
@@ -239,13 +221,6 @@
     return out;
   }
   function cartCount() { var n = 0; for (var k in cart) n += cart[k]; return n; }
-  function cartTotal() {
-    var byKey = {};
-    allDishes().forEach(function (x) { byKey[x.key] = x.d; });
-    var t = 0;
-    for (var k in cart) if (byKey[k]) t += byKey[k].price * cart[k];
-    return t;
-  }
   function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {} }
   function loadCart() {
     try {
@@ -360,8 +335,7 @@
       "🌶️".repeat(d.spicy) + "</span>" : "";
     var tag = d.tag ? '<span class="badge">' + esc(d.tag) + "</span>" : "";
     return '<div class="dish' + (n ? " in" : "") + '" data-key="' + esc(key) + '">' +
-      '<div class="top"><span class="nm">' + esc(d.name) + "</span>" + tag +
-        '<span class="pr">' + money(d.price) + "</span></div>" +
+      '<div class="top"><span class="nm">' + esc(d.name) + "</span>" + tag + "</div>" +
       '<div class="ds">' + esc(d.desc || "") + "</div>" +
       '<div class="foot">' + sp +
         '<span class="step">' +
@@ -398,12 +372,11 @@
   }
 
   function renderCart() {
-    var n = cartCount(), t = cartTotal();
+    var n = cartCount();
     var bar = $("#cartbar");
     if (!n) { bar.hidden = true; return; }
     bar.hidden = false;
     $("#c-count").textContent = n;
-    $("#c-total").textContent = money(t);
   }
 
   function render() {
@@ -416,61 +389,223 @@
     setStat("#s-lock", "退出");
   }
 
-  // ---------- 小票 ----------
-  function showReceipt() {
-    var lines = [], byKey = {};
+  // ---------- 小票（用 canvas 画，能存成图片） ----------
+  function receiptData() {
+    var items = [], byKey = {};
     allDishes().forEach(function (x) { byKey[x.key] = x; });
-    for (var k in cart) {
-      if (!cart[k] || !byKey[k]) continue;
-      var x = byKey[k];
-      lines.push('<div class="ln"><span class="n">' + esc(x.d.name) + '</span>' +
-        '<span class="q">×' + cart[k] + "</span>" +
-        '<span class="p">' + money(x.d.price * cart[k]) + "</span></div>");
-    }
-    if (!lines.length) return;
+    MENU.cuisines.forEach(function (c) {
+      c.dishes.forEach(function (d) {
+        var k = c.id + "|" + d.name;
+        if (cart[k]) items.push({ name: d.name, qty: cart[k], cuisine: c.name });
+      });
+    });
     var d = new Date();
-    var stamp = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" +
-      String(d.getDate()).padStart(2, "0") + " " + String(d.getHours()).padStart(2, "0") + ":" +
-      String(d.getMinutes()).padStart(2, "0");
-    var no = "JM" + Date.now().toString().slice(-8);
+    var p2 = function (n) { return String(n).padStart(2, "0"); };
+    return {
+      items: items,
+      count: items.reduce(function (a, x) { return a + x.qty; }, 0),
+      stamp: d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()) + " " +
+             p2(d.getHours()) + ":" + p2(d.getMinutes()),
+      file: d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + "-" +
+            p2(d.getHours()) + p2(d.getMinutes()) + p2(d.getSeconds()),
+      no: "JM" + Date.now().toString().slice(-8)
+    };
+  }
+
+  /** 把一条虚线画在 canvas 上 */
+  function dashLine(g, x1, x2, y) {
+    g.save();
+    g.strokeStyle = "#d9d4c8";
+    g.lineWidth = 2;
+    g.setLineDash([7, 7]);
+    g.beginPath();
+    g.moveTo(x1, y);
+    g.lineTo(x2, y);
+    g.stroke();
+    g.restore();
+  }
+
+  /** 画成锯齿纸边（顺带把纸外的部分留成透明） */
+  function paperPath(g, w, h, tooth) {
+    g.beginPath();
+    g.moveTo(0, tooth);
+    for (var x = 0; x < w; x += tooth * 2) {
+      g.lineTo(Math.min(x + tooth, w), 0);
+      g.lineTo(Math.min(x + tooth * 2, w), tooth);
+    }
+    g.lineTo(w, h - tooth);
+    for (var x2 = w; x2 > 0; x2 -= tooth * 2) {
+      g.lineTo(Math.max(x2 - tooth, 0), h);
+      g.lineTo(Math.max(x2 - tooth * 2, 0), h - tooth);
+    }
+    g.closePath();
+  }
+
+  /** 生成小票 canvas —— 2 倍尺寸画，存出来的图清晰 */
+  function drawReceipt(data) {
+    var W = 680;
+    var PADX = 52;
+    var TOOTH = 11;
+    var TOP = 40;                       // 纸内上边距
+    var SANS = '"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif';
+    var MONO = 'ui-monospace,Menlo,Consolas,"Courier New",monospace';
+
+    var headH = 108;                    // 标题 + 时间单号
+    var itemH = 42 * data.items.length;
+    var footH = 150;
+    var H = TOP + headH + 30 + itemH + 30 + 54 + footH + TOP;
+
+    var cv = document.createElement("canvas");
+    cv.width = W;
+    cv.height = H;
+    var g = cv.getContext("2d");
+
+    // 纸
+    g.fillStyle = "#fffdf6";
+    paperPath(g, W, H, TOOTH);
+    g.fill();
+
+    // 纸上一道很淡的横纹，像热敏纸
+    g.save();
+    g.globalAlpha = 0.35;
+    g.fillStyle = "#fbf7ea";
+    for (var y = TOOTH + 5; y < H - TOOTH; y += 52) g.fillRect(0, y, W, 26);
+    g.restore();
+
+    g.textBaseline = "middle";
+    var y = TOP + TOOTH;
+
+    // 标题
+    g.textAlign = "center";
+    g.fillStyle = "#2f2a24";
+    g.font = "600 36px " + SANS;
+    g.fillText("基 米 餐 馆", W / 2, y + 22);
+    y += 50;
+
+    // 时间 + 单号
+    g.font = "19px " + MONO;
+    g.fillStyle = "#9a938a";
+    g.fillText(data.stamp + "　单号 " + data.no, W / 2, y + 16);
+    y += 44;
+
+    // 分隔线
+    dashLine(g, PADX, W - PADX, y);
+    y += 30;
+
+    // 菜品
+    g.textAlign = "left";
+    data.items.forEach(function (it) {
+      g.font = "23px " + SANS;
+      g.fillStyle = "#2f2a24";
+      g.fillText(it.name, PADX, y + 12);
+
+      g.textAlign = "right";
+      g.font = "23px " + MONO;
+      g.fillStyle = "#7d766c";
+      g.fillText("×" + it.qty, W - PADX, y + 12);
+      g.textAlign = "left";
+      y += 42;
+    });
+
+    y += 4;
+    dashLine(g, PADX, W - PADX, y);
+    y += 30;
+
+    // 合计样数
+    g.font = "600 24px " + SANS;
+    g.fillStyle = "#2f2a24";
+    g.fillText("共 " + data.count + " 样菜", PADX, y + 12);
+    y += 46;
+
+    dashLine(g, PADX, W - PADX, y);
+    y += 34;
+
+    // 结尾
+    g.textAlign = "center";
+    g.font = "22px " + SANS;
+    g.fillStyle = "#7d766c";
+    g.fillText("🥢　谢谢惠顾", W / 2, y + 10);
+    y += 40;
+    g.font = "17px " + SANS;
+    g.fillStyle = "#b3aca2";
+    g.fillText("本单仅供娱乐，不产生任何实际交易", W / 2, y + 8);
+
+    return cv;
+  }
+
+  function downloadCanvas(cv, filename) {
+    var done = function (url, revoke) {
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        if (revoke) URL.revokeObjectURL(url);
+        a.remove();
+      }, 2000);
+    };
+    if (cv.toBlob) {
+      cv.toBlob(function (blob) {
+        if (!blob) { downloadCanvas(cv, "x"); return; }
+        done(URL.createObjectURL(blob), true);
+      }, "image/png");
+    } else {
+      done(cv.toDataURL("image/png"), false);
+    }
+  }
+
+  function showReceipt() {
+    if (!cartCount()) return;
+    var data = receiptData();
+    if (!data.items.length) return;
+
+    var cv = drawReceipt(data);
+    var dataUrl = cv.toDataURL("image/png");
+    var fname = "基米餐馆小票-" + data.file + ".png";
 
     $("#modalHost").innerHTML =
-      '<div class="modal" id="modal"><div class="modal-in" style="max-width:400px;background:transparent;' +
-      'border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0">' +
-      '<div class="receipt">' +
-        "<h3>基 米 餐 馆</h3>" +
-        '<div class="sub">' + stamp + "　单号 " + no + "</div>" +
-        '<div class="dash"></div>' +
-        lines.join("") +
-        '<div class="dash"></div>' +
-        '<div class="ln"><span class="n">共 ' + cartCount() + " 样</span>" +
-          '<span class="p">' + money(cartTotal()) + "</span></div>" +
-        '<div class="tot"><span>合计</span><span class="p">' + money(cartTotal()) + "</span></div>" +
-        '<div class="dash"></div>' +
-        '<div class="ty">🥢 谢谢惠顾<br>本单仅供娱乐，不产生任何实际交易</div>' +
+      '<div class="modal" id="modal"><div class="modal-in" style="max-width:480px">' +
+      '<h2>小票<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+      '<div style="text-align:center;margin-bottom:14px">' +
+        '<img id="r-img" alt="基米餐馆小票" src="' + dataUrl + '" ' +
+        'style="max-width:100%;border-radius:8px;box-shadow:0 10px 30px rgba(20,40,65,.18)" />' +
       "</div>" +
-      '<div style="display:flex;gap:10px;margin-top:20px">' +
-        '<button class="btn" id="r-copy" style="flex:1">复制小票</button>' +
-        '<button class="btn primary" id="r-ok" style="flex:1">好的</button>' +
-      "</div>" +
-      "</div></div>";
+      '<p style="font-size:12px;color:var(--dim2);text-align:center;margin:0 0 16px">' +
+        "手机上也可以长按图片保存</p>" +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+        '<button class="btn primary" id="r-save" style="flex:1;min-width:130px">💾 保存图片</button>' +
+        '<button class="btn" id="r-copy" style="flex:1;min-width:110px">复制文字</button>' +
+        '<button class="btn ghost" id="r-ok" style="flex:0 0 84px">好的</button>' +
+      "</div></div></div>";
 
     function close() { $("#modalHost").innerHTML = ""; }
+    $("#modalClose").onclick = close;
     $("#r-ok").onclick = close;
     $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") close(); });
+
+    $("#r-save").onclick = function () {
+      try {
+        downloadCanvas(cv, fname);
+        toast("小票图片已保存：" + fname);
+      } catch (e) {
+        toast("保存失败，长按图片试试", false);
+      }
+    };
+
     $("#r-copy").onclick = function () {
-      var txt = "【基米餐馆】" + stamp + " 单号" + no + "\n" +
-        Object.keys(cart).filter(function (k) { return byKey[k]; }).map(function (k) {
-          return byKey[k].d.name + " ×" + cart[k] + "  " + money(byKey[k].d.price * cart[k]);
-        }).join("\n") +
-        "\n合计 " + money(cartTotal()) + "（共 " + cartCount() + " 样）";
-      var done = function () { toast("小票已复制"); };
+      var txt = "【基米餐馆】" + data.stamp + "　单号 " + data.no + "\n" +
+        data.items.map(function (x) { return x.name + " ×" + x.qty; }).join("\n") +
+        "\n共 " + data.count + " 样菜\n（仅供娱乐，不产生任何实际交易）";
+      var okFn = function () { toast("已复制成文字"); };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).then(done, function () { toast("复制失败", false); });
+        navigator.clipboard.writeText(txt).then(okFn, function () { toast("复制失败", false); });
       } else {
         var ta = document.createElement("textarea");
-        ta.value = txt; document.body.appendChild(ta); ta.select();
-        try { document.execCommand("copy"); done(); } catch (e) { toast("复制失败", false); }
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); okFn(); } catch (e) { toast("复制失败", false); }
         document.body.removeChild(ta);
       }
     };
