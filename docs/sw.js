@@ -8,7 +8,7 @@
    - /api/changes：网络优先，2 秒超时回退到上次结果
    ============================================================ */
 
-var VERSION = "hk-v1";
+var VERSION = "hk-v2";
 var SHELL = "shell-" + VERSION;
 var ASSET = "asset-" + VERSION;
 var DATA = "data-" + VERSION;
@@ -105,17 +105,19 @@ function handleData(req, event) {
   });
 }
 
-/** 接口：网络优先（2 秒），失败用上次结果 */
+/** 接口：网络优先，超时或失败用上次结果；
+    连缓存都没有就如实报错 —— 绝不能伪造一个"成功但空"的响应，
+    否则前端会以为"后端正常、只是没人提交过"，从而静默丢掉所有网友数据。 */
 function handleApi(req) {
-  return timeoutFetch(req, 2000).then(function (res) {
+  return timeoutFetch(req, 10000).then(function (res) {
     return put(DATA, req, res);
-  }).catch(function () {
+  })["catch"](function () {
     return caches.match(req).then(function (cached) {
       if (cached) return cached;
-      return new Response(JSON.stringify({ changes: [] }), {
-        status: 200,
-        headers: { "Content-Type": "application/json; charset=utf-8", "X-From-SW-Cache": "1" }
-      });
+      return new Response(
+        JSON.stringify({ error: "接口暂时连不上，请稍后重试" }),
+        { status: 504, headers: { "Content-Type": "application/json; charset=utf-8" } }
+      );
     });
   });
 }
