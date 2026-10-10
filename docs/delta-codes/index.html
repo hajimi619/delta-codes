@@ -353,22 +353,16 @@
   var ALL = [];                 // 合并后的最终列表
   var byId = {};
   /* 后端基地址。调用处统一是 fetch(API + "/api/xxx")，所以这里只放"前缀"：
-       - 自有域名：返回空串 → 变成 /api/xxx，同源，省掉一次跨域 TLS 握手
-       - 其它域名：返回 config.json 里配的绝对地址（GitHub 镜像、本地调试）
-     是否配了后端要单独判断，因为同源时 API 是空串（falsy）。 */
-  var API = (function () {
-    var abs = String(D.apiBase || "").replace(/\/+$/, "");
-    if (!abs) return "";
-    /* 只有这两种情况需要绝对地址：
-         - 本地直接打开 html 文件（file://）
-         - GitHub Pages 镜像（跨域）
-       其余（自有域名、测试用 IP、localhost）一律走同源 /api，
-       省掉一次跨域 TCP + TLS 握手。 */
-    if (location.protocol === "file:") return abs;
-    if (/(^|\.)github\.io$/.test(location.hostname)) return abs;
-    return "";
-  })();
-  var API_ON = !!(D.apiBase || "");
+       - 自有域名 / 测试 IP / localhost：空串 → 变成 /api/xxx，同源，省掉跨域握手
+       - GitHub 镜像、本地 file://：config.json 里配的绝对地址（没有就只读） */
+  var CROSS_ORIGIN = location.protocol === "file:" ||
+    /(^|\.)github\.io$/.test(location.hostname);
+  var API = CROSS_ORIGIN
+    ? String(D.apiBase || "").replace(/\/+$/, "")
+    : "";
+  /* 有没有后端：同源时一定有；跨域时得看 config.json 配没配地址。
+     不能拿 API 判断 —— 同源时它是空串（falsy）。 */
+  var API_ON = CROSS_ORIGIN ? !!D.apiBase : true;
   var apiOnline = false;
   var FAV_KEY = "delta-codes-favs-v1";
   var G_MIN = D.priceMin || 0, G_MAX = D.priceMax || 0;
