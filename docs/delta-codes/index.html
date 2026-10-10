@@ -329,8 +329,14 @@
   var API = (function () {
     var abs = String(D.apiBase || "").replace(/\/+$/, "");
     if (!abs) return "";
-    if (/(^|\.)hajimiovo\.top$/.test(location.hostname)) return "";
-    return abs;
+    /* 只有这两种情况需要绝对地址：
+         - 本地直接打开 html 文件（file://）
+         - GitHub Pages 镜像（跨域）
+       其余（自有域名、测试用 IP、localhost）一律走同源 /api，
+       省掉一次跨域 TCP + TLS 握手。 */
+    if (location.protocol === "file:") return abs;
+    if (/(^|\.)github\.io$/.test(location.hostname)) return abs;
+    return "";
   })();
   var API_ON = !!(D.apiBase || "");
   var apiOnline = false;
