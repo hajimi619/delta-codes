@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-base="../">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>基米餐馆 · 哈基米工具箱</title>
+<meta name="description" content="基米餐馆：川粤鲁苏浙闽湘徽、东北菜、家常小炒、烧烤、火锅、小吃、汤羹、饮品甜品，点菜下单。" />
+<link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+<link rel="stylesheet" href="../assets/theme.css" />
+<style>
+  /* ---------- 密码门 ---------- */
+  .gate{max-width:440px;margin:9vh auto 0;border-radius:24px;padding:34px 30px 30px;text-align:center;
+    background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(255,255,255,.66) 48%,rgba(255,255,255,.8));
+    border:1px solid rgba(255,255,255,.95);border-top-color:#fff;
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:var(--inset),0 18px 50px rgba(20,40,65,.12)}
+  .gate .lock{font-size:46px;line-height:1;margin-bottom:12px;filter:drop-shadow(0 6px 12px rgba(226,112,10,.25))}
+  .gate h2{margin:0 0 6px;font-size:21px;letter-spacing:.5px}
+  .gate p{margin:0 0 22px;font-size:13px;color:var(--dim2);line-height:1.7}
+  .gate .pin{display:flex;gap:10px}
+  .gate input{flex:1;text-align:center;font-size:20px;letter-spacing:8px;padding:14px 12px;border-radius:14px;
+    font-family:var(--mono);color:var(--txt);background:rgba(255,255,255,.85);
+    border:1px solid rgba(20,40,65,.16);box-shadow:inset 0 1px 0 #fff;outline:none}
+  .gate input:focus{border-color:rgba(226,112,10,.5);box-shadow:0 0 0 3px rgba(226,112,10,.12),inset 0 1px 0 #fff}
+  .gate .err{min-height:20px;margin-top:12px;font-size:12.5px;color:var(--bad)}
+  .gate .hintline{margin-top:16px;font-size:11.5px;color:var(--dim2)}
+  .shake{animation:shake .32s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+
+  /* ---------- 菜单布局 ---------- */
+  .shop{display:grid;grid-template-columns:186px 1fr;gap:20px;margin-top:22px;align-items:start}
+  .side{position:sticky;top:86px;border-radius:20px;padding:12px;
+    background:linear-gradient(160deg,rgba(255,255,255,.82),rgba(255,255,255,.6));
+    border:1px solid rgba(255,255,255,.95);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:var(--inset),var(--shadow);max-height:calc(100vh - 110px);overflow:auto}
+  .side button{display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;border-radius:12px;
+    border:0;background:transparent;cursor:pointer;font:inherit;font-size:13.5px;color:var(--dim);
+    text-align:left;transition:background .16s,color .16s}
+  .side button:hover{background:rgba(255,255,255,.7)}
+  .side button.on{color:var(--txt);font-weight:600;background:rgba(255,197,143,.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+  .side button .em{font-size:16px;width:20px;text-align:center}
+  .side button .n{margin-left:auto;font-size:11.5px;color:var(--dim2);font-family:var(--mono)}
+
+  .main{min-width:0}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .bar input[type=search]{flex:1;min-width:170px;padding:11px 14px;border-radius:13px;font-size:13.5px;
+    font-family:inherit;color:var(--txt);background:rgba(255,255,255,.8);
+    border:1px solid rgba(20,40,65,.14);box-shadow:inset 0 1px 0 #fff;outline:none}
+  .bar input[type=search]:focus{border-color:rgba(226,112,10,.45)}
+
+  .chead{margin:2px 0 14px}
+  .chead h2{margin:0 0 4px;font-size:19px}
+  .chead p{margin:0;font-size:12.5px;color:var(--dim2)}
+
+  .dishes{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px}
+  .dish{position:relative;border-radius:16px;padding:14px 15px;display:flex;flex-direction:column;gap:7px;
+    background:linear-gradient(160deg,rgba(255,255,255,.86),rgba(255,255,255,.64));
+    border:1px solid rgba(255,255,255,.95);box-shadow:var(--inset),0 6px 18px rgba(20,40,65,.06);
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);transition:transform .16s,box-shadow .16s}
+  .dish:hover{transform:translateY(-2px);box-shadow:var(--inset),0 12px 26px rgba(20,40,65,.1)}
+  .dish.in{border-color:rgba(226,112,10,.42);background:linear-gradient(160deg,rgba(255,240,225,.9),rgba(255,255,255,.7))}
+  .dish .top{display:flex;align-items:baseline;gap:8px}
+  .dish .nm{font-weight:600;font-size:15px;letter-spacing:.2px}
+  .dish .pr{margin-left:auto;font-family:var(--mono);font-size:15px;font-weight:600;color:var(--accent2)}
+  .dish .pr small{font-size:11px;font-weight:400;color:var(--dim2)}
+  .dish .ds{font-size:12px;color:var(--dim2);line-height:1.6;min-height:19px}
+  .dish .foot{display:flex;align-items:center;gap:7px;margin-top:2px}
+  .dish .sp{font-size:11px;letter-spacing:-1px}
+  .step{display:flex;align-items:center;gap:6px;margin-left:auto}
+  .step button{width:27px;height:27px;border-radius:9px;border:1px solid rgba(20,40,65,.16);
+    background:rgba(255,255,255,.85);cursor:pointer;font-size:15px;line-height:1;color:var(--dim);
+    display:flex;align-items:center;justify-content:center;padding:0;transition:all .14s}
+  .step button:hover:not(:disabled){color:var(--accent);border-color:rgba(226,112,10,.5);
+    background:rgba(255,228,203,.8)}
+  .step button:disabled{opacity:.35;cursor:default}
+  .step .q{min-width:22px;text-align:center;font-family:var(--mono);font-size:13.5px;font-weight:600}
+
+  /* ---------- 底部购物车条 ---------- */
+  .cartbar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:60;
+    display:flex;align-items:center;gap:14px;padding:11px 12px 11px 20px;border-radius:999px;
+    background:linear-gradient(140deg,rgba(255,255,255,.92),rgba(255,255,255,.78));
+    border:1px solid rgba(255,255,255,.98);box-shadow:0 14px 40px rgba(20,40,65,.16),inset 0 1px 0 #fff;
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    transition:transform .24s cubic-bezier(.2,.9,.3,1.4),opacity .2s}
+  .cartbar[hidden]{display:none}
+  .cartbar .sum{font-size:13px;color:var(--dim)}
+  .cartbar .sum b{font-family:var(--mono);font-size:16px;color:var(--accent2);margin-left:3px}
+  .cartbar .sep{width:1px;height:22px;background:rgba(20,40,65,.12)}
+
+  /* ---------- 小票 ---------- */
+  .receipt{margin:0 auto;max-width:340px;padding:22px 20px 18px;border-radius:6px;color:#2b2b2b;
+    background:repeating-linear-gradient(0deg,#fffdf7,#fffdf7 26px,#fdfbf3 26px,#fdfbf3 27px);
+    box-shadow:0 10px 30px rgba(0,0,0,.16);font-family:var(--mono);font-size:12.5px;line-height:1.9;
+    position:relative}
+  .receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:9px;
+    background:radial-gradient(circle at 6px 0,transparent 5px,#fffdf7 5.5px) repeat-x;background-size:12px 9px}
+  .receipt::before{top:-8px;transform:rotate(180deg)}
+  .receipt::after{bottom:-8px}
+  .receipt h3{margin:0 0 3px;text-align:center;font-size:15px;letter-spacing:3px}
+  .receipt .sub{text-align:center;font-size:11px;color:#8a8a8a;margin-bottom:12px}
+  .receipt .ln{display:flex;gap:8px}
+  .receipt .ln .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .receipt .ln .q{color:#8a8a8a}
+  .receipt .ln .p{text-align:right;min-width:52px}
+  .receipt .dash{border-top:1px dashed #cfcfcf;margin:9px 0}
+  .receipt .tot{display:flex;font-size:15px;font-weight:700}
+  .receipt .tot .p{margin-left:auto}
+  .receipt .ty{text-align:center;margin-top:12px;font-size:11px;color:#8a8a8a;line-height:1.7}
+  .empty-tip{text-align:center;padding:44px 0;color:var(--dim2);font-size:13.5px}
+
+  @media (max-width:760px){
+    .shop{grid-template-columns:1fr;gap:12px}
+    .side{position:static;max-height:none;display:flex;gap:7px;overflow-x:auto;padding:10px;
+      scrollbar-width:none}
+    .side::-webkit-scrollbar{display:none}
+    .side button{width:auto;white-space:nowrap;padding:8px 14px;border-radius:999px;
+      background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.95)}
+    .side button .n{display:none}
+    .side button.on{background:rgba(255,197,143,.6)}
+    .dishes{grid-template-columns:1fr}
+    .cartbar{left:14px;right:14px;bottom:14px;transform:none;justify-content:space-between;padding-left:16px}
+    .gate{margin-top:5vh;padding:26px 20px}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="../">
+      <div class="mark">🍚</div>
+      <div>
+        <h1>基米餐馆</h1>
+        <div class="sub" id="sub">今天想吃点什么？</div>
+      </div>
+    </a>
+    <div class="stats">
+      <div class="stat" id="s-cui" hidden>菜系 <b>0</b></div>
+      <div class="stat" id="s-dish" hidden>菜品 <b>0</b></div>
+      <div class="stat" id="s-api" hidden>接口 <b>—</b></div>
+      <button class="stat" id="s-lock" hidden>🔒 <b>退出</b></button>
+    </div>
+  </div>
+  <nav class="fnav" id="siteNav"></nav>
+</header>
+
+<div class="wrap">
+
+  <!-- 密码门 -->
+  <section class="gate" id="gate">
+    <div class="lock">🔒</div>
+    <h2>基米餐馆</h2>
+    <p>这里是内部食堂，进门要密码<br>密码问老板要</p>
+    <div class="pin">
+      <input id="pwd" type="password" inputmode="numeric" autocomplete="off"
+             maxlength="20" placeholder="••••" aria-label="进门密码" />
+    </div>
+    <div class="err" id="err"></div>
+    <button class="btn primary" id="go" style="width:100%;padding:13px;font-size:15px">进 门</button>
+    <div class="hintline">通过后 12 小时内不用再输</div>
+  </section>
+
+  <!-- 菜单 -->
+  <section id="app" hidden>
+    <div class="shop">
+      <aside class="side" id="cuisines"></aside>
+      <div class="main">
+        <div class="bar">
+          <input type="search" id="q" placeholder="搜菜名，比如「鱼」「豆腐」「奶茶」" />
+          <select id="spicy" title="辣度筛选">
+            <option value="-1">不限辣度</option>
+            <option value="0">不辣</option>
+            <option value="1">微辣</option>
+            <option value="2">中辣</option>
+            <option value="3">特辣</option>
+          </select>
+          <button class="btn ghost" id="lucky" title="随便点一道">🎲 随便来一个</button>
+        </div>
+        <div class="chead" id="chead"></div>
+        <div class="dishes" id="dishes"></div>
+        <div class="empty-tip" id="nores" hidden>没找到这道菜，换个词试试</div>
+      </div>
+    </div>
+    <footer style="margin-top:36px">
+      <div id="foot-note"></div>
+      <div id="foot-copy"></div>
+    </footer>
+  </section>
+</div>
+
+<div class="cartbar" id="cartbar" hidden>
+  <span class="sum">已点 <b id="c-count">0</b> 样 · 合计 <b id="c-total">¥0</b></span>
+  <span class="sep"></span>
+  <button class="btn ghost" id="c-clear" style="padding:8px 14px">清空</button>
+  <button class="btn primary" id="c-order" style="padding:8px 18px">下单</button>
+</div>
+
+<div id="modalHost"></div>
+<button class="totop" id="toTop" title="回到顶部" aria-label="回到顶部">↑</button>
+<div class="toast" id="toast">已复制</div>
+
+<script src="../assets/site.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var TOKEN_KEY = "jimi-restaurant-token-v1";
+  var CART_KEY  = "jimi-restaurant-cart-v1";
+  var API = "";                                  // 同源，走 nginx 反代的 /api/*
+
+  var token = "";
+  try { token = localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { token = ""; }
+
+  var MENU = null;                                // {cuisines:[…]}
+  var cart = {};                                  // "菜系id|菜名" -> 数量
+  var cur = "";                                   // 当前菜系 id
+  var q = "";
+  var spicy = -1;
+
+  function $(s) { return document.querySelector(s); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function money(n) { return "¥" + n; }
+  function allDishes() {
+    var out = [];
+    (MENU ? MENU.cuisines : []).forEach(function (c) {
+      c.dishes.forEach(function (d) { out.push({ c: c, d: d, key: c.id + "|" + d.name }); });
+    });
+    return out;
+  }
+  function cartCount() { var n = 0; for (var k in cart) n += cart[k]; return n; }
+  function cartTotal() {
+    var byKey = {};
+    allDishes().forEach(function (x) { byKey[x.key] = x.d; });
+    var t = 0;
+    for (var k in cart) if (byKey[k]) t += byKey[k].price * cart[k];
+    return t;
+  }
+  function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {} }
+  function loadCart() {
+    try {
+      var raw = localStorage.getItem(CART_KEY);
+      cart = raw ? JSON.parse(raw) : {};
+      if (!cart || typeof cart !== "object") cart = {};
+    } catch (e) { cart = {}; }
+  }
+
+  var toastTimer = null;
+  function toast(msg, ok) {
+    var t = $("#toast");
+    t.textContent = msg;
+    t.style.background = ok === false ? "rgba(214,69,69,.94)" : "";
+    t.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("on"); }, 1900);
+  }
+
+  function setStat(id, val) {
+    var el = $(id);
+    if (!el) return;
+    if (val == null) { el.hidden = true; return; }
+    el.hidden = false;
+    el.querySelector("b").textContent = val;
+  }
+
+  // ---------- 密码门 ----------
+  function showGate(msg) {
+    $("#gate").hidden = false;
+    $("#app").hidden = true;
+    setStat("#s-cui", null); setStat("#s-dish", null);
+    setStat("#s-api", null); setStat("#s-lock", null);
+    $("#cartbar").hidden = true;
+    if (msg) $("#err").textContent = msg;
+    setTimeout(function () { $("#pwd").focus(); }, 60);
+  }
+
+  function unlock() {
+    var pwd = $("#pwd").value;
+    var err = $("#err"), btn = $("#go");
+    if (!pwd) { err.textContent = "请输入密码"; return; }
+    err.textContent = "";
+    btn.disabled = true; btn.textContent = "验证中…";
+    setStat("#s-api", "连接中…");
+    fetch(API + "/api/restaurant/unlock", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pwd })
+    }).then(function (r) {
+      return r.json()["catch"](function () { return {}; }).then(function (d) {
+        if (!r.ok) throw new Error((d && d.error) || ("HTTP " + r.status));
+        return d;
+      });
+    }).then(function (d) {
+      token = d.token;
+      try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+      $("#pwd").value = "";
+      return fetchMenu();
+    })["catch"](function (e) {
+      err.textContent = (e && e.message) || "验证失败";
+      $("#gate").classList.add("shake");
+      setTimeout(function () { $("#gate").classList.remove("shake"); }, 340);
+      setStat("#s-api", null);
+      btn.disabled = false; btn.textContent = "进 门";
+    });
+  }
+
+  function lockOut(msg) {
+    token = "";
+    try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+    showGate(msg || "");
+    $("#go").disabled = false; $("#go").textContent = "进 门";
+  }
+
+  // ---------- 取菜单 ----------
+  function fetchMenu() {
+    return fetch(API + "/api/restaurant/menu", {
+      headers: { Authorization: "Bearer " + token }
+    }).then(function (r) {
+      return r.json()["catch"](function () { return {}; }).then(function (d) {
+        if (r.status === 401) { lockOut(d.error || "请重新输入密码"); throw new Error("__gate__"); }
+        if (!r.ok) throw new Error((d && d.error) || ("HTTP " + r.status));
+        return d;
+      });
+    }).then(function (d) {
+      MENU = d;
+      setStat("#s-api", "已连接");
+      return true;
+    })["catch"](function (e) {
+      if (e && e.message === "__gate__") return false;
+      setStat("#s-api", "连不上");
+      showGate("服务器连不上，稍后再试");
+      throw e;
+    });
+  }
+
+  // ---------- 渲染 ----------
+  function renderCuisines() {
+    $("#cuisines").innerHTML = MENU.cuisines.map(function (c) {
+      var n = c.dishes.reduce(function (a, d) { return a + (cart[c.id + "|" + d.name] || 0); }, 0);
+      return '<button data-c="' + esc(c.id) + '"' + (c.id === cur ? ' class="on"' : "") + ">" +
+        '<span class="em">' + esc(c.emoji) + "</span>" + esc(c.name) +
+        '<span class="n">' + (n ? "已点 " + n : c.dishes.length) + "</span></button>";
+    }).join("");
+  }
+
+  function dishCard(c, d) {
+    var key = c.id + "|" + d.name;
+    var n = cart[key] || 0;
+    var sp = d.spicy > 0 ? '<span class="sp" title="辣度 ' + d.spicy + '/3">' +
+      "🌶️".repeat(d.spicy) + "</span>" : "";
+    var tag = d.tag ? '<span class="badge">' + esc(d.tag) + "</span>" : "";
+    return '<div class="dish' + (n ? " in" : "") + '" data-key="' + esc(key) + '">' +
+      '<div class="top"><span class="nm">' + esc(d.name) + "</span>" + tag +
+        '<span class="pr">' + money(d.price) + "</span></div>" +
+      '<div class="ds">' + esc(d.desc || "") + "</div>" +
+      '<div class="foot">' + sp +
+        '<span class="step">' +
+          '<button data-act="minus"' + (n ? "" : " disabled") + ' aria-label="减一份">−</button>' +
+          '<span class="q">' + n + "</span>" +
+          '<button data-act="plus" aria-label="加一份">+</button>' +
+        "</span></div></div>";
+  }
+
+  function renderDishes() {
+    var c = MENU.cuisines.filter(function (x) { return x.id === cur; })[0];
+    if (!c) return;
+    var terms = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    var searchAll = terms.length > 0 || spicy >= 0;
+    var list = searchAll ? allDishes() : c.dishes.map(function (d) { return { c: c, d: d }; });
+
+    var rows = list.filter(function (x) {
+      if (spicy >= 0 && x.d.spicy !== spicy) return false;
+      if (!terms.length) return true;
+      var hay = (x.d.name + " " + (x.d.desc || "") + " " + x.c.name).toLowerCase();
+      return terms.every(function (t) { return hay.indexOf(t) >= 0; });
+    });
+
+    if (searchAll) {
+      $("#chead").innerHTML = "<h2>搜索结果</h2><p>共 " + rows.length + " 道" +
+        (q ? "，关键词「" + esc(q) + "」" : "") + "</p>";
+    } else {
+      $("#chead").innerHTML = "<h2>" + esc(c.emoji + " " + c.name) + "</h2><p>" +
+        esc(c.desc) + "　·　" + c.dishes.length + " 道</p>";
+    }
+
+    $("#nores").hidden = rows.length > 0;
+    $("#dishes").innerHTML = rows.map(function (x) { return dishCard(x.c, x.d); }).join("");
+  }
+
+  function renderCart() {
+    var n = cartCount(), t = cartTotal();
+    var bar = $("#cartbar");
+    if (!n) { bar.hidden = true; return; }
+    bar.hidden = false;
+    $("#c-count").textContent = n;
+    $("#c-total").textContent = money(t);
+  }
+
+  function render() {
+    if (!MENU) return;
+    renderCuisines();
+    renderDishes();
+    renderCart();
+    setStat("#s-cui", MENU.cuisines.length);
+    setStat("#s-dish", allDishes().length);
+    setStat("#s-lock", "退出");
+  }
+
+  // ---------- 小票 ----------
+  function showReceipt() {
+    var lines = [], byKey = {};
+    allDishes().forEach(function (x) { byKey[x.key] = x; });
+    for (var k in cart) {
+      if (!cart[k] || !byKey[k]) continue;
+      var x = byKey[k];
+      lines.push('<div class="ln"><span class="n">' + esc(x.d.name) + '</span>' +
+        '<span class="q">×' + cart[k] + "</span>" +
+        '<span class="p">' + money(x.d.price * cart[k]) + "</span></div>");
+    }
+    if (!lines.length) return;
+    var d = new Date();
+    var stamp = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" +
+      String(d.getDate()).padStart(2, "0") + " " + String(d.getHours()).padStart(2, "0") + ":" +
+      String(d.getMinutes()).padStart(2, "0");
+    var no = "JM" + Date.now().toString().slice(-8);
+
+    $("#modalHost").innerHTML =
+      '<div class="modal" id="modal"><div class="modal-in" style="max-width:400px;background:transparent;' +
+      'border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0">' +
+      '<div class="receipt">' +
+        "<h3>基 米 餐 馆</h3>" +
+        '<div class="sub">' + stamp + "　单号 " + no + "</div>" +
+        '<div class="dash"></div>' +
+        lines.join("") +
+        '<div class="dash"></div>' +
+        '<div class="ln"><span class="n">共 ' + cartCount() + " 样</span>" +
+          '<span class="p">' + money(cartTotal()) + "</span></div>" +
+        '<div class="tot"><span>合计</span><span class="p">' + money(cartTotal()) + "</span></div>" +
+        '<div class="dash"></div>' +
+        '<div class="ty">🥢 谢谢惠顾<br>本单仅供娱乐，不产生任何实际交易</div>' +
+      "</div>" +
+      '<div style="display:flex;gap:10px;margin-top:20px">' +
+        '<button class="btn" id="r-copy" style="flex:1">复制小票</button>' +
+        '<button class="btn primary" id="r-ok" style="flex:1">好的</button>' +
+      "</div>" +
+      "</div></div>";
+
+    function close() { $("#modalHost").innerHTML = ""; }
+    $("#r-ok").onclick = close;
+    $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") close(); });
+    $("#r-copy").onclick = function () {
+      var txt = "【基米餐馆】" + stamp + " 单号" + no + "\n" +
+        Object.keys(cart).filter(function (k) { return byKey[k]; }).map(function (k) {
+          return byKey[k].d.name + " ×" + cart[k] + "  " + money(byKey[k].d.price * cart[k]);
+        }).join("\n") +
+        "\n合计 " + money(cartTotal()) + "（共 " + cartCount() + " 样）";
+      var done = function () { toast("小票已复制"); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, function () { toast("复制失败", false); });
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); done(); } catch (e) { toast("复制失败", false); }
+        document.body.removeChild(ta);
+      }
+    };
+  }
+
+  // ---------- 事件 ----------
+  document.addEventListener("click", function (e) {
+    var step = e.target.closest(".step button");
+    if (step) {
+      var card = step.closest(".dish");
+      var key = card.dataset.key;
+      var n = cart[key] || 0;
+      if (step.dataset.act === "plus") cart[key] = n + 1;
+      else { if (n <= 1) delete cart[key]; else cart[key] = n - 1; }
+      saveCart();
+      card.outerHTML = dishCardByKey(key);
+      renderCuisines();
+      renderCart();
+      return;
+    }
+    var cb = e.target.closest("#cuisines button");
+    if (cb) {
+      cur = cb.dataset.c;
+      q = ""; $("#q").value = "";
+      spicy = -1; $("#spicy").value = "-1";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  function dishCardByKey(key) {
+    var found = null;
+    allDishes().forEach(function (x) { if (x.key === key) found = x; });
+    return found ? dishCard(found.c, found.d) : "";
+  }
+
+  $("#go").addEventListener("click", unlock);
+  $("#pwd").addEventListener("keydown", function (e) { if (e.key === "Enter") unlock(); });
+
+  var qTimer = null;
+  $("#q").addEventListener("input", function (e) {
+    clearTimeout(qTimer);
+    var v = e.target.value;
+    qTimer = setTimeout(function () { q = v; renderDishes(); }, 140);
+  });
+  $("#spicy").addEventListener("change", function (e) { spicy = Number(e.target.value); renderDishes(); });
+
+  $("#lucky").addEventListener("click", function () {
+    var pool = [];
+    (MENU ? MENU.cuisines : []).forEach(function (c) {
+      c.dishes.forEach(function (d) { pool.push({ c: c, d: d, key: c.id + "|" + d.name }); });
+    });
+    if (!pool.length) return;
+    var pick = pool[Math.floor(Math.random() * pool.length)];
+    cart[pick.key] = (cart[pick.key] || 0) + 1;
+    saveCart();
+    cur = pick.c.id; q = ""; $("#q").value = ""; spicy = -1; $("#spicy").value = "-1";
+    render();
+    var el = document.querySelector('.dish[data-key="' + CSS.escape(pick.key) + '"]');
+    if (el) {
+      el.scrollIntoView({ block: "center", behavior: "smooth" });
+      el.style.transition = "box-shadow .3s";
+      el.style.boxShadow = "0 0 0 4px rgba(226,112,10,.35), 0 12px 26px rgba(20,40,65,.1)";
+      setTimeout(function () { el.style.boxShadow = ""; }, 1400);
+    }
+    toast("给你点了：" + pick.d.name);
+  });
+
+  $("#c-clear").addEventListener("click", function () {
+    if (!cartCount()) return;
+    if (!confirm("清空已点的 " + cartCount() + " 样？")) return;
+    cart = {}; saveCart(); render();
+  });
+  $("#c-order").addEventListener("click", showReceipt);
+  $("#s-lock").addEventListener("click", function () {
+    if (!confirm("退出餐馆？下次要重新输密码。")) return;
+    cart = {}; saveCart(); lockOut("");
+    toast("已退出");
+  });
+
+  var toTop = $("#toTop");
+  function onScroll() { toTop.classList.toggle("on", window.scrollY > 620); }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  toTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
+  onScroll();
+
+  // ---------- 启动 ----------
+  loadCart();
+  if (window.SITE) {
+    $("#foot-note").textContent = "菜单只在服务器上，没密码看不到。";
+    $("#foot-copy").textContent = "© 2026 哈基米";
+  }
+  if (!token) {
+    showGate("");
+  } else {
+    setStat("#s-api", "连接中…");
+    fetchMenu().then(function (ok) {
+      if (!ok) return;
+      $("#gate").hidden = true;
+      $("#app").hidden = false;
+      cur = MENU.cuisines[0].id;
+      render();
+    })["catch"](function () {});
+  }
+})();
+</script>
+</body>
+</html>
