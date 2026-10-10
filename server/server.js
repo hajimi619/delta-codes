@@ -12,6 +12,10 @@
  *   POST /api/add             新增一个改枪码
  *   POST /api/flag            标记失效 / 恢复
  *
+ * 基米餐馆（菜单只放服务器上，客户端不可能绕过密码）:
+ *   POST /api/restaurant/unlock  {password} -> {token}
+ *   GET  /api/restaurant/menu    (Bearer)   -> 菜单
+ *
  * 管理员接口（需 Authorization: Bearer <token>）:
  *   POST /api/admin/login     {username, password} -> {token}
  *   POST /api/admin/logout
@@ -33,6 +37,10 @@ const DATA_DIR = process.env.DATA_DIR || "/var/lib/hajimiovo";
 const STORE = path.join(DATA_DIR, "changes.json");
 const ADMIN_FILE = path.join(DATA_DIR, "admin.json");
 const TOKEN_FILE = path.join(DATA_DIR, "tokens.json");
+/* 基米餐馆：密码和菜单都只在服务器上，静态文件里一个字都不放 */
+const GUEST_FILE = path.join(DATA_DIR, "restaurant.json");
+const RMENU_FILE = path.join(DATA_DIR, "restaurant-menu.json");
+const RTOKEN_FILE = path.join(DATA_DIR, "restaurant-tokens.json");
 
 const MODES = ["烽火地带", "全面战场", "烽火高操速T0", "黑潮爆破"];
 const CODE_RE = /^[0-9A-Za-z]{8,32}$/;
@@ -41,6 +49,8 @@ const MAX_BODY = 16 * 1024;
 const TOKEN_TTL_MS = 30 * 24 * 3600 * 1000;   // 登录 30 天有效
 const LOGIN_MAX_FAIL = 8;                      // 单 IP 15 分钟内最多失败次数
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const R_TOKEN_TTL_MS = 12 * 3600 * 1000;       // 餐馆密码通过后 12 小时有效
+const R_MAX_FAIL = 6;                          // 餐馆密码单 IP 15 分钟最多错 6 次
 
 /* ---------------- CORS ---------------- */
 
@@ -71,7 +81,9 @@ function corsHeaders(req) {
 
 let changes = [];
 let tokens = {};
+let rTokens = {};             // 餐馆访客令牌
 let loginFails = {};          // ipHash -> [时间戳]
+let rFails = {};              // 餐馆密码错误次数
 let writeChain = Promise.resolve();
 
 function loadJson(file, fallback) {
@@ -115,6 +127,21 @@ function loadAll() {
   });
   console.log(`[store] 改动 ${changes.length} 条, 有效令牌 ${Object.keys(tokens).length} 个` + (n ? `（清理过期 ${n} 个）` : ""));
   console.log(`[store] 管理员凭据: ${fs.existsSync(ADMIN_FILE) ? "已配置" : "❌ 未配置（跑 set_admin.py）"}`);
+
+  // 餐馆访客令牌
+  rTokens = loadJson(RTOKEN_FILE, {});
+  const now2 = Date.now();
+  Object.keys(rTokens).forEach(function (t) {
+    if (!rTokens[t] || rTokens[t].expires < now2) delete rTokens[t];
+  });
+  const g = loadJson(GUEST_FILE, null);
+  let menuCount = 0;
+  try {
+    const m = loadJson(RMENU_FILE, null);
+    if (m && m.cuisines) menuCount = m.cuisines.reduce(function (a, c) { return a + c.dishes.length; }, 0);
+  } catch (e) { /* ignore */ }
+  console.log(`[store] 基米餐馆: 密码${g && g.hash ? "已配置" : "❌ 未配置（跑 set_restaurant.py）"}` +
+              `, 菜单 ${menuCount} 道菜, 访客令牌 ${Object.keys(rTokens).length} 个`);
 }
 
 /* ---------------- 工具 ---------------- */
@@ -393,6 +420,67 @@ function adminClearFlags(body) {
   return { ok: true, removed: removed };
 }
 
+/* ---------------- 基米餐馆 ----------------
+   菜单和密码都只存在服务器上（/var/lib/hajimiovo/），
+   docs/ 里一个字都不放 —— 不然看源码就把密码绕过去了。 */
+
+function loadGuest() {
+  return loadJson(GUEST_FILE, null);
+}
+
+function restaurantUnlock(body, req) {
+  const g = loadGuest();
+  if (!g || !g.hash) throw new Error("餐馆还没设置密码");
+
+  const ip = hashIp(clientIp(req));
+  const now = Date.now();
+  rFails[ip] = (rFails[ip] || []).filter(function (t) { return now - t < LOGIN_WINDOW_MS; });
+  if (rFails[ip].length >= R_MAX_FAIL) throw new Error("密码错误次数过多，请 15 分钟后再试");
+
+  const password = String(body.password || "");
+  if (!password) throw new Error("请输入密码");
+  if (!safeEqual(hashPassword(password, g.salt), g.hash)) {
+    rFails[ip].push(now);
+    throw new Error("密码不对");
+  }
+
+  rFails[ip] = [];
+  const token = crypto.randomBytes(32).toString("hex");
+  rTokens[token] = {
+    ver: g.ver || "",
+    expires: now + R_TOKEN_TTL_MS,
+    created_at: new Date().toISOString(),
+  };
+  saveJson(RTOKEN_FILE, rTokens);
+  return { ok: true, token: token, expires: rTokens[token].expires };
+}
+
+function requireGuest(req) {
+  const t = findToken(req);
+  if (!t) throw new Error("请先输入密码");
+  const rec = rTokens[t];
+  if (!rec) throw new Error("请重新输入密码");
+  if (rec.expires < Date.now()) {
+    delete rTokens[t];
+    saveJson(RTOKEN_FILE, rTokens);
+    throw new Error("已超过 12 小时，请重新输入密码");
+  }
+  const g = loadGuest();
+  if (g && g.ver && rec.ver !== g.ver) {
+    delete rTokens[t];
+    saveJson(RTOKEN_FILE, rTokens);
+    throw new Error("密码已变更，请重新输入密码");
+  }
+  return true;
+}
+
+function restaurantMenu(req) {
+  requireGuest(req);
+  const m = loadJson(RMENU_FILE, null);
+  if (!m || !m.cuisines) throw new Error("菜单还没准备好");
+  return m;
+}
+
 /* ---------------- HTTP ---------------- */
 
 function publicChanges() {
@@ -423,6 +511,13 @@ const server = http.createServer(function (req, res) {
       });
     }
     if (p === "/api/changes") return sendJson(res, headers, 200, { changes: publicChanges() });
+    if (p === "/api/restaurant/menu") {
+      try {
+        return sendJson(res, headers, 200, restaurantMenu(req));
+      } catch (e) {
+        return sendJson(res, headers, 401, { error: e.message });
+      }
+    }
     if (p === "/api/admin/me") {
       try {
         const u = requireAdmin(req);
@@ -438,6 +533,7 @@ const server = http.createServer(function (req, res) {
     const routes = {
       "/api/add": function (b, r) { return addCode(b, r); },
       "/api/flag": function (b, r) { return flagCode(b, r); },
+      "/api/restaurant/unlock": function (b, r) { return restaurantUnlock(b, r); },
       "/api/admin/login": function (b, r) { return adminLogin(b, r); },
       "/api/admin/logout": function (b, r) {
         const t = findToken(r);
