@@ -95,6 +95,8 @@ def main():
             "username": args.user,
             "salt": salt,
             "hash": digest,
+            # 凭据版本：每次改账号都换一个，服务端拿它让所有旧登录令牌立刻失效
+            "ver": secrets.token_hex(8),
             "created_at": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
         }
 
@@ -103,12 +105,19 @@ def main():
             with sftp.open(ADMIN_FILE + ".new", "wb") as f:
                 f.write(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
             sftp.posix_rename(ADMIN_FILE + ".new", ADMIN_FILE)
+
+            # 顺手清空旧令牌（改了账号，所有设备都该重新登录）
+            tok = "/var/lib/hajimiovo/tokens.json"
+            with sftp.open(tok + ".new", "wb") as f:
+                f.write(b"{}")
+            sftp.posix_rename(tok + ".new", tok)
         finally:
             sftp.close()
 
-        print(run(f"chown www-data:www-data {ADMIN_FILE} && chmod 600 {ADMIN_FILE} && ls -la {ADMIN_FILE}"))
+        print(run(f"chown -R www-data:www-data /var/lib/hajimiovo && chmod 600 {ADMIN_FILE} && ls -la {ADMIN_FILE}"))
         print(run("systemctl restart hajimiovo-api && sleep 2 && systemctl is-active hajimiovo-api"))
         print(run('curl -s --max-time 5 http://127.0.0.1:8080/api/health'))
+        print(run("echo -n '剩余有效令牌: '; cat /var/lib/hajimiovo/tokens.json"))
 
         print()
         print("=" * 50)
