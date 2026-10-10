@@ -341,6 +341,59 @@ Pages 的自定义域名，不值得折腾。）
 
 > 想踢掉所有已登录设备：把 `tokens.json` 清空成 `{}` 再重启服务即可。
 
+### 备案期间的管理方式（走过弯路，记下来免得再试）
+
+**能不能让 `hajimiovo.top` 上的管理员功能也能用？** 试过了，**不行**，两条路都被堵死：
+
+**① Cloudflare Worker 不能 fetch 裸 IP**
+
+想让 Worker 把 `/api/*` 转发到服务器 `119.45.171.242:8080`，实测**对任何 IP 都立刻返回
+`403 error code: 1003`**（Cloudflare 的「不允许直接 IP 访问」），只有它自家的 `1.1.1.1` 例外：
+
+| 目标 | 结果 |
+|---|---|
+| `http://119.45.171.242:8080/…` | 403 error code: 1003（0–1ms，内网就拒了） |
+| `http://8.8.8.8/` | 403 error code: 1003 |
+| `http://114.114.114.114/` | 403 error code: 1003 |
+| `http://1.1.1.1/` | **200**（Cloudflare 自己的） |
+
+**② 换成域名回源 —— 被腾讯云的备案拦截挡住**
+
+于是加了一条灰云记录 `origin.hajimiovo.top -> 119.45.171.242`，让 Worker 用域名回源。
+结果拿到的是腾讯云的未备案提示页：
+
+```
+HTTP/1.1 302 Found
+Location: https://dnspod.qcloud.com/static/webblock.html?d=origin.hajimiovo.top:8080
+```
+
+**关键发现：腾讯云的备案拦截是按 `Host` 头判断的，不是按端口。**
+任何用「未备案域名」访问境内服务器的请求——**哪怕走 8080**——都会被重定向到那个提示页。
+只有用**裸 IP** 访问才放行（所以 `http://119.45.171.242:8080` 一直是通的）。
+
+想伪造成裸 IP 绕过也没用：Cloudflare Worker **不允许覆盖 `Host` 头**，实测仍然是那个 302。
+
+**所以备案通过前，域名访问服务器的路是死的。**
+
+**当前的折中：服务器每小时自动同步 D1**
+
+```
+群里人  →  https://hajimiovo.top/          →  Cloudflare D1
+                       ↓  每小时拉一次，按 id 去重并入
+你管理  →  http://119.45.171.242:8080/     →  服务器 JSON（是 D1 的超集）
+```
+
+同步脚本 `/usr/local/bin/hajimiovo-sync-d1`，cron 在 `/etc/cron.d/hajimiovo-sync`（每小时第 17 分钟）。
+**只新增不覆盖**（本地已有的 id 一律跳过，管理员在服务器上的编辑优先），
+拉不到或数据不合法就安静退出，草稿写在 `.sync` 临时文件再 `os.replace` 原子替换。
+
+**备案通过后**就自然统一了：域名指向服务器，Worker 停用，`hajimiovo.top` 上管理员功能
+直接可用（同源，0.05 秒）。
+
+> 踩过的坑：`PUT /accounts/<id>/workers/scripts/<name>` 是**整体替换**，
+> metadata 里不带 `bindings` 就会把已有的 D1 绑定弄丢（页面会报
+> `Cannot read properties of undefined`）。`deploy_worker.py` 现在显式带上绑定。
+
 ## 更新数据
 
 本地（推荐）：
