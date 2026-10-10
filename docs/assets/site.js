@@ -137,6 +137,13 @@
     if (y) y.textContent = SITE.copyright;
     var n = document.getElementById("s-feat");
     if (n) n.textContent = FEATURES.length;
+
+    /* Service Worker：让第二次之后的访问直接从本地缓存打开。
+       国内到 Cloudflare 的握手经常十几秒甚至超时，这一步收益最大。 */
+    if ("serviceWorker" in navigator && location.protocol === "https:") {
+      var base = document.documentElement.getAttribute("data-base") || "./";
+      navigator.serviceWorker.register(base + "sw.js", { scope: base })["catch"](function () {});
+    }
   });
 
   window.SITE = SITE;
