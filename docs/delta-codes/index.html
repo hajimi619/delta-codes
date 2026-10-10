@@ -1302,18 +1302,8 @@
       "</div></div>";
     $("#modalClose").onclick = closeModal;
     $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
-    $("#modalHost").addEventListener("click", function (e) {
-      var btn = e.target.closest("[data-r]");
-      if (!btn) return;
-      var id = btn.closest(".item").dataset.id;
-      btn.disabled = true;
-      var act = btn.dataset.r === "undelete"
-        ? adminPost("/api/admin/delete", { target_id: id, undo: true })
-        : adminPost("/api/admin/clearflags", { target_id: id });
-      act.then(function () { return adminAfterChange("已恢复"); })
-        .then(function () { openRecycle(); })
-        ["catch"](function (err) { btn.disabled = false; showToast(err.message || "操作失败", false); });
-    });
+    /* 恢复按钮的监听在启动时统一挂在 #modalHost 上一次，别在这里反复 addEventListener
+       —— 那样每开一次回收站就多叠一层，点一下会触发好几次。 */
   }
 
   /** 编辑任意一条（基础数据和网友新增都行），编辑内容会作为 edit 改动存下来 */
@@ -1382,10 +1372,29 @@
     if (!API_ON) { showToast("没配后端，管理员功能不可用", false); return; }
     if (isAdmin()) { openRecycle(); } else { openAdminLogin(); }
   });
+  /* 管理条上的按钮是 setAdminUI() 动态塞进 #adminTools 的，
+     所以监听要挂在容器上（容器的 innerHTML 被换掉，监听本身还在）。 */
+  $("#adminTools").addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.id === "adminLogout") { adminLogout(); return; }
+    if (b.id === "adminRecycle") { openRecycle(); return; }
+    if (b.id === "adminClear") { adminClearAllFlags(); return; }
+  });
+  /* 回收站里「恢复显示 / 清除失效」的委托监听，全局只挂一次 */
   $("#modalHost").addEventListener("click", function (e) {
-    if (e.target.id === "adminLogout") { adminLogout(); return; }
-    if (e.target.id === "adminRecycle") { openRecycle(); return; }
-    if (e.target.id === "adminClear") { adminClearAllFlags(); return; }
+    var btn = e.target.closest("[data-r]");
+    if (!btn || btn.disabled) return;
+    var item = btn.closest(".item");
+    if (!item || !item.dataset.id) return;
+    var id = item.dataset.id;
+    btn.disabled = true;
+    var act = btn.dataset.r === "undelete"
+      ? adminPost("/api/admin/delete", { target_id: id, undo: true })
+      : adminPost("/api/admin/clearflags", { target_id: id });
+    act.then(function () { return adminAfterChange("已恢复"); })
+      .then(function () { openRecycle(); })
+      ["catch"](function (err) { btn.disabled = false; showToast((err && err.message) || "操作失败", false); });
   });
 
   $("#sub").textContent = "共 " + BASE.length + " 条 · " + D.modes.length + " 种玩法 · " + D.withPrice + " 条标价";
