@@ -1,0 +1,1840 @@
+{
+ "name": "基米餐馆",
+ "slogan": "今天想吃点什么？",
+ "updated": "2026-10-10",
+ "cuisines": [
+  {
+   "id": "chuan",
+   "name": "川菜",
+   "emoji": "🌶️",
+   "desc": "一菜一格，百菜百味。麻在前，辣在后。",
+   "dishes": [
+    {
+     "name": "麻婆豆腐",
+     "price": 28,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "麻、辣、烫、香、酥、嫩、鲜、活，八字诀"
+    },
+    {
+     "name": "回锅肉",
+     "price": 38,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "灯盏窝儿，肥而不腻"
+    },
+    {
+     "name": "宫保鸡丁",
+     "price": 36,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "糊辣荔枝味，甜酸微辣"
+    },
+    {
+     "name": "水煮鱼",
+     "price": 68,
+     "spicy": 3,
+     "desc": "滚油泼辣椒，鱼片嫩得能滑进喉咙"
+    },
+    {
+     "name": "水煮肉片",
+     "price": 48,
+     "spicy": 3
+    },
+    {
+     "name": "夫妻肺片",
+     "price": 42,
+     "spicy": 3,
+     "desc": "其实没有肺，是牛头皮牛舌牛心"
+    },
+    {
+     "name": "鱼香肉丝",
+     "price": 32,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "鱼香无鱼，泡椒姜蒜糖醋调出来的"
+    },
+    {
+     "name": "辣子鸡",
+     "price": 52,
+     "spicy": 3,
+     "desc": "在辣椒堆里找鸡丁的乐趣"
+    },
+    {
+     "name": "毛血旺",
+     "price": 58,
+     "spicy": 3
+    },
+    {
+     "name": "口水鸡",
+     "price": 36,
+     "spicy": 2,
+     "desc": "名字就是因为看着就流口水"
+    },
+    {
+     "name": "蒜泥白肉",
+     "price": 34,
+     "spicy": 1,
+     "desc": "薄如纸，配蒜泥红油"
+    },
+    {
+     "name": "灯影牛肉",
+     "price": 46,
+     "spicy": 2,
+     "desc": "薄到能透光，故名灯影"
+    },
+    {
+     "name": "干煸四季豆",
+     "price": 26,
+     "spicy": 2
+    },
+    {
+     "name": "酸菜鱼",
+     "price": 62,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "酸辣开胃，汤能泡两碗饭"
+    },
+    {
+     "name": "泡椒凤爪",
+     "price": 24,
+     "spicy": 3
+    },
+    {
+     "name": "冷吃兔",
+     "price": 42,
+     "spicy": 3,
+     "desc": "自贡名菜，越嚼越香"
+    },
+    {
+     "name": "自贡跳水蛙",
+     "price": 68,
+     "spicy": 3
+    },
+    {
+     "name": "干锅肥肠",
+     "price": 56,
+     "spicy": 3
+    },
+    {
+     "name": "鱼香茄子",
+     "price": 26,
+     "spicy": 2
+    },
+    {
+     "name": "酸辣土豆丝",
+     "price": 18,
+     "spicy": 2
+    },
+    {
+     "name": "担担面",
+     "price": 16,
+     "spicy": 2,
+     "tag": "主食",
+     "desc": "一碗面，麻辣鲜香全在里面"
+    },
+    {
+     "name": "钟水饺",
+     "price": 18,
+     "spicy": 1,
+     "tag": "主食",
+     "desc": "红油水饺，甜辣口"
+    },
+    {
+     "name": "龙抄手",
+     "price": 18,
+     "spicy": 2,
+     "tag": "主食"
+    },
+    {
+     "name": "甜水面",
+     "price": 14,
+     "spicy": 2,
+     "tag": "主食",
+     "desc": "筷子粗的面，甜辣酱"
+    },
+    {
+     "name": "宜宾燃面",
+     "price": 16,
+     "spicy": 2,
+     "tag": "主食",
+     "desc": "油重无水，点火即燃"
+    },
+    {
+     "name": "川北凉粉",
+     "price": 14,
+     "spicy": 2
+    }
+   ]
+  },
+  {
+   "id": "yue",
+   "name": "粤菜",
+   "emoji": "🍤",
+   "desc": "清而不淡，鲜而不俗，嫩而不生，油而不腻。",
+   "dishes": [
+    {
+     "name": "白切鸡",
+     "price": 68,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "皮爽肉滑，唯有好鸡才敢白切"
+    },
+    {
+     "name": "脆皮烧鹅",
+     "price": 88,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "皮脆如玻璃，一咬爆汁"
+    },
+    {
+     "name": "蜜汁叉烧",
+     "price": 58,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "半肥瘦，边角微焦最香"
+    },
+    {
+     "name": "豉汁蒸排骨",
+     "price": 38,
+     "spicy": 1
+    },
+    {
+     "name": "虾饺皇",
+     "price": 32,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "一笼四只，皮薄到看得见虾"
+    },
+    {
+     "name": "干蒸烧卖",
+     "price": 26,
+     "spicy": 1,
+     "tag": "点心"
+    },
+    {
+     "name": "鲜虾肠粉",
+     "price": 24,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "米浆现蒸，滑得挂不住筷子"
+    },
+    {
+     "name": "凤爪",
+     "price": 22,
+     "spicy": 1,
+     "tag": "点心",
+     "desc": "先炸后焖，一吮脱骨"
+    },
+    {
+     "name": "蜜汁叉烧包",
+     "price": 22,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "开花三瓣才算合格"
+    },
+    {
+     "name": "流沙包",
+     "price": 24,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "咸蛋黄流心，小心烫嘴"
+    },
+    {
+     "name": "菠萝包",
+     "price": 16,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "没有菠萝，只有酥皮"
+    },
+    {
+     "name": "蛋挞",
+     "price": 12,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "酥皮层层，蛋液嫩滑"
+    },
+    {
+     "name": "艇仔粥",
+     "price": 18,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "一碗粥里十样料"
+    },
+    {
+     "name": "煲仔饭",
+     "price": 38,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "最精华是锅底那层饭焦"
+    },
+    {
+     "name": "干炒牛河",
+     "price": 42,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "考验锅气，河粉不碎不断"
+    },
+    {
+     "name": "清蒸石斑",
+     "price": 128,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "只放葱姜豉油，吃的是本味"
+    },
+    {
+     "name": "避风塘炒蟹",
+     "price": 138,
+     "spicy": 2,
+     "desc": "蒜蓉酥香，蟹肉鲜甜"
+    },
+    {
+     "name": "蒜蓉粉丝蒸扇贝",
+     "price": 48,
+     "spicy": 1
+    },
+    {
+     "name": "白灼基围虾",
+     "price": 68,
+     "spicy": 0,
+     "desc": "水一开就捞，蘸豉油"
+    },
+    {
+     "name": "盐焗鸡",
+     "price": 72,
+     "spicy": 0,
+     "desc": "粗盐埋住焗出来，香得钻鼻子"
+    },
+    {
+     "name": "梅菜扣肉",
+     "price": 52,
+     "spicy": 0,
+     "desc": "梅菜吸饱肉汁，比肉还好吃"
+    },
+    {
+     "name": "咕咾肉",
+     "price": 42,
+     "spicy": 0,
+     "desc": "酸甜开胃，小孩最爱"
+    },
+    {
+     "name": "艇家炒蟹",
+     "price": 118,
+     "spicy": 1
+    },
+    {
+     "name": "萝卜牛腩煲",
+     "price": 58,
+     "spicy": 1
+    },
+    {
+     "name": "老火靓汤",
+     "price": 32,
+     "spicy": 0,
+     "tag": "汤",
+     "desc": "煲足三小时，汤色清亮"
+    }
+   ]
+  },
+  {
+   "id": "lu",
+   "name": "鲁菜",
+   "emoji": "🍲",
+   "desc": "咸鲜为主，火候精湛，善用高汤。",
+   "dishes": [
+    {
+     "name": "九转大肠",
+     "price": 88,
+     "spicy": 1,
+     "tag": "招牌",
+     "desc": "酸甜香辣咸，五味俱全"
+    },
+    {
+     "name": "葱烧海参",
+     "price": 188,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "大葱的香全逼进海参里"
+    },
+    {
+     "name": "糖醋鲤鱼",
+     "price": 78,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "外焦里嫩，糖醋汁挂得住"
+    },
+    {
+     "name": "爆炒腰花",
+     "price": 48,
+     "spicy": 1,
+     "desc": "刀工菜，火候差一秒就老"
+    },
+    {
+     "name": "四喜丸子",
+     "price": 52,
+     "spicy": 0,
+     "desc": "四个大丸子，取福禄寿喜"
+    },
+    {
+     "name": "把子肉",
+     "price": 38,
+     "spicy": 1,
+     "desc": "济南人的米饭杀手"
+    },
+    {
+     "name": "油焖大虾",
+     "price": 78,
+     "spicy": 0
+    },
+    {
+     "name": "德州扒鸡",
+     "price": 68,
+     "spicy": 0,
+     "desc": "脱骨而不散形"
+    },
+    {
+     "name": "糟溜鱼片",
+     "price": 56,
+     "spicy": 0,
+     "desc": "香糟味，滑嫩"
+    },
+    {
+     "name": "锅塌豆腐",
+     "price": 28,
+     "spicy": 0
+    },
+    {
+     "name": "油爆双脆",
+     "price": 68,
+     "spicy": 1,
+     "desc": "肚头配鸡胗，只在几秒之间"
+    },
+    {
+     "name": "奶汤蒲菜",
+     "price": 42,
+     "spicy": 0,
+     "tag": "汤",
+     "desc": "奶白汤色，清鲜见底"
+    },
+    {
+     "name": "糖醋里脊",
+     "price": 42,
+     "spicy": 0
+    },
+    {
+     "name": "黄瓜拌海蜇",
+     "price": 26,
+     "spicy": 1
+    },
+    {
+     "name": "风味茄子",
+     "price": 28,
+     "spicy": 0
+    },
+    {
+     "name": "扒肘子",
+     "price": 68,
+     "spicy": 0
+    }
+   ]
+  },
+  {
+   "id": "su",
+   "name": "苏菜 · 淮扬",
+   "emoji": "🐟",
+   "desc": "刀工精细，讲究火候，咸甜适中。",
+   "dishes": [
+    {
+     "name": "松鼠鳜鱼",
+     "price": 138,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "改刀成花，浇汁时吱吱响"
+    },
+    {
+     "name": "蟹粉狮子头",
+     "price": 78,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "肉圆嫩如豆腐，入口即化"
+    },
+    {
+     "name": "盐水鸭",
+     "price": 58,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "南京人的日常，皮白肉嫩"
+    },
+    {
+     "name": "大煮干丝",
+     "price": 42,
+     "spicy": 0,
+     "desc": "一块豆腐干片成上百根丝"
+    },
+    {
+     "name": "文思豆腐",
+     "price": 48,
+     "spicy": 0,
+     "desc": "豆腐切成发丝，能穿针"
+    },
+    {
+     "name": "响油鳝糊",
+     "price": 62,
+     "spicy": 1,
+     "desc": "上桌时热油还在响"
+    },
+    {
+     "name": "碧螺虾仁",
+     "price": 88,
+     "spicy": 0,
+     "desc": "用碧螺春茶炒的虾仁"
+    },
+    {
+     "name": "樱桃肉",
+     "price": 52,
+     "spicy": 0,
+     "desc": "形似樱桃，红亮诱人"
+    },
+    {
+     "name": "叫花鸡",
+     "price": 98,
+     "spicy": 0,
+     "desc": "荷叶泥巴裹着烤"
+    },
+    {
+     "name": "水晶肴肉",
+     "price": 46,
+     "spicy": 0,
+     "desc": "晶莹剔透，蘸镇江醋"
+    },
+    {
+     "name": "白袍虾仁",
+     "price": 68,
+     "spicy": 0
+    },
+    {
+     "name": "清炖蟹粉狮子头",
+     "price": 82,
+     "spicy": 0,
+     "tag": "汤"
+    },
+    {
+     "name": "扬州炒饭",
+     "price": 32,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "粒粒分明，配料丰富"
+    },
+    {
+     "name": "阳春面",
+     "price": 16,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "清汤寡水，但最考验功夫"
+    },
+    {
+     "name": "三丁包",
+     "price": 18,
+     "spicy": 0,
+     "tag": "点心"
+    },
+    {
+     "name": "千层油糕",
+     "price": 16,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "一层层撕着吃"
+    }
+   ]
+  },
+  {
+   "id": "zhe",
+   "name": "浙菜",
+   "emoji": "🦐",
+   "desc": "清鲜爽脆，注重本味，河鲜见长。",
+   "dishes": [
+    {
+     "name": "西湖醋鱼",
+     "price": 88,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "只用草鱼，糖醋汁带蟹味"
+    },
+    {
+     "name": "东坡肉",
+     "price": 58,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "慢着火，少着水，火候足时它自美"
+    },
+    {
+     "name": "龙井虾仁",
+     "price": 98,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "茶香入虾，清雅之极"
+    },
+    {
+     "name": "叫花童鸡",
+     "price": 88,
+     "spicy": 0,
+     "desc": "泥封炭煨，敲开香气扑鼻"
+    },
+    {
+     "name": "宋嫂鱼羹",
+     "price": 48,
+     "spicy": 0,
+     "tag": "汤",
+     "desc": "羹比鱼鲜"
+    },
+    {
+     "name": "干菜焖肉",
+     "price": 52,
+     "spicy": 0,
+     "desc": "梅干菜吸油，咸香下饭"
+    },
+    {
+     "name": "油焖春笋",
+     "price": 38,
+     "spicy": 0,
+     "desc": "春天限定"
+    },
+    {
+     "name": "荷叶粉蒸肉",
+     "price": 46,
+     "spicy": 0
+    },
+    {
+     "name": "醉蟹",
+     "price": 78,
+     "spicy": 0,
+     "desc": "生腌，酒香浓郁"
+    },
+    {
+     "name": "糟鸡",
+     "price": 52,
+     "spicy": 0
+    },
+    {
+     "name": "片儿川",
+     "price": 22,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "雪菜笋片肉丝面"
+    },
+    {
+     "name": "虾爆鳝面",
+     "price": 38,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "杭州面馆的招牌"
+    },
+    {
+     "name": "三鲜锅巴",
+     "price": 42,
+     "spicy": 0,
+     "desc": "浇汁时滋滋响"
+    },
+    {
+     "name": "生煎包",
+     "price": 20,
+     "spicy": 0,
+     "tag": "点心",
+     "desc": "底脆汁多，小心烫"
+    },
+    {
+     "name": "葱包桧",
+     "price": 12,
+     "spicy": 0,
+     "tag": "点心"
+    },
+    {
+     "name": "定胜糕",
+     "price": 14,
+     "spicy": 0,
+     "tag": "点心"
+    }
+   ]
+  },
+  {
+   "id": "min",
+   "name": "闽菜",
+   "emoji": "🥘",
+   "desc": "鲜香清淡，善用汤，一汤十变。",
+   "dishes": [
+    {
+     "name": "佛跳墙",
+     "price": 388,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "坛启荤香飘四邻，佛闻弃禅跳墙来"
+    },
+    {
+     "name": "荔枝肉",
+     "price": 42,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "形色味都像荔枝"
+    },
+    {
+     "name": "醉排骨",
+     "price": 38,
+     "spicy": 0
+    },
+    {
+     "name": "海蛎煎",
+     "price": 36,
+     "spicy": 0,
+     "desc": "番薯粉裹海蛎，外脆内嫩"
+    },
+    {
+     "name": "沙茶面",
+     "price": 26,
+     "spicy": 1,
+     "tag": "主食",
+     "desc": "沙茶酱汤头，自选加料"
+    },
+    {
+     "name": "鱼丸汤",
+     "price": 28,
+     "spicy": 0,
+     "tag": "汤",
+     "desc": "手打鱼丸，能弹起来"
+    },
+    {
+     "name": "肉燕",
+     "price": 24,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "肉做的皮，包肉的馅"
+    },
+    {
+     "name": "锅边糊",
+     "price": 18,
+     "spicy": 0,
+     "tag": "主食"
+    },
+    {
+     "name": "白斩河田鸡",
+     "price": 68,
+     "spicy": 0
+    },
+    {
+     "name": "太极芋泥",
+     "price": 28,
+     "spicy": 0,
+     "tag": "甜品",
+     "desc": "一半猪油一半芋泥，形似太极"
+    },
+    {
+     "name": "鸡汤汆海蚌",
+     "price": 168,
+     "spicy": 0,
+     "tag": "汤",
+     "desc": "鸡汤滚烫，把海蚌烫熟"
+    },
+    {
+     "name": "太平燕",
+     "price": 32,
+     "spicy": 0,
+     "tag": "汤",
+     "desc": "福州喜宴必上"
+    },
+    {
+     "name": "光饼",
+     "price": 10,
+     "spicy": 0,
+     "tag": "点心"
+    },
+    {
+     "name": "线面",
+     "price": 18,
+     "spicy": 0,
+     "tag": "主食",
+     "desc": "细如发丝，越长越好"
+    },
+    {
+     "name": "red糟鳗",
+     "price": 68,
+     "spicy": 0,
+     "desc": "红糟味，闽菜独有"
+    },
+    {
+     "name": "八宝芋泥",
+     "price": 32,
+     "spicy": 0,
+     "tag": "甜品"
+    }
+   ]
+  },
+  {
+   "id": "xiang",
+   "name": "湘菜",
+   "emoji": "🌶️",
+   "desc": "香辣为主，重油重色，无辣不成席。",
+   "dishes": [
+    {
+     "name": "剁椒鱼头",
+     "price": 88,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "红剁椒盖满鱼头，蒸出来的鲜辣"
+    },
+    {
+     "name": "口味虾",
+     "price": 98,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "长沙夜宵之王"
+    },
+    {
+     "name": "毛氏红烧肉",
+     "price": 58,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "不放酱油，靠糖色"
+    },
+    {
+     "name": "辣椒炒肉",
+     "price": 38,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "湖南人的命根子菜"
+    },
+    {
+     "name": "腊味合蒸",
+     "price": 68,
+     "spicy": 2,
+     "desc": "腊肉腊鱼腊鸡一起蒸"
+    },
+    {
+     "name": "东安子鸡",
+     "price": 62,
+     "spicy": 3,
+     "desc": "酸辣，醋是灵魂"
+    },
+    {
+     "name": "永州血鸭",
+     "price": 68,
+     "spicy": 3
+    },
+    {
+     "name": "湘西外婆菜",
+     "price": 32,
+     "spicy": 2,
+     "desc": "腌菜炒肉末，超下饭"
+    },
+    {
+     "name": "农家小炒肉",
+     "price": 36,
+     "spicy": 3
+    },
+    {
+     "name": "酸辣鸡杂",
+     "price": 38,
+     "spicy": 3
+    },
+    {
+     "name": "长沙臭豆腐",
+     "price": 18,
+     "spicy": 2,
+     "tag": "小吃",
+     "desc": "黑皮白心，闻着臭吃着香"
+    },
+    {
+     "name": "组庵鱼翅",
+     "price": 288,
+     "spicy": 0,
+     "desc": "谭延闿家厨传下来的"
+    },
+    {
+     "name": "湘莲扣肉",
+     "price": 52,
+     "spicy": 1
+    },
+    {
+     "name": "剁椒蒸芋头",
+     "price": 26,
+     "spicy": 2
+    },
+    {
+     "name": "干锅茶树菇",
+     "price": 42,
+     "spicy": 2
+    },
+    {
+     "name": "米粉",
+     "price": 14,
+     "spicy": 2,
+     "tag": "主食",
+     "desc": "湖南人的早餐"
+    },
+    {
+     "name": "糖油粑粑",
+     "price": 12,
+     "spicy": 0,
+     "tag": "小吃"
+    }
+   ]
+  },
+  {
+   "id": "hui",
+   "name": "徽菜",
+   "emoji": "🍄",
+   "desc": "重油重色重火功，善烹山珍野味。",
+   "dishes": [
+    {
+     "name": "臭鳜鱼",
+     "price": 98,
+     "spicy": 1,
+     "tag": "招牌",
+     "desc": "闻着臭，吃着香，蒜瓣肉"
+    },
+    {
+     "name": "毛豆腐",
+     "price": 32,
+     "spicy": 1,
+     "tag": "招牌",
+     "desc": "长毛的豆腐，煎香蘸辣酱"
+    },
+    {
+     "name": "胡适一品锅",
+     "price": 128,
+     "spicy": 0,
+     "desc": "一层层码起来，越往下越入味"
+    },
+    {
+     "name": "火腿炖甲鱼",
+     "price": 168,
+     "spicy": 0,
+     "tag": "汤"
+    },
+    {
+     "name": "黄山炖鸽",
+     "price": 88,
+     "spicy": 0,
+     "tag": "汤"
+    },
+    {
+     "name": "问政山笋",
+     "price": 48,
+     "spicy": 0,
+     "desc": "笋嫩到能掐出水"
+    },
+    {
+     "name": "方腊鱼",
+     "price": 78,
+     "spicy": 0
+    },
+    {
+     "name": "清蒸石鸡",
+     "price": 88,
+     "spicy": 1,
+     "desc": "山涧里的石鸡，比牛蛙嫩"
+    },
+    {
+     "name": "蜜汁红芋",
+     "price": 26,
+     "spicy": 0,
+     "tag": "甜品"
+    },
+    {
+     "name": "中和汤",
+     "price": 38,
+     "spicy": 0,
+     "tag": "汤",
+     "desc": "黄山人过年必喝"
+    },
+    {
+     "name": "徽州圆子",
+     "price": 36,
+     "spicy": 0
+    },
+    {
+     "name": "苞芦松",
+     "price": 18,
+     "spicy": 0,
+     "tag": "小吃"
+    },
+    {
+     "name": "蟹壳黄烧饼",
+     "price": 8,
+     "spicy": 0,
+     "tag": "小吃",
+     "desc": "形似蟹壳，层层酥"
+    },
+    {
+     "name": "腊八豆腐",
+     "price": 22,
+     "spicy": 0
+    }
+   ]
+  },
+  {
+   "id": "dongbei",
+   "name": "东北菜",
+   "emoji": "🥟",
+   "desc": "咸鲜味浓，分量扎实，不拘小节。",
+   "dishes": [
+    {
+     "name": "锅包肉",
+     "price": 48,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "外壳酥脆，酸甜挂汁"
+    },
+    {
+     "name": "小鸡炖蘑菇",
+     "price": 68,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "榛蘑才是灵魂"
+    },
+    {
+     "name": "猪肉炖粉条",
+     "price": 52,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "粉条吸饱肉汤"
+    },
+    {
+     "name": "地三鲜",
+     "price": 32,
+     "spicy": 0,
+     "desc": "土豆茄子青椒，过油三遍"
+    },
+    {
+     "name": "溜肉段",
+     "price": 42,
+     "spicy": 0
+    },
+    {
+     "name": "杀猪菜",
+     "price": 78,
+     "spicy": 1,
+     "desc": "酸菜血肠白肉一锅炖"
+    },
+    {
+     "name": "得莫利炖鱼",
+     "price": 88,
+     "spicy": 1
+    },
+    {
+     "name": "酸菜白肉",
+     "price": 52,
+     "spicy": 0
+    },
+    {
+     "name": "东北大拉皮",
+     "price": 26,
+     "spicy": 1,
+     "desc": "麻酱蒜汁拌的"
+    },
+    {
+     "name": "酱大骨",
+     "price": 58,
+     "spicy": 1,
+     "desc": "上手抓着啃"
+    },
+    {
+     "name": "烤冷面",
+     "price": 12,
+     "spicy": 1,
+     "tag": "小吃",
+     "desc": "街边摊之王"
+    },
+    {
+     "name": "拔丝地瓜",
+     "price": 28,
+     "spicy": 0,
+     "tag": "甜品",
+     "desc": "能拉一米长的丝"
+    },
+    {
+     "name": "粘豆包",
+     "price": 16,
+     "spicy": 0,
+     "tag": "小吃",
+     "desc": "蘸白糖"
+    },
+    {
+     "name": "哈尔滨红肠",
+     "price": 32,
+     "spicy": 0
+    },
+    {
+     "name": "酸菜饺子",
+     "price": 22,
+     "spicy": 0,
+     "tag": "主食"
+    },
+    {
+     "name": "大碴粥",
+     "price": 10,
+     "spicy": 0,
+     "tag": "主食"
+    }
+   ]
+  },
+  {
+   "id": "jiachang",
+   "name": "家常小炒",
+   "emoji": "🍳",
+   "desc": "最常吃、最下饭、最不会出错。",
+   "dishes": [
+    {
+     "name": "西红柿炒鸡蛋",
+     "price": 22,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "国民第一菜"
+    },
+    {
+     "name": "青椒肉丝",
+     "price": 28,
+     "spicy": 1
+    },
+    {
+     "name": "酸辣土豆丝",
+     "price": 18,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "便宜、好吃、人人会点"
+    },
+    {
+     "name": "干煸豆角",
+     "price": 26,
+     "spicy": 1
+    },
+    {
+     "name": "红烧茄子",
+     "price": 26,
+     "spicy": 0
+    },
+    {
+     "name": "蒜蓉西兰花",
+     "price": 24,
+     "spicy": 0
+    },
+    {
+     "name": "糖醋里脊",
+     "price": 42,
+     "spicy": 0,
+     "desc": "小孩必点"
+    },
+    {
+     "name": "可乐鸡翅",
+     "price": 36,
+     "spicy": 0,
+     "desc": "甜咸挂汁，零失败"
+    },
+    {
+     "name": "番茄牛腩",
+     "price": 58,
+     "spicy": 0,
+     "desc": "汤汁泡饭一绝"
+    },
+    {
+     "name": "蒜苔炒肉",
+     "price": 28,
+     "spicy": 1
+    },
+    {
+     "name": "香菇滑鸡",
+     "price": 38,
+     "spicy": 0
+    },
+    {
+     "name": "红烧肉",
+     "price": 52,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "肥而不腻，入口即化"
+    },
+    {
+     "name": "红烧排骨",
+     "price": 48,
+     "spicy": 0
+    },
+    {
+     "name": "京酱肉丝",
+     "price": 36,
+     "spicy": 0
+    },
+    {
+     "name": "木须肉",
+     "price": 30,
+     "spicy": 0
+    },
+    {
+     "name": "麻酱油麦菜",
+     "price": 18,
+     "spicy": 0,
+     "tag": "凉菜"
+    },
+    {
+     "name": "拍黄瓜",
+     "price": 14,
+     "spicy": 2,
+     "tag": "凉菜",
+     "desc": "解腻神器"
+    },
+    {
+     "name": "凉拌木耳",
+     "price": 18,
+     "spicy": 1,
+     "tag": "凉菜"
+    },
+    {
+     "name": "皮蛋豆腐",
+     "price": 16,
+     "spicy": 0,
+     "tag": "凉菜"
+    },
+    {
+     "name": "手撕包菜",
+     "price": 22,
+     "spicy": 2
+    },
+    {
+     "name": "醋溜白菜",
+     "price": 18,
+     "spicy": 1
+    },
+    {
+     "name": "炒时蔬",
+     "price": 18,
+     "spicy": 0
+    }
+   ]
+  },
+  {
+   "id": "shaokao",
+   "name": "烧烤",
+   "emoji": "🍢",
+   "desc": "炭火、孜然、辣椒面，深夜的快乐。",
+   "dishes": [
+    {
+     "name": "羊肉串",
+     "price": 6,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "肥瘦相间，孜然辣椒面"
+    },
+    {
+     "name": "牛肉串",
+     "price": 7,
+     "spicy": 2
+    },
+    {
+     "name": "烤五花肉",
+     "price": 8,
+     "spicy": 1,
+     "desc": "滋滋冒油"
+    },
+    {
+     "name": "烤鸡翅",
+     "price": 9,
+     "spicy": 1,
+     "tag": "招牌",
+     "desc": "外焦里嫩"
+    },
+    {
+     "name": "烤鸡心",
+     "price": 5,
+     "spicy": 2
+    },
+    {
+     "name": "烤鸡胗",
+     "price": 5,
+     "spicy": 2
+    },
+    {
+     "name": "烤板筋",
+     "price": 6,
+     "spicy": 2,
+     "desc": "越嚼越香"
+    },
+    {
+     "name": "烤腰子",
+     "price": 12,
+     "spicy": 2
+    },
+    {
+     "name": "烤韭菜",
+     "price": 6,
+     "spicy": 1
+    },
+    {
+     "name": "烤茄子",
+     "price": 12,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "蒜蓉铺满，一夹就烂"
+    },
+    {
+     "name": "烤玉米",
+     "price": 8,
+     "spicy": 0
+    },
+    {
+     "name": "烤金针菇",
+     "price": 8,
+     "spicy": 2
+    },
+    {
+     "name": "烤生蚝",
+     "price": 12,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "蒜蓉粉丝，一口一个"
+    },
+    {
+     "name": "烤扇贝",
+     "price": 12,
+     "spicy": 2
+    },
+    {
+     "name": "烤面筋",
+     "price": 5,
+     "spicy": 2
+    },
+    {
+     "name": "烤馒头片",
+     "price": 4,
+     "spicy": 1,
+     "desc": "刷蒜香酱"
+    },
+    {
+     "name": "烤豆腐皮",
+     "price": 5,
+     "spicy": 2
+    },
+    {
+     "name": "烤土豆片",
+     "price": 6,
+     "spicy": 1
+    },
+    {
+     "name": "烤年糕",
+     "price": 6,
+     "spicy": 0
+    },
+    {
+     "name": "烤鱼",
+     "price": 78,
+     "spicy": 3,
+     "tag": "大菜",
+     "desc": "整条烤，底下垫菜"
+    }
+   ]
+  },
+  {
+   "id": "huoguo",
+   "name": "火锅",
+   "emoji": "🍲",
+   "desc": "锅底一滚，万物皆可涮。",
+   "dishes": [
+    {
+     "name": "毛肚",
+     "price": 38,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "七上八下，脆得响"
+    },
+    {
+     "name": "鸭肠",
+     "price": 36,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "比毛肚还快，一晃就熟"
+    },
+    {
+     "name": "黄喉",
+     "price": 32,
+     "spicy": 2,
+     "desc": "脆爽"
+    },
+    {
+     "name": "肥牛卷",
+     "price": 42,
+     "spicy": 0,
+     "tag": "招牌"
+    },
+    {
+     "name": "肥羊卷",
+     "price": 38,
+     "spicy": 0
+    },
+    {
+     "name": "虾滑",
+     "price": 36,
+     "spicy": 0,
+     "desc": "手打，能弹"
+    },
+    {
+     "name": "鱼豆腐",
+     "price": 18,
+     "spicy": 0
+    },
+    {
+     "name": "宽粉",
+     "price": 12,
+     "spicy": 2,
+     "desc": "吸满汤汁"
+    },
+    {
+     "name": "土豆片",
+     "price": 10,
+     "spicy": 1
+    },
+    {
+     "name": "藕片",
+     "price": 12,
+     "spicy": 0,
+     "desc": "脆的"
+    },
+    {
+     "name": "金针菇",
+     "price": 12,
+     "spicy": 1
+    },
+    {
+     "name": "娃娃菜",
+     "price": 10,
+     "spicy": 0
+    },
+    {
+     "name": "豆皮",
+     "price": 12,
+     "spicy": 1
+    },
+    {
+     "name": "午餐肉",
+     "price": 22,
+     "spicy": 0
+    },
+    {
+     "name": "鹌鹑蛋",
+     "price": 16,
+     "spicy": 0
+    },
+    {
+     "name": "脑花",
+     "price": 28,
+     "spicy": 3,
+     "desc": "爱憎分明"
+    },
+    {
+     "name": "鸭血",
+     "price": 16,
+     "spicy": 2
+    },
+    {
+     "name": "牛百叶",
+     "price": 36,
+     "spicy": 3
+    },
+    {
+     "name": "菌菇拼盘",
+     "price": 26,
+     "spicy": 0
+    },
+    {
+     "name": "油条",
+     "price": 12,
+     "spicy": 0,
+     "desc": "涮三秒"
+    },
+    {
+     "name": "番茄锅底",
+     "price": 32,
+     "spicy": 0,
+     "tag": "锅底"
+    },
+    {
+     "name": "麻辣锅底",
+     "price": 38,
+     "spicy": 3,
+     "tag": "锅底"
+    },
+    {
+     "name": "鸳鸯锅底",
+     "price": 42,
+     "spicy": 2,
+     "tag": "锅底"
+    },
+    {
+     "name": "菌汤锅底",
+     "price": 36,
+     "spicy": 0,
+     "tag": "锅底"
+    }
+   ]
+  },
+  {
+   "id": "xiaochi",
+   "name": "小吃主食",
+   "emoji": "🥟",
+   "desc": "一个人也能吃饱的那种。",
+   "dishes": [
+    {
+     "name": "煎饼果子",
+     "price": 10,
+     "spicy": 1,
+     "tag": "招牌",
+     "desc": "加蛋加脆饼"
+    },
+    {
+     "name": "肉夹馍",
+     "price": 14,
+     "spicy": 1,
+     "tag": "招牌",
+     "desc": "腊汁肉剁碎夹馍"
+    },
+    {
+     "name": "凉皮",
+     "price": 12,
+     "spicy": 2,
+     "desc": "麻酱蒜水辣油"
+    },
+    {
+     "name": "小笼包",
+     "price": 20,
+     "spicy": 0,
+     "desc": "皮薄汁多"
+    },
+    {
+     "name": "生煎包",
+     "price": 20,
+     "spicy": 0
+    },
+    {
+     "name": "灌汤包",
+     "price": 22,
+     "spicy": 0,
+     "desc": "先开窗后喝汤"
+    },
+    {
+     "name": "锅贴",
+     "price": 18,
+     "spicy": 1
+    },
+    {
+     "name": "手抓饼",
+     "price": 10,
+     "spicy": 1
+    },
+    {
+     "name": "烤红薯",
+     "price": 12,
+     "spicy": 0,
+     "desc": "冬天限定"
+    },
+    {
+     "name": "冰糖葫芦",
+     "price": 10,
+     "spicy": 0
+    },
+    {
+     "name": "长沙臭豆腐",
+     "price": 15,
+     "spicy": 2
+    },
+    {
+     "name": "关东煮",
+     "price": 16,
+     "spicy": 1
+    },
+    {
+     "name": "螺蛳粉",
+     "price": 22,
+     "spicy": 3,
+     "tag": "招牌",
+     "desc": "闻着臭吃着香"
+    },
+    {
+     "name": "酸辣粉",
+     "price": 16,
+     "spicy": 3
+    },
+    {
+     "name": "兰州拉面",
+     "price": 22,
+     "spicy": 1,
+     "desc": "一清二白三红四绿"
+    },
+    {
+     "name": "刀削面",
+     "price": 20,
+     "spicy": 1,
+     "desc": "面片飞进锅里"
+    },
+    {
+     "name": "炸酱面",
+     "price": 20,
+     "spicy": 0
+    },
+    {
+     "name": "热干面",
+     "price": 14,
+     "spicy": 1,
+     "desc": "芝麻酱拌的武汉早餐"
+    },
+    {
+     "name": "重庆小面",
+     "price": 16,
+     "spicy": 3
+    },
+    {
+     "name": "过桥米线",
+     "price": 28,
+     "spicy": 1,
+     "desc": "汤上浮油，烫熟生肉"
+    },
+    {
+     "name": "煲仔饭",
+     "price": 32,
+     "spicy": 0
+    },
+    {
+     "name": "蛋炒饭",
+     "price": 18,
+     "spicy": 0
+    },
+    {
+     "name": "馄饨",
+     "price": 16,
+     "spicy": 0
+    },
+    {
+     "name": "粥",
+     "price": 10,
+     "spicy": 0,
+     "desc": "皮蛋瘦肉 / 白粥"
+    }
+   ]
+  },
+  {
+   "id": "tang",
+   "name": "汤羹",
+   "emoji": "🍜",
+   "desc": "饭前一碗，饭后一碗。",
+   "dishes": [
+    {
+     "name": "西红柿蛋汤",
+     "price": 18,
+     "spicy": 0,
+     "tag": "招牌"
+    },
+    {
+     "name": "紫菜蛋花汤",
+     "price": 16,
+     "spicy": 0
+    },
+    {
+     "name": "冬瓜排骨汤",
+     "price": 42,
+     "spicy": 0
+    },
+    {
+     "name": "玉米排骨汤",
+     "price": 42,
+     "spicy": 0
+    },
+    {
+     "name": "老鸭汤",
+     "price": 58,
+     "spicy": 0,
+     "desc": "炖到脱骨"
+    },
+    {
+     "name": "酸辣汤",
+     "price": 22,
+     "spicy": 2
+    },
+    {
+     "name": "胡辣汤",
+     "price": 14,
+     "spicy": 2,
+     "tag": "招牌",
+     "desc": "河南人的早餐"
+    },
+    {
+     "name": "罗宋汤",
+     "price": 26,
+     "spicy": 0
+    },
+    {
+     "name": "菌菇汤",
+     "price": 32,
+     "spicy": 0
+    },
+    {
+     "name": "银耳莲子羹",
+     "price": 20,
+     "spicy": 0,
+     "tag": "甜品"
+    },
+    {
+     "name": "南瓜浓汤",
+     "price": 22,
+     "spicy": 0
+    },
+    {
+     "name": "山药排骨汤",
+     "price": 46,
+     "spicy": 0
+    },
+    {
+     "name": "老火例汤",
+     "price": 28,
+     "spicy": 0,
+     "desc": "每日不同"
+    },
+    {
+     "name": "番茄牛尾汤",
+     "price": 58,
+     "spicy": 0
+    }
+   ]
+  },
+  {
+   "id": "yinpin",
+   "name": "饮品甜品",
+   "emoji": "🧋",
+   "desc": "吃完总要来点甜的。",
+   "dishes": [
+    {
+     "name": "珍珠奶茶",
+     "price": 16,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "少冰半糖"
+    },
+    {
+     "name": "杨枝甘露",
+     "price": 22,
+     "spicy": 0,
+     "tag": "招牌",
+     "desc": "芒果西柚西米"
+    },
+    {
+     "name": "柠檬茶",
+     "price": 14,
+     "spicy": 0,
+     "desc": "手打，微苦回甘"
+    },
+    {
+     "name": "芋泥啵啵奶茶",
+     "price": 20,
+     "spicy": 0
+    },
+    {
+     "name": "茉莉奶绿",
+     "price": 16,
+     "spicy": 0
+    },
+    {
+     "name": "生椰拿铁",
+     "price": 20,
+     "spicy": 0
+    },
+    {
+     "name": "美式咖啡",
+     "price": 15,
+     "spicy": 0
+    },
+    {
+     "name": "双皮奶",
+     "price": 18,
+     "spicy": 0,
+     "desc": "顺德做法"
+    },
+    {
+     "name": "芒果班戟",
+     "price": 22,
+     "spicy": 0
+    },
+    {
+     "name": "提拉米苏",
+     "price": 28,
+     "spicy": 0
+    },
+    {
+     "name": "舒芙蕾",
+     "price": 32,
+     "spicy": 0,
+     "desc": "出炉三分钟就塌"
+    },
+    {
+     "name": "冰淇淋",
+     "price": 12,
+     "spicy": 0,
+     "desc": "香草 / 巧克力 / 抹茶"
+    },
+    {
+     "name": "豆乳盒子",
+     "price": 24,
+     "spicy": 0
+    },
+    {
+     "name": "酸梅汤",
+     "price": 10,
+     "spicy": 0,
+     "desc": "解腻"
+    },
+    {
+     "name": "鲜榨橙汁",
+     "price": 18,
+     "spicy": 0
+    },
+    {
+     "name": "西瓜汁",
+     "price": 16,
+     "spicy": 0,
+     "desc": "夏天限定"
+    },
+    {
+     "name": "可乐",
+     "price": 6,
+     "spicy": 0,
+     "tag": "饮料",
+     "desc": "冰的"
+    },
+    {
+     "name": "雪碧",
+     "price": 6,
+     "spicy": 0,
+     "tag": "饮料",
+     "desc": "冰的"
+    },
+    {
+     "name": "北冰洋",
+     "price": 8,
+     "spicy": 0,
+     "tag": "饮料"
+    },
+    {
+     "name": "精酿啤酒",
+     "price": 22,
+     "spicy": 0,
+     "tag": "饮料"
+    },
+    {
+     "name": "酸梅汤（壶）",
+     "price": 26,
+     "spicy": 0,
+     "tag": "饮料"
+    },
+    {
+     "name": "大麦茶",
+     "price": 6,
+     "spicy": 0,
+     "tag": "饮料",
+     "desc": "免费续"
+    }
+   ]
+  }
+ ]
+}
