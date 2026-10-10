@@ -394,6 +394,46 @@ Location: https://dnspod.qcloud.com/static/webblock.html?d=origin.hajimiovo.top:
 > metadata 里不带 `bindings` 就会把已有的 D1 绑定弄丢（页面会报
 > `Cannot read properties of undefined`）。`deploy_worker.py` 现在显式带上绑定。
 
+### 已停用 Cloudflare（2026-10-10）
+
+既然域名回源走不通、数据又要两边同步，干脆把 Cloudflare 降级成**一块路牌**：
+
+| 项 | 状态 |
+|---|---|
+| Pages 自定义域名 | **已摘掉**（站点不再托管在 Cloudflare） |
+| Worker `api.hajimiovo.top` | **已摘掉** |
+| Worker D1 绑定 | **已去掉**（不再读写 D1） |
+| Worker 路由 | `hajimiovo.top/*` + `www.hajimiovo.top/*` |
+| Worker 职能 | **只剩 301 跳转**到 `http://119.45.171.242:8080` |
+| D1 同步 cron | **已删除** |
+
+```bash
+$ curl -sI https://hajimiovo.top/delta-codes/
+HTTP/1.1 301 Moved Permanently
+Location: http://119.45.171.242:8080/delta-codes/
+```
+
+**为什么留个跳转而不是彻底删掉**：别人记的是域名，直接变成错误页体验太差。
+301 一下就能到，旧链接、书签都不会失效。**备案通过后把域名解析到服务器，这个 Worker 就可以彻底删了。**
+
+**⚠️ 备案期间的风险**（用户知情选择）：现在大家用的是 `http://119.45.171.242:8080`，
+属于「境内服务器未备案对外提供服务」，而且没有 HTTPS（浏览器显示"不安全"）。
+备案通过后立刻切到域名 + HTTPS。
+
+### `API_ON` 的一个坑
+
+`API_ON`（有没有后端）**不能**从 `apiBase` 推 —— 同源时 `API` 是空串（falsy），
+但后端明明在。改成看「是不是跨域场景」：
+
+```js
+var CROSS_ORIGIN = location.protocol === "file:" || /(^|\.)github\.io$/.test(location.hostname);
+var API     = CROSS_ORIGIN ? String(D.apiBase || "").replace(/\/+$/, "") : "";  // 同源时是空前缀
+var API_ON  = CROSS_ORIGIN ? !!D.apiBase : true;   // 同源时一定有后端
+```
+
+GitHub 镜像没有可用的后端（`api.hajimiovo.top` 已摘，而 https 页面调 http 接口会被
+浏览器按混合内容拦掉），所以 `config.json` 的 `apiBase` 留空 —— 镜像变成**只读浏览**版。
+
 ## 更新数据
 
 本地（推荐）：
