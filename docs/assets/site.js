@@ -34,6 +34,19 @@
         { label: "枪械", value: "67" },
         { label: "玩法", value: "4" }
       ]
+    },
+    {
+      id: "jimi-restaurant",
+      name: "基米餐馆",
+      desc: "川粤鲁苏浙闽湘徽、东北菜、家常小炒、烧烤、火锅、小吃、汤羹、饮品甜品，288 道菜随便点。要密码才能进。",
+      tags: ["美食", "需要密码"],
+      status: "online",
+      icon: "🍚",
+      lock: true,
+      stats: [
+        { label: "菜系", value: "15" },
+        { label: "菜品", value: "288" }
+      ]
     }
     /* 以后的新功能加在这里，例如：
     ,{
