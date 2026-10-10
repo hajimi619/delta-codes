@@ -69,35 +69,38 @@ function put(cacheName, req, res) {
   return res;
 }
 
-/** 页面导航：先给缓存（秒开），同时后台拉新的 */
-function handleNavigation(req) {
+/** 页面导航：先给缓存（秒开），同时后台拉新的
+    用 event.waitUntil 保证后台更新不会被中途掐断 */
+function handleNavigation(req, event) {
   return caches.match(req).then(function (cached) {
     var network = timeoutFetch(req, 2500).then(function (res) {
       return put(SHELL, req, res);
-    }).catch(function () {
+    })["catch"](function () {
       return cached || caches.match(OFFLINE_URL);
     });
-    /* 有缓存就立刻返回，让浏览器用缓存的（stale-while-revalidate 的导航版） */
+    if (event) event.waitUntil(network.then(function () {}).catch(function () {}));
     return cached || network;
   });
 }
 
-/** 静态资源：缓存优先 */
-function handleAsset(req) {
+/** 静态资源：缓存优先，后台静默更新 */
+function handleAsset(req, event) {
   return caches.match(req).then(function (cached) {
     var network = fetch(req).then(function (res) {
       return put(ASSET, req, res);
-    }).catch(function () { return cached; });
+    })["catch"](function () { return cached; });
+    if (event) event.waitUntil(network.then(function () {}).catch(function () {}));
     return cached || network;
   });
 }
 
 /** data.js：有缓存先用，后台更新 */
-function handleData(req) {
+function handleData(req, event) {
   return caches.match(req).then(function (cached) {
     var network = fetch(req).then(function (res) {
       return put(DATA, req, res);
-    }).catch(function () { return cached; });
+    })["catch"](function () { return cached; });
+    if (event) event.waitUntil(network.then(function () {}).catch(function () {}));
     return cached || network;
   });
 }
@@ -128,9 +131,9 @@ self.addEventListener("fetch", function (e) {
   }
   if (url.origin !== self.location.origin) return;        // 其它跨域不拦
 
-  if (req.mode === "navigate") { e.respondWith(handleNavigation(req)); return; }
-  if (/\/data\.js$/.test(url.pathname)) { e.respondWith(handleData(req)); return; }
+  if (req.mode === "navigate") { e.respondWith(handleNavigation(req, e)); return; }
+  if (/\/data\.js$/.test(url.pathname)) { e.respondWith(handleData(req, e)); return; }
   if (/\.(css|js|webp|png|jpg|svg|woff2?|ico)$/.test(url.pathname) || url.pathname.indexOf("/assets/") >= 0) {
-    e.respondWith(handleAsset(req));
+    e.respondWith(handleAsset(req, e));
   }
 });
