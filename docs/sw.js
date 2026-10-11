@@ -8,7 +8,7 @@
    - /api/changes：网络优先，2 秒超时回退到上次结果
    ============================================================ */
 
-var VERSION = "hk-v2";
+var VERSION = "hk-v3";
 var SHELL = "shell-" + VERSION;
 var ASSET = "asset-" + VERSION;
 var DATA = "data-" + VERSION;
@@ -21,8 +21,11 @@ var API_RE = /\/api\/(changes|add|flag)/;
 var PRECACHE = [
   ROOT,
   ROOT + "delta-codes/",
+  ROOT + "jimi-restaurant/",
   ROOT + "assets/theme.css",
   ROOT + "assets/site.js",
+  ROOT + "icons/icon-192.png",
+  ROOT + "icons/apple-touch-icon.png",
   ROOT + "404.html"
 ];
 
