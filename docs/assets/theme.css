@@ -88,6 +88,11 @@ header.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height
   display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff;
   text-shadow:0 1px 2px rgba(120,50,0,.45);
   box-shadow:0 8px 20px rgba(226,112,10,.32),inset 0 1px 0 rgba(255,255,255,.75)}
+/* 用图片当 logo：去掉渐变底和文字投影，让图铺满（自己会切圆角） */
+.mark.has-img{background:#fff;padding:0;overflow:hidden;
+  box-shadow:0 6px 16px rgba(20,40,65,.2),inset 0 0 0 1px rgba(255,255,255,.95)}
+.mark.has-img img{width:100%;height:100%;object-fit:cover;display:block;
+  /* 图片本身是方形的，超出圆角的部分由 overflow 裁掉 */}
 .brand h1,.brand .bt{margin:0;font-size:17.5px;letter-spacing:.4px;white-space:nowrap;
   background:linear-gradient(92deg,#1b2836,#3c5d80 55%,#6b5ea8);-webkit-background-clip:text;
   background-clip:text;color:transparent}
