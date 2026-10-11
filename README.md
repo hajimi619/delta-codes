@@ -521,6 +521,102 @@ drawReceipt()  按内容算好高度 -> 建 canvas（680px 宽，2 倍尺寸所�
 [火锅菜品](https://www.6eat.com/ask_detail/263233)、
 [下饭菜 100 道](https://m.wenda.so.com/q/1662380556217093)
 
+## 图标与 PWA（添加到手机桌面）
+
+### 图标怎么来的
+
+用一张猫猫图裁的，**没做像素化**（一开始试过，糊且认不出）：
+
+```
+手机截图（1206×2622，其实是视频截图）
+  → 裁掉截图的深灰边框，只取照片区 y 480~1900
+  → 裁 1160×1160 方形，中心对准猫头（裁剪方案 B：头 + 一点胸）
+  → 先缩到目标尺寸，再按尺寸锐化（缩小本身会糊，锐化补回来）
+  → 压成 256 色调色板
+```
+
+**锐化是关键一步**：原图锐度只有 **87**（>300 才叫清晰，因为视频截图本身就软），
+锐化后到 **300**，胡须和眼睛立刻清楚了。锐化放在**缩小之后**做，效果比先锐化再缩小好。
+
+```python
+# 先缩，再锐化
+out = img.resize((n, n), Image.LANCZOS)
+out = out.filter(ImageFilter.UnsharpMask(radius=1.0, percent=140, threshold=2))
+out = ImageEnhance.Contrast(out).enhance(1.04)
+out = ImageEnhance.Color(out).enhance(1.06)
+# 最后压成 256 色：398KB -> 151KB，平均色差 1.55，肉眼看不出
+q = out.quantize(colors=256, method=Image.MEDIANCUT, dither=Image.NONE)
+```
+
+| 文件 | 尺寸 | 大小 | 用途 |
+|---|---|---|---|
+| `icons/apple-touch-icon.png` | 180 | 25.5 KB | iPhone 添加到桌面（**这张最重要**） |
+| `icons/icon-192.png` | 192 | 28.8 KB | 安卓桌面 / manifest |
+| `icons/icon-512.png` | 512 | 151.4 KB | PWA / 高清屏 |
+| `icons/favicon-32.png` | 32 | 1.8 KB | 备用 |
+| `favicon.svg` | 矢量 | 0.4 KB | **浏览器标签页仍用这个**（32px 下照片认不出是猫） |
+| `icon-source-crop.png` | 1160 | 1 MB | 裁剪原图备份（不进网站） |
+
+### manifest 每个板块一个
+
+`start_url` 是相对 manifest 自己解析的，所以**每个功能页有自己的 manifest**，
+这样把「基米餐馆」加到桌面，点开就是餐馆，不会跳回工具箱首页。
+
+```
+docs/manifest.webmanifest                  哈基米工具箱   start_url ./
+docs/delta-codes/manifest.webmanifest      改枪码库       start_url ./
+docs/jimi-restaurant/manifest.webmanifest  基米餐馆       start_url ./
+```
+
+每个页面加的标签（`prefix` 自动适配子目录）：
+
+```html
+<link rel="apple-touch-icon" sizes="180x180" href="{prefix}icons/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="{prefix}icons/icon-192.png" />
+<link rel="manifest" href="{prefix}manifest.webmanifest" />
+<meta name="theme-color" content="#f0892c" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="改枪码库" />
+```
+
+> iOS 不认 manifest 里的 `display`，**必须靠 `apple-mobile-web-app-capable` 才会全屏**。
+
+### nginx 要配合的两条规则
+
+```nginx
+location /icons/ { add_header Cache-Control "public, max-age=604800, immutable"; try_files $uri =404; }
+
+# 注意用正则：只写 `location = /manifest.webmanifest` 的话，
+# /delta-codes/ 和 /jimi-restaurant/ 下面的会被当成 application/octet-stream
+location ~* \.webmanifest$ {
+    add_header Cache-Control "public, max-age=600";
+    default_type application/manifest+json;
+    try_files $uri =404;
+}
+```
+
+### 目前的效果 / 限制
+
+| | 现在（http） | 备案 + HTTPS 后 |
+|---|---|---|
+| 桌面图标 | ✅ 猫猫图 | ✅ |
+| 点开全屏（无地址栏） | ✅ | ✅ |
+| **离线打开** | ❌ **Service Worker 只在 https 下注册** | ✅ |
+| 首次加载走缓存 | ❌ | ✅ |
+
+> `sw.js` 的 `VERSION` 顺手升到了 `hk-v3`，预缓存里加了餐馆页和图标。
+> 老访客的 Service Worker 会自动更新，把旧缓存清掉。
+
+### 踩过的坑
+
+**往 `<head>` 插标签时正则只匹配到 `href` 的引号**，没包含结尾的 ` />`，
+结果把标签切成了两半（favicon 那行少了 `/>`，注释后面多出一个 `/>`）。
+匹配 `<link>` 一定要连结尾的 `/>` 一起匹配。
+
+> `deploy_pages.ps1`（Cloudflare Pages）现在会报错，但**已经没用了** ——
+> Cloudflare 停用后只剩一个 301 跳转 Worker，站点在服务器上。这个脚本可以删了。
+
 ## 更新数据
 
 本地（推荐）：
