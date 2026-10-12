@@ -85,22 +85,6 @@
     var base = document.documentElement.getAttribute("data-base") || "";
     return base + f.id + "/";
   }
-  function homeUrl() {
-    return document.documentElement.getAttribute("data-base") || "./";
-  }
-
-  /** 顶部导航
-      以前这里是「首页 / 三角洲行动 / 基米餐馆」三个快速切换，
-      手机上太占地方，而且换功能走首页就够了。
-      现在：首页上什么都不显示；功能页只留一个「返回首页」。 */
-  function renderNav() {
-    var host = document.getElementById("siteNav");
-    if (!host) return;
-    if (!currentId()) { host.innerHTML = ""; return; }   // 首页：留空，CSS 会把这一行收掉
-    host.innerHTML = '<a class="back-home" href="' + esc(homeUrl()) + '">' +
-      '\u2190 工具箱首页</a>';
-  }
-
   /** 首页的功能卡片 */
   function renderHome() {
     var host = document.getElementById("featureList");
@@ -135,7 +119,6 @@
   }
 
   ready(function () {
-    renderNav();
     renderHome();
     var y = document.getElementById("siteCopy");
     if (y) y.textContent = SITE.copyright;
