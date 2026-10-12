@@ -893,6 +893,93 @@ flex 布局下，**flex 项的默认 `min-width:auto` 意味着它不肯收缩�
 > 探针本身也踩了一下：我用 `.brand > div` 选元素，结果选中的是 `.mark`（它也是 `.brand` 的直接子 div）。
 > 要写 `.brand > div:not(.mark)`。
 
+## Bug：滚到顶部时顶栏不断跳动
+
+**现象**：浏览器滚到接近顶部时，整个页面上下抖。
+
+**根因：一个布局反馈循环。** 滚动时有三条规则会**改变顶栏高度**：
+
+| 规则 | 高度变化 |
+|---|---|
+| `body.scrolled .top-in{padding-top:9px;padding-bottom:7px}` | −12px |
+| `body.scrolled .brand .sub{height:0;margin:0}` | −20px |
+| `body.scrolled .top-in{padding:6px 5px}`（手机） | −4px |
+
+而 `header.top` 是 `position:sticky` **且在正常文档流里** —— 所以它一矮，
+**整个文档总高跟着变**，下面的内容整体上下跳：
+
+```
+滚过 y=8  ->  .scrolled 开  ->  顶栏矮  ->  内容上跳
+滚回 y=8  ->  .scrolled 关  ->  顶栏高回 ->  内容下跳
+在阈值附近微滚 -> 反复触发 = "不断跳动"
+```
+
+副标题那条还带 `transition:height .24s`，那 240ms 里文档高度**一直在变**，更容易抖。
+
+**修法：顶栏在滚动时绝不改变高度**，只保留不影响布局的属性（阴影）。
+
+```css
+/* 只留这个 —— box-shadow 不参与布局 */
+body.scrolled header.top{box-shadow:0 1px 0 rgba(20,40,65,.06),0 16px 40px rgba(20,40,65,.14)}
+```
+
+删掉了 padding 变化和副标题塌陷。**凡是滚动时要变的东西，只能变 `box-shadow` /
+`color` / `opacity` / `transform`，绝不能碰 `padding` / `height` / `margin` / `font-size`。**
+
+### 实测（带对照组）
+
+写了个页子在 8 个滚动位置量顶栏高度：
+
+```
+【退回旧 CSS 的对照组】
+y= 8  顶栏高 78px  文档高 13159  scrolled=关
+y= 9  顶栏高 61px  文档高 13142  scrolled=开   <- 一跳 17px
+y= 0  顶栏高 78px  文档高 13159  scrolled=关   <- 又跳回来
+顶栏出现过的高度种类: 2 (78, 61px)   结论: 失败
+
+【修复后】
+y= 8  顶栏高 78px  scrolled=关
+y= 9  顶栏高 78px  scrolled=开        <- 高度纹丝不动
+y= 0  顶栏高 78px  scrolled=关
+顶栏出现过的高度种类: 1 (78px)       结论: 通过
+```
+
+### ⚠️ 测这个 bug 踩的两个坑（重要）
+
+第一次跑测试时**对照组也"通过"了**，差点被骗过去。两个原因：
+
+**① 无头浏览器 + `--virtual-time-budget` 下 `requestAnimationFrame` 不触发**
+
+站点的滚动处理是包在 rAF 里的：
+
+```js
+function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }
+```
+
+rAF 不跑 -> `upd()` 永远不执行 -> `body.scrolled` 永远不加 -> 顶栏高度当然不变。
+**测试页必须先打补丁**：
+
+```html
+<script>
+window.requestAnimationFrame = function (f) { return setTimeout(function () { f(Date.now()); }, 16); };
+window.cancelAnimationFrame = function (id) { clearTimeout(id); };
+</script>
+```
+
+**② `window.scrollTo()` 在这套无头环境下不派发 `scroll` 事件**
+
+`pageYOffset` 变了，但监听器收不到通知。**要手动派发**：
+
+```js
+window.scrollTo(0, y);
+window.dispatchEvent(new Event('scroll'));
+```
+
+**两条都补上之后，对照组才真的失败、修复版才真的通过。**
+
+> 教训：**测试"通过"不一定代表代码没问题，也可能是测试根本没跑到那段代码。**
+> 先让测试在已知有 bug 的版本上失败（对照组），才有资格用它证明修复有效。
+
 ## 更新数据
 
 本地（推荐）：
