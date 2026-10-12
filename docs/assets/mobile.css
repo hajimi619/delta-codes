@@ -34,8 +34,19 @@
   .stats{flex:0 1 auto;gap:5px;flex-wrap:nowrap;overflow-x:auto;
     scrollbar-width:none;-ms-overflow-style:none}
   .stats::-webkit-scrollbar{display:none}
-  .stat{font-size:11.5px;padding:4px 8px;white-space:nowrap;flex:0 0 auto}
-  .stat b{font-size:12px}
+  .stat{font-size:11px;padding:3px 7px;white-space:nowrap;flex:0 0 auto;
+    letter-spacing:-.2px}
+  .stat b{font-size:11.5px}
+  /* 管理员按钮的「管理员」三个字手机上省掉，只留「登录」 */
+  .st-full{display:none}
+  /* 品牌标题优先保住。
+     实测 .stats 会被撑到 278px（内容只有 ~129px），把品牌挤到只剩 75px，
+     标题只能显示「基…」。所以两边都给硬约束：
+       .brand  flex-basis:0%  -> 完全按剩余空间分配
+       .stats  max-width:52%  -> 不管谁来撑，最多占一半多一点 */
+  .brand{flex:1 1 0%;min-width:0;overflow:hidden}
+  .stats{flex:0 1 auto;min-width:0;max-width:52%}
+  .brand h1,.brand .bt{font-size:14.5px}
   .stats .stat[data-mhide]{display:none}       /* 改枪码页藏掉「枪械」「收录」 */
 
   /* 导航：一整行横滑，不折行；末尾的「N 个功能」去掉 */
@@ -74,3 +85,13 @@
   /* 分组标题（步枪 / 冲锋枪 …）收紧 */
   .cat-title{margin:15px 0 9px}
 }
+
+/* ---------- 顶部导航：只剩一个返回首页 ---------- */
+.fnav:empty{display:none}                        /* 首页上没有导航，整行收掉 */
+.fnav .back-home{font-weight:600}
+.fnav .back-home::before{content:none}
+
+/* 手机端品牌标题和统计条重叠的修复：
+   .brand 内层 div 缺 min-width:0，flex 布局下它不肯收缩到内容宽度以下，
+   于是标题溢出压到统计条上。补上 min-width:0 让 ellipsis 正常生效。 */
+.brand > div{min-width:0}
