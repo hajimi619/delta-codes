@@ -375,3 +375,7 @@ body.no-prog header.top::before{display:none}
   header.top::before{transform:scaleX(1)!important}
   body::before{will-change:auto}
 }
+
+/* ---------- 品牌块收缩修复（桌面也要，不只手机）---------- */
+.brand > div{min-width:0}
+.brand h1,.brand .bt{overflow:hidden;text-overflow:ellipsis}
