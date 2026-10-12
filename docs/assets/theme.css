@@ -319,12 +319,12 @@ body::before{will-change:transform;backface-visibility:hidden}
 /* ---------- ⑤ 顶栏滚动收缩 ---------- */
 header.top{transition:box-shadow .26s ease}
 .top-in{transition:padding .26s cubic-bezier(.22,.72,.28,1)}
-body.scrolled .top-in{padding-top:9px;padding-bottom:7px}
+/* 滚动时顶栏只能改「不影响布局」的属性。
+   改高度/padding 会让文档总高变化，而顶栏是 sticky 且在正常流里，
+   于是内容整体上下跳，在阈值附近反复触发就成了「不断跳动」。 */
 body.scrolled header.top{
   box-shadow:0 1px 0 rgba(20,40,65,.06),0 16px 40px rgba(20,40,65,.14),
              inset 0 -1px 0 rgba(255,255,255,.6)}
-body.scrolled .brand .sub{opacity:0;height:0;margin:0;transform:translateY(-4px)}
-.brand .sub{transition:opacity .24s,height .24s,transform .24s,margin .24s}
 
 /* ---------- ⑥ 键盘焦点可见（也更好看） ---------- */
 :focus{outline:none}
