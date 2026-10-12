@@ -153,3 +153,19 @@ header.top::after,header.top::before{display:none!important}
 .ficon{background:linear-gradient(140deg,#705BD2,#4C33C7)!important;
   border-radius:6px!important;box-shadow:0 6px 16px rgba(76,51,199,.22)!important;
   text-shadow:none!important}
+
+/* ⑭ 「全部功能」标题前的小竖条：橙 -> 紫 */
+.sec-title::before{background:#4C33C7!important}
+.sec-title::after{background:linear-gradient(90deg,#E4E7ED,transparent)!important}
+
+/* ============================================================
+   ⑮ 基米餐馆页自己的橙色残留（该页有独立 <style>）
+   ============================================================ */
+.side button.on{background:#F0F2FD!important;color:#4C33C7!important;
+  border-color:#D9D2F5!important}
+.gate input:focus,.bar input[type=search]:focus{border-color:#4C33C7!important;
+  box-shadow:0 0 0 2px rgba(76,51,199,.12)!important}
+.dish.in{background:#F0F2FD!important;border-color:#4C33C7!important}
+.step button:hover:not(:disabled){background:#4C33C7!important;color:#fff!important;
+  border-color:#4C33C7!important}
+.gate .lock{color:#4C33C7!important}
