@@ -980,6 +980,153 @@ window.dispatchEvent(new Event('scroll'));
 > 教训：**测试"通过"不一定代表代码没问题，也可能是测试根本没跑到那段代码。**
 > 先让测试在已知有 bug 的版本上失败（对照组），才有资格用它证明修复有效。
 
+## 改枪码审核流
+
+网友提交的改枪码**不再直接上线**，先进待审队列，管理员通过之后才出现在公开列表里。
+
+### 数据模型
+
+在 `changes.json` 的 `add` 记录上加一个字段：
+
+```json
+{ "type": "add", "review": "pending", "gun": "...", "code": "...", "author": "..." }
+```
+
+- `review: "pending"` —— 待审，**公开接口看不到**
+- `review: "approved"` —— 已通过，正常显示
+- **没有 `review` 字段的老数据按「已通过」处理** —— 那时候新增是直接上线的，
+  不能因为加了审核就把历史内容藏了（向后兼容）
+
+### 服务端（server/server.js）
+
+```js
+/** 老数据没 review 字段，按已通过处理 */
+function isPendingReview(c) {
+  return c.type === "add" && c.review === "pending";
+}
+
+function publicChanges() {
+  return changes
+    .filter(c => c.type !== "delete" || c.status !== "valid")
+    .filter(c => !isPendingReview(c))     // <- 待审的不给外面看
+    .map(...);
+}
+```
+
+新增的接口：
+
+| 接口 | 说明 |
+|---|---|
+| `GET  /api/admin/pending` | 待审列表（管理员） |
+| `POST /api/admin/review` | `{target_id, action:"approve"\|"reject", gun?, build?, tab?, code?}` |
+| `POST /api/admin/reviewall` | `{action}` 批量通过 / 全部拒绝 |
+
+**通过时可以顺带改字段** —— 提交里常有错别字，审核时直接改掉最省事，
+不用先通过再走一遍编辑。改完会做和 `adminEdit` 一样的校验（玩法枚举、码格式、重复码）。
+
+### 前端（delta-codes/index.html）
+
+管理条上多一个 `📥 待审核 N` 按钮，`N > 0` 时按钮变琥珀色高亮。
+点开是待审列表：每条显示提交人、提交时间、四个**可直接编辑**的字段，
+外加「✓ 通过并上传」「✕ 拒绝」；两条以上时顶部还有「全部通过 / 全部拒绝」。
+
+管理员登录后**每 60 秒自动查一次**有没有新提交（`startPendingPoll()`），
+不用手动刷新。
+
+提交成功的提示也改了，说明要等审核：
+
+```
+已提交，感谢 XXX！管理员审核通过后就会出现在列表里
+```
+
+> 不改的话，用户提交完发现列表里没有，会以为提交失败了。
+
+### 实测（16/16 通过）
+
+```
+1. 管理员登录                                    ✅
+2. 提交一条 -> 公开列表【看不到】/ 待审列表【能看到】  ✅✅
+3. 通过        -> 公开列表【能看到】/ 待审列表【没有了】 ✅✅
+4. 再提交并拒绝 -> 两边都【没有】                   ✅✅
+5. 审核时顺带改字段 -> 字段确实被改掉                ✅
+6. 清理测试数据                                   ✅
+```
+
+## 管理员的「增添记录」
+
+看谁什么时候提交了什么、谁审的、结果如何。
+
+![审核弹窗与增添记录]
+
+### 前提：拒绝不能再删记录
+
+原来 `adminReview` 的拒绝分支是**直接把记录从 `changes` 里过滤掉**的：
+
+```js
+changes = changes.filter(function (c) {
+  return c.id !== rawId && c.target_id !== targetId;   // 删了
+});
+```
+
+删了的话「增添记录」里**永远查不到被拒绝过什么** —— 那这个功能就没意义了。
+
+**改成只打标记**：
+
+```js
+rec.review = "rejected";
+rec.reviewed_at = new Date().toISOString();
+rec.reviewed_by = operator || "admin";
+```
+
+真要彻底清除还是用 `/api/admin/purge`（物理移除，不可恢复）。
+
+顺带修的几处：
+
+| 位置 | 问题 |
+|---|---|
+| `publicChanges()` | 原来只过滤 `pending`，**已拒绝的会漏出去** → 改成过滤 `isUnpublished()`（pending + rejected） |
+| `adminReview()` | 原来拒绝过就再也审不了 → 允许把**已拒绝的重新通过**（拒错了能救回来） |
+| `adminReview()` 里的重复码判断 | 写成 `c.review !== "reject"`，**少了个 ed**，永远为真 → 改为 `"rejected"` |
+| `addCode()` 的重复码判断 | 被拒绝过的码会挡住重新提交 → 排除 `rejected` |
+
+### 状态取值
+
+| `review` | 含义 | 公开列表 |
+|---|---|---|
+| `"pending"` | 待审 | ❌ 看不到 |
+| `"approved"` | 已通过 | ✅ 看得到 |
+| `"rejected"` | 已拒绝（**记录保留**） | ❌ 看不到 |
+| （没有这个字段） | **老数据**，那时直接上线，按已通过算 | ✅ 看得到 |
+
+界面上老数据会标一行「旧数据（直接上线的）」，免得看着奇怪。
+
+### 接口
+
+```
+GET /api/admin/history  ->  { stat: {total,pending,approved,rejected}, items: [...] }
+```
+
+每条 item 还带两个派生状态：`flagged`（通过后被人标失效）、`hidden`（被隐藏）。
+
+界面：管理条上的 `📜 增添记录`，面板顶部四个筛选标签（全部/待审/已通过/已拒绝，带个数），
+每条显示提交人、时间、审核人和时间；已拒绝的右边有「重新通过」。
+
+### 实测（22/22 通过）
+
+重点几项：
+
+```
+★ 拒绝后记录【还在】历史里        ✅   review=rejected
+  状态标成已拒绝                  ✅
+  记下了审核人和时间              ✅
+  公开列表【看不到】它            ✅
+  拒错了能救回来（重新通过）      ✅
+  已通过的不能再审                ✅
+  批量拒绝也保留记录              ✅
+  总数 = 待审 + 已通过 + 已拒绝    ✅
+  purge 能真删                    ✅
+```
+
 ## 更新数据
 
 本地（推荐）：
