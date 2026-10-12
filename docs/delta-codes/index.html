@@ -288,6 +288,7 @@ setTimeout(function () {
 </script>
 <!-- 皮肤层：只改配色/圆角/阴影，删掉这行就回原样 -->
 <link rel="stylesheet" href="../assets/skin.css" />
+<link rel="stylesheet" href="../assets/mobile.css" />
 </head>
 <body>
 <div class="grain"></div>
@@ -296,14 +297,14 @@ setTimeout(function () {
     <a class="brand" id="brand" href="../">
       <div class="mark has-img"><img src="../icons/icon-192.png" alt="改枪码库" width="42" height="42" /></div>
       <div>
-        <h1>三角洲行动 · 改枪码库</h1>
+        <h1><span class="h1-full">三角洲行动 · 改枪码库</span><span class="h1-mob">改枪码库</span></h1>
         <div class="sub" id="sub">加载中…</div>
       </div>
     </a>
     <div class="stats">
-      <div class="stat">枪械 <b id="s-guns">0</b></div>
+      <div class="stat" data-mhide>枪械 <b id="s-guns">0</b></div>
       <div class="stat">改枪码 <b id="s-codes">0</b></div>
-      <div class="stat">收录 <b id="s-total">0</b></div>
+      <div class="stat" data-mhide>收录 <b id="s-total">0</b></div>
       <!-- 顶栏的接口状态徽章已移除（setApiStat 里有 !el 保护，不会报错）-->
       <button class="stat" id="s-admin" title="管理员登录 / 管理面板">管理员 <b>登录</b></button>
     </div>
