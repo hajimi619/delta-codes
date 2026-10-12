@@ -27,6 +27,7 @@
  *   GET  /api/admin/pending                       待审核的网友新增
  *   POST /api/admin/review   {target_id, action}  审核单条（approve / reject，可顺带改字段）
  *   POST /api/admin/reviewall{action}             批量审核全部待审
+ *   GET  /api/admin/history                       全部增添记录（待审/已通过/已拒绝）
  *
  * 审核流：
  *   POST /api/add 提交的码会带 review:"pending"，GET /api/changes **不会**返回它，
@@ -306,7 +307,10 @@ function addCode(body, req) {
   const ipHash = hashIp(clientIp(req));
   assertUnderRateLimit(ipHash);
 
-  if (changes.some(function (c) { return c.code === code && c.type === "add"; })) {
+  /* 被拒绝过的不挡路 —— 不然同一个人改好再提交会被自己挡住 */
+  if (changes.some(function (c) {
+    return c.code === code && c.type === "add" && c.review !== "rejected";
+  })) {
     throw new Error("这条改枪码已经有人提交过了");
   }
 
@@ -439,6 +443,12 @@ function isPendingReview(c) {
   return c.type === "add" && c.review === "pending";
 }
 
+/** 审核过但没通过的（待审 + 已拒绝）。公开接口一律不返回。
+    注意：没有 review 字段的是老数据 —— 那时候新增直接上线，按已通过算。 */
+function isUnpublished(c) {
+  return c.type === "add" && (c.review === "pending" || c.review === "rejected");
+}
+
 function adminPending() {
   const items = changes
     .filter(isPendingReview)
@@ -464,15 +474,21 @@ function adminReview(body, operator) {
   const rawId = targetId.slice(5);
   const rec = changes.filter(function (c) { return c.id === rawId && c.type === "add"; })[0];
   if (!rec) throw new Error("这条提交已经不在了（可能刚被处理过）");
-  if (rec.review !== "pending") throw new Error("这条已经审核过了");
+  /* 待审的可以审；已经拒绝的也允许重新通过（拒错了能救回来）。
+     已经通过的就不用再审了。 */
+  if (rec.review === "approved") throw new Error("这条已经通过了");
+  if (rec.review && rec.review !== "pending" && rec.review !== "rejected") {
+    throw new Error("这条的状态看不懂，没法审");
+  }
 
   if (action === "reject") {
-    const before = changes.length;
-    changes = changes.filter(function (c) {
-      return c.id !== rawId && c.target_id !== targetId;
-    });
+    /* 只打标记，不删记录 —— 删了「增添记录」里就查不到谁提交过什么了。
+       真要彻底清除用 /api/admin/purge。 */
+    rec.review = "rejected";
+    rec.reviewed_at = new Date().toISOString();
+    rec.reviewed_by = operator || "admin";
     saveJson(STORE, { changes: changes });
-    return { ok: true, action: "reject", removed: before - changes.length, gun: rec.gun };
+    return { ok: true, action: "reject", target_id: targetId, gun: rec.gun };
   }
 
   /* 通过：允许顺手改字段 */
@@ -492,7 +508,7 @@ function adminReview(body, operator) {
     const code = String(body.code).trim();
     if (!CODE_RE.test(code)) throw new Error("改枪码格式不对（8–32 位字母数字）");
     if (changes.some(function (c) {
-      return c !== rec && c.type === "add" && c.code === code && c.review !== "reject";
+      return c !== rec && c.type === "add" && c.code === code && c.review !== "rejected";
     })) throw new Error("这个码已经有另一条提交了");
     rec.code = code;
   }
@@ -504,6 +520,40 @@ function adminReview(body, operator) {
   return { ok: true, action: "approve", target_id: targetId, gun: rec.gun, code: rec.code };
 }
 
+/** 全部增添记录：待审 / 已通过 / 已拒绝，按时间倒序。
+    管理员用来查"谁什么时候提交了什么、谁审的"。 */
+function adminHistory() {
+  const items = changes
+    .filter(function (c) { return c.type === "add"; })
+    .sort(function (a, b) { return Date.parse(b.created_at) - Date.parse(a.created_at); })
+    .map(function (c) {
+      return {
+        target_id: "user|" + c.id, id: c.id,
+        /* 老数据没有 review 字段 —— 那时候新增直接上线，算已通过 */
+        review: c.review || "approved",
+        legacy: !c.review,
+        gun: c.gun, build: c.build, tab: c.tab, code: c.code, author: c.author,
+        created_at: c.created_at,
+        reviewed_at: c.reviewed_at || null,
+        reviewed_by: c.reviewed_by || null,
+        /* 通过之后又被人标记失效了吗 */
+        flagged: changes.some(function (f) {
+          return f.type === "flag" && f.target_id === ("user|" + c.id) && f.status === "invalid";
+        }),
+        hidden: changes.some(function (d) {
+          return d.type === "delete" && d.target_id === ("user|" + c.id) && d.status === "deleted";
+        }),
+      };
+    });
+  const stat = { total: items.length, pending: 0, approved: 0, rejected: 0 };
+  items.forEach(function (i) {
+    if (i.review === "pending") stat.pending++;
+    else if (i.review === "rejected") stat.rejected++;
+    else stat.approved++;
+  });
+  return { ok: true, stat: stat, items: items };
+}
+
 /** 批量：把当前所有待审一次性通过 / 全部丢掉 */
 function adminReviewAll(body, operator) {
   const action = body.action === "reject" ? "reject" : "approve";
@@ -511,7 +561,10 @@ function adminReviewAll(body, operator) {
   if (!pend.length) return { ok: true, action: action, count: 0 };
 
   if (action === "reject") {
-    changes = changes.filter(function (c) { return !isPendingReview(c); });
+    const now0 = new Date().toISOString();
+    pend.forEach(function (c) {
+      c.review = "rejected"; c.reviewed_at = now0; c.reviewed_by = operator || "admin";
+    });
   } else {
     const now = new Date().toISOString();
     pend.forEach(function (c) {
@@ -588,7 +641,7 @@ function restaurantMenu(req) {
 function publicChanges() {
   return changes
     .filter(function (c) { return c.type !== "delete" || c.status !== "valid"; })  // 保留删除记录给前端
-    .filter(function (c) { return !isPendingReview(c); })   // 待审核的不给外面看
+    .filter(function (c) { return !isUnpublished(c); })     // 待审 / 已拒绝都不给外面看
     .map(function (c) {
       return {
         id: c.id, type: c.type, target_id: c.target_id, status: c.status,
@@ -617,6 +670,14 @@ const server = http.createServer(function (req, res) {
     if (p === "/api/restaurant/menu") {
       try {
         return sendJson(res, headers, 200, restaurantMenu(req));
+      } catch (e) {
+        return sendJson(res, headers, 401, { error: e.message });
+      }
+    }
+    if (p === "/api/admin/history") {
+      try {
+        requireAdmin(req);
+        return sendJson(res, headers, 200, adminHistory());
       } catch (e) {
         return sendJson(res, headers, 401, { error: e.message });
       }
