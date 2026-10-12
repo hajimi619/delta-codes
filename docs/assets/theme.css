@@ -264,3 +264,114 @@ footer.site{margin-top:44px;padding-top:20px;border-top:1px solid rgba(20,40,65,
   .hero h2{font-size:24px}
   .feat-grid{grid-template-columns:1fr}
 }
+
+/* ============================================================
+   质感升级 + 性能优化
+   加在最后，覆盖前面的规则（不删原有代码，方便回退）
+   ============================================================ */
+
+/* ---------- ① 性能：把永久动画放进独立合成层 ---------- */
+/* body::before 是满屏的模糊光晕 + 无限动画。
+   不加 will-change 的话，每一帧都要重新算一次 blur(48px) —— 手机上最吃 GPU 的就是它。
+   加了这个，浏览器把模糊结果单独栅格化一次，之后只做 transform 位移。 */
+body::before{will-change:transform;backface-visibility:hidden}
+
+/* 固定定位、会动的那几个，也各自一层 */
+.toast,.totop,.cartbar{will-change:transform}
+
+/* ---------- ② 性能：小元件不做毛玻璃 ---------- */
+/* 原样式里 .stat / .btn / .copy / .icon-btn / .badge 都上了 backdrop-filter。
+   它们尺寸都很小（10~13px 的模糊），底下的背景已经被父级玻璃糊过一遍了，
+   再糊一次视觉上几乎看不出，但每一个都要单独开一层合成 —— 全站有 20 多处。
+   这里统一去掉，并把不透明度调高一点点补偿。 */
+.stat,.btn,.copy,.icon-btn,.badge,.tabs .tab,.panel{
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.stat{background:rgba(255,255,255,.82)}
+.btn{background:rgba(255,255,255,.84)}
+.btn.ghost{background:rgba(255,255,255,.62)}
+.copy{background:rgba(255,255,255,.88)}
+.icon-btn{background:rgba(255,255,255,.86)}
+.badge{background:rgba(255,255,255,.86)}
+
+/* ---------- ③ 性能：长列表跳过屏外渲染 ---------- */
+/* 改枪码页有 67 张枪卡、餐馆有几十道菜，屏幕外的本来不用布局和绘制。
+   contain-intrinsic-size 是给浏览器一个高度预估，避免滚动条乱跳；
+   auto 关键字会让它记住上次真实高度，越滚越准。 */
+.gun-card,.dish{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 300px;
+}
+
+/* ---------- ④ 滚动进场 ---------- */
+/* 只在 JS 可用时才隐藏 —— <html> 上有 .js 才生效。
+   这样 JS 被禁用/加载失败时，内容照常显示，不会白屏。 */
+.js .reveal{opacity:0;transform:translateY(16px)}
+.js .reveal.in{
+  opacity:1;transform:none;
+  transition:opacity .58s cubic-bezier(.22,.72,.28,1),
+             transform .58s cubic-bezier(.22,.72,.28,1)}
+/* 依次错开一点，像"排队浮现" */
+.reveal[data-d="1"].in{transition-delay:.06s}
+.reveal[data-d="2"].in{transition-delay:.12s}
+.reveal[data-d="3"].in{transition-delay:.18s}
+.reveal[data-d="4"].in{transition-delay:.24s}
+
+/* ---------- ⑤ 顶栏滚动收缩 ---------- */
+header.top{transition:box-shadow .26s ease}
+.top-in{transition:padding .26s cubic-bezier(.22,.72,.28,1)}
+body.scrolled .top-in{padding-top:9px;padding-bottom:7px}
+body.scrolled header.top{
+  box-shadow:0 1px 0 rgba(20,40,65,.06),0 16px 40px rgba(20,40,65,.14),
+             inset 0 -1px 0 rgba(255,255,255,.6)}
+body.scrolled .brand .sub{opacity:0;height:0;margin:0;transform:translateY(-4px)}
+.brand .sub{transition:opacity .24s,height .24s,transform .24s,margin .24s}
+
+/* ---------- ⑥ 键盘焦点可见（也更好看） ---------- */
+:focus{outline:none}
+:focus-visible{
+  outline:2px solid rgba(226,112,10,.72);outline-offset:2px;border-radius:10px}
+
+/* ---------- ⑦ 按下反馈 ---------- */
+.btn:active,.copy:active,.icon-btn:active,.fnav a:active,.fcard:active,.copytab:active{
+  transform:translateY(0) scale(.975);transition-duration:.06s}
+
+/* ---------- ⑧ 更讲究的层次感 ---------- */
+/* 大块玻璃加一层极淡的内顶光，像真的有一层玻璃盖着 */
+.card::before,.fcard::before,.hero::before{
+  content:"";position:absolute;left:8%;right:8%;top:0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95) 22%,
+             rgba(255,255,255,.85) 78%,transparent)}
+/* 卡片悬浮时那圈暖色辉光再柔一点 */
+.fcard:hover,.card:hover{
+  box-shadow:var(--inset),0 28px 56px rgba(20,40,65,.2),
+             0 0 0 1px rgba(255,255,255,.75),
+             0 0 36px rgba(255,168,96,.28)}
+.hero{
+  background:linear-gradient(148deg,rgba(255,255,255,.86),
+             rgba(255,255,255,.52) 46%,rgba(255,255,255,.72));
+  box-shadow:var(--inset),var(--shadow),0 0 60px rgba(186,166,255,.16)}
+
+/* ---------- ⑨ 顶栏底部那道彩线改成"滚动进度" ---------- */
+/* 打底那条：就是原来那道彩线，保持原样（页面顶部也看得见） */
+header.top::after{
+  background:linear-gradient(90deg,transparent,rgba(255,150,80,.6),
+             rgba(120,200,235,.55),rgba(186,166,255,.5),transparent)}
+/* 上面再叠一条更亮更饱和的，随滚动从左边长出来 —— 当进度条用。
+   ::before 在这个 header 上没人用过，可以放心占。 */
+header.top::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  z-index:1;pointer-events:none;border-radius:0 2px 2px 0;
+  background:linear-gradient(90deg,rgba(255,140,60,.98),rgba(90,190,235,.95),
+             rgba(170,145,255,.95));
+  box-shadow:0 1px 10px rgba(226,112,10,.45);
+  transform-origin:0 50%;transform:scaleX(var(--prog,0));
+  transition:transform .1s linear}
+body.no-prog header.top::before{display:none}
+
+/* ---------- ⑩ 数字滚动时不要跳字 ---------- */
+.stat b{font-variant-numeric:tabular-nums}
+
+@media (prefers-reduced-motion:reduce){
+  .js .reveal{opacity:1!important;transform:none!important}
+  header.top::before{transform:scaleX(1)!important}
+  body::before{will-change:auto}
+}
