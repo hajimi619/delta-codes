@@ -313,6 +313,10 @@ setTimeout(function () {
       try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
       $("#pwd").value = "";
       return fetchMenu();
+    }).then(function (ok) {
+      // ok === false 表示 401，fetchMenu 里已经调 lockOut 把人挡回去了，这里不用管
+      if (ok === false) return;
+      enterApp();
     })["catch"](function (e) {
       err.textContent = (e && e.message) || "验证失败";
       $("#gate").classList.add("shake");
@@ -327,6 +331,21 @@ setTimeout(function () {
     try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
     showGate(msg || "");
     $("#go").disabled = false; $("#go").textContent = "进 门";
+  }
+
+  /** 进门成功、或者刷新后带着 token 回来 —— 两条路都走这里把菜单亮出来。
+      之前只有刷新那条路会显示 #app，输密码那条路走完 fetchMenu 就没了，
+      结果就是"密码对了但一直卡在验证中"，得刷新才行。 */
+  function enterApp() {
+    $("#gate").hidden = true;
+    $("#app").hidden = false;
+    $("#go").disabled = false;
+    $("#go").textContent = "进 门";
+    $("#pwd").value = "";
+    if (MENU && MENU.cuisines && MENU.cuisines.length && !cur) {
+      cur = MENU.cuisines[0].id;
+    }
+    render();
   }
 
   // ---------- 取菜单 ----------
@@ -746,10 +765,7 @@ setTimeout(function () {
     setStat("#s-api", "连接中…");
     fetchMenu().then(function (ok) {
       if (!ok) return;
-      $("#gate").hidden = true;
-      $("#app").hidden = false;
-      cur = MENU.cuisines[0].id;
-      render();
+      enterApp();
     })["catch"](function () {});
   }
 })();
