@@ -169,3 +169,13 @@ header.top::after,header.top::before{display:none!important}
 .step button:hover:not(:disabled){background:#4C33C7!important;color:#fff!important;
   border-color:#4C33C7!important}
 .gate .lock{color:#4C33C7!important}
+
+/* ============================================================
+   ⑯ 品牌块（猫头像 + 标题）当「回首页」按钮
+   顶部导航行去掉了，回首页就靠点它。
+   ============================================================ */
+.brand{transition:opacity .15s ease}
+.brand:hover{opacity:.8}
+.brand:active{opacity:.7;transform:scale(.985)}
+.brand .mark{transition:transform .15s ease}
+.brand:hover .mark{transform:scale(1.05)}
