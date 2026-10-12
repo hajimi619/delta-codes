@@ -57,8 +57,7 @@
   .fnav .sep{display:none}
   .fnav > span{display:none}
 
-  /* 再滚就再收一点 */
-  body.scrolled .top-in{padding-top:6px;padding-bottom:5px}
+  /* 滚动时不动顶栏高度：会让文档总高变化，在阈值附近反复触发就成了跳动 */
 
   /* ---------- 筛选区：横滑，不再折成好几行 ---------- */
   /* 用负边距顶到屏幕两边，滑起来更像原生控件 */
