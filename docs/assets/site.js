@@ -116,7 +116,7 @@
   function renderHome() {
     var host = document.getElementById("featureList");
     if (!host) return;
-    host.innerHTML = FEATURES.map(function (f) {
+    host.innerHTML = FEATURES.map(function (f, i) {
       var dis = f.status === "coming";
       var stats = (f.stats || []).map(function (s) {
         return '<span class="badge">' + esc(s.label) + ' <b style="font-family:var(--mono)">' + esc(s.value) + "</b></span>";
@@ -124,7 +124,8 @@
       var tags = (f.tags || []).map(function (t) {
         return '<span class="badge ftag">' + esc(t) + "</span>";
       }).join("");
-      return '<a class="fcard' + (dis ? " coming" : "") + '" href="' + esc(dis ? "javascript:void 0" : urlOf(f)) + '">' +
+      return '<a class="fcard reveal' + (dis ? " coming" : "") + '" data-d="' + ((i % 4) + 1) + '" ' +
+        'href="' + esc(dis ? "javascript:void 0" : urlOf(f)) + '">' +
         '<div class="ficon">' + esc(f.icon || "★") + "</div>" +
         '<div class="fbody">' +
           '<div class="fhead">' +
@@ -136,6 +137,7 @@
           (dis ? "" : '<div class="fgo">打开 →</div>') +
         "</div></a>";
     }).join("");
+    if (window.SITE && window.SITE.reveal) window.SITE.reveal(host);
   }
 
   function ready(fn) {
@@ -159,6 +161,89 @@
       navigator.serviceWorker.register(base + "sw.js", { scope: base })["catch"](function () {});
     }
   });
+
+/* ============================================================
+   质感增强（滚动进场 / 顶栏状态 / 键盘焦点）
+   全站共用，功能页渲染完动态内容后调用 SITE.reveal() 即可。
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var reduce = false;
+  try {
+    reduce = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch (e) {}
+
+  var io = null;
+
+  /** 让 .reveal 元素在进入视口时浮现；可重复调用（动态渲染后） */
+  function reveal(root) {
+    var list = (root || document).querySelectorAll(".reveal:not(.in)");
+    if (!list.length) return;
+    if (reduce || !("IntersectionObserver" in window)) {
+      for (var i = 0; i < list.length; i++) list[i].classList.add("in");
+      return;
+    }
+    if (!io) {
+      io = new IntersectionObserver(function (ents) {
+        for (var k = 0; k < ents.length; k++) {
+          if (ents[k].isIntersecting) {
+            ents[k].target.classList.add("in");
+            io.unobserve(ents[k].target);
+          }
+        }
+      }, { rootMargin: "0px 0px -6% 0px", threshold: 0.04 });
+    }
+    for (var j = 0; j < list.length; j++) io.observe(list[j]);
+  }
+
+  /** 顶栏：滚下去就收紧；底部那道彩线同时当滚动进度条 */
+  function scrollState() {
+    var ticking = false;
+    function upd() {
+      ticking = false;
+      var doc = document.documentElement;
+      var y = window.pageYOffset || doc.scrollTop || 0;
+      document.body.classList.toggle("scrolled", y > 8);
+
+      var max = doc.scrollHeight - window.innerHeight;
+      if (max > 60) {
+        document.body.classList.remove("no-prog");
+        doc.style.setProperty("--prog", Math.min(1, y / max).toFixed(4));
+      } else {
+        document.body.classList.add("no-prog");
+        doc.style.setProperty("--prog", "1");
+      }
+    }
+    function onScroll() {
+      if (!ticking) { ticking = true; requestAnimationFrame(upd); }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    upd();
+  }
+
+  function boot() {
+    if (reduce) document.body.classList.add("no-prog");
+    scrollState();
+    reveal();
+    /* 图片加载完高度会变，重新量一次进度 */
+    window.addEventListener("load", function () {
+      window.dispatchEvent(new Event("resize"));
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+
+  /* 注意：这里要挂到 SITE 对象上，不能用 window.SITE ——
+     文件结尾还有一句 window.SITE = SITE，会把这里的赋值整个覆盖掉。 */
+  SITE.reveal = reveal;
+})();
 
   window.SITE = SITE;
   window.FEATURES = FEATURES;
