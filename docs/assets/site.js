@@ -89,27 +89,16 @@
     return document.documentElement.getAttribute("data-base") || "./";
   }
 
-  /** 顶部功能切换导航 */
+  /** 顶部导航
+      以前这里是「首页 / 三角洲行动 / 基米餐馆」三个快速切换，
+      手机上太占地方，而且换功能走首页就够了。
+      现在：首页上什么都不显示；功能页只留一个「返回首页」。 */
   function renderNav() {
     var host = document.getElementById("siteNav");
     if (!host) return;
-    var cur = currentId();
-    var parts = [];
-    for (var i = 0; i < FEATURES.length; i++) {
-      var f = FEATURES[i];
-      var on = f.id === cur;
-      var dis = f.status === "coming" && !on;
-      parts.push(
-        '<a href="' + esc(dis ? "javascript:void 0" : urlOf(f)) + '"' +
-        (on ? ' class="on"' : "") +
-        (dis ? ' style="opacity:.45;cursor:default"' : "") +
-        ">" + esc(f.name) + (dis ? " ·" + STATUS_TEXT[f.status] : "") + "</a>"
-      );
-    }
-    parts.unshift('<a href="' + esc(homeUrl()) + '"' + (cur ? "" : ' class="on"') + ">⌂ 首页</a>");
-    parts.push('<span class="sep"></span>');
-    parts.push('<span style="font-size:12.5px;color:var(--dim2)">' + FEATURES.length + " 个功能</span>");
-    host.innerHTML = parts.join("");
+    if (!currentId()) { host.innerHTML = ""; return; }   // 首页：留空，CSS 会把这一行收掉
+    host.innerHTML = '<a class="back-home" href="' + esc(homeUrl()) + '">' +
+      '\u2190 工具箱首页</a>';
   }
 
   /** 首页的功能卡片 */
