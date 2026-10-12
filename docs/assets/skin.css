@@ -1,0 +1,155 @@
+/* ============================================================
+   哈基米工具箱 · 皮肤层（designverse 风格）
+   ------------------------------------------------------------
+   参照 designverse.com.cn（Element UI + 紫 #4C33C7）提炼：
+     主色紫 / Element 四级灰阶 / 4~6px 小圆角 / 平面化 / 极轻阴影
+
+   为什么单独一个文件：
+     主题（theme.css）负责结构和布局，这个文件只负责"皮"。
+     想反悔：删掉本文件 + 各页面 head 里那行 <link> 就回到原样。
+
+   为什么大量用 !important：
+     改枪码页自己 <style> 里的规则很具体（.gun-card::after 之类），
+     普通优先级压不住。皮肤层要保证盖得住，所以直接上 !important。
+     这个文件只覆盖颜色/圆角/阴影/装饰，不碰任何布局尺寸。
+   ============================================================ */
+
+:root{
+  /* ---- 主色：橙 -> 紫（取自 designverse #4C33C7）---- */
+  --accent:#4C33C7;
+  --accent2:#442DB3;
+  --star:#E6A23C;
+  --bad:#F56C6C;
+  --ok:#67C23A;
+  --cyan:#4C33C7;
+
+  /* ---- 文字：Element 四级灰阶 ---- */
+  --txt:#303133;
+  --dim:#606266;
+  --dim2:#909399;
+
+  /* ---- 底 & 卡片：平面化，不用玻璃 ---- */
+  --bg:#F5F7FA;
+  --glass:#FFFFFF;
+  --glass-2:#FFFFFF;
+  --rim:#DCDFE6;
+  --rim-2:#E4E7ED;
+  --blur:none;
+
+  /* ---- 阴影：Element 经典卡片阴影 ---- */
+  --shadow:0 2px 12px 0 rgba(0,0,0,.08);
+  --inset:none;
+
+  /* ---- 圆角：22px -> 6px ---- */
+  --radius:6px;
+}
+
+/* ① 干掉所有装饰：七彩光晕、网格、颗粒噪点 */
+body::before,body::after,.grain{display:none!important}
+html,body{background:#F5F7FA!important}
+
+/* ② 干掉所有毛玻璃（designverse 是纯平面） */
+*,*::before,*::after{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+
+/* ③ 曲线拉直：不要漂移、不要浮起 */
+*,*::before,*::after{
+  animation:none!important;
+  transition-property:background-color,border-color,color,box-shadow!important;
+  transition-duration:.15s!important}
+.fcard:hover,.card:hover,.gun-card:hover{transform:none!important}
+
+/* ④ 顶栏：白底 + 一条发丝线，没有渐变没有彩虹 */
+header.top{
+  background:#FFFFFF!important;
+  border-bottom:1px solid #DCDFE6!important;
+  box-shadow:none!important}
+header.top::after,header.top::before{display:none!important}
+body.scrolled header.top{box-shadow:0 2px 12px 0 rgba(0,0,0,.06)!important}
+
+/* ⑤ 圆角收紧到 4~6px */
+.mark,.mark.has-img{border-radius:6px!important}
+.brand .mark img,.mark.has-img img{border-radius:6px!important}
+.btn,.copy,.icon-btn,.tab,.badge,.stat,.badge.ftag,
+.badge.st-online,.badge.st-beta,.copytab,button,input,select{
+  border-radius:4px!important}
+.card,.fcard,.hero,.panel,.gun-card,.modal,.box,.notice,.usage{
+  border-radius:6px!important}
+
+/* ⑥ 按钮 -> Element 主按钮 */
+.btn{background:#4C33C7!important;color:#fff!important;
+  border:1px solid #4C33C7!important;box-shadow:none!important}
+.btn:hover{background:#442DB3!important;border-color:#442DB3!important}
+.btn.ghost{background:#fff!important;color:#4C33C7!important;
+  border:1px solid #4C33C7!important}
+.btn.ghost:hover{background:#F0F2FD!important}
+
+/* ⑦ 标签 -> Element tag（浅紫底 + 紫字 + 细边） */
+.badge,.badge.ftag,.badge.st-online,.badge.st-beta,.stat{
+  background:#F0F2FD!important;color:#4C33C7!important;
+  border:1px solid #D9D2F5!important;font-weight:500!important}
+.badge.st-online{background:#F0F9EB!important;color:#67C23A!important;
+  border-color:#C2E7B0!important}
+
+/* ⑧ 卡片：白底 + 发丝边 + Element 阴影 */
+.card,.fcard,.hero,.gun-card{
+  background:#FFFFFF!important;border:1px solid #EBEEF5!important;
+  box-shadow:0 2px 12px 0 rgba(0,0,0,.08)!important}
+.card::before,.fcard::before,.hero::before{display:none!important}
+
+/* ⑨ 输入框 -> Element input */
+input,select,textarea{
+  background:#FFFFFF!important;border:1px solid #DCDFE6!important;
+  color:#303133!important;box-shadow:none!important}
+input:focus,select:focus,textarea:focus{
+  border-color:#4C33C7!important;box-shadow:0 0 0 2px rgba(76,51,199,.12)!important}
+
+/* ⑩ 选中态一律浅紫 */
+.tabs .tab.on,.tab.on,.copy.on{
+  background:#4C33C7!important;color:#fff!important;border-color:#4C33C7!important}
+
+/* ⑪ 滚动进场那套没意义了，直接显示 */
+.reveal{opacity:1!important;transform:none!important}
+
+/* ⑫ 补漏：改枪码页自己的 <style> 里有橙色残留，优先级比我上面高，这里逐条压掉 */
+.notice{background:#F0F2FD!important;border-color:#D9D2F5!important}
+.gun-card::before,.gun-card::after,.detail-head::before,.card-title::before,
+.cat-title::before{background:none!important;opacity:0!important;box-shadow:none!important}
+.cat-title::before{background:#4C33C7!important;opacity:1!important}
+.gun-card:hover{border-color:#C6BBF0!important;
+  box-shadow:0 4px 16px rgba(76,51,199,.13)!important;transform:none!important}
+.gc-pricebar{background:#EBEEF5!important}
+.gc-pricebar i{background:#705BD2!important}
+.gc-pricebar i:nth-child(3){background:#4C33C7!important}
+.badge.price.t-mid{background:#F0F2FD!important;color:#4C33C7!important;
+  border-color:#D9D2F5!important}
+.badge.price.t-high{background:#FDF6EC!important;color:#E6A23C!important;
+  border-color:#F5DAB1!important}
+.badge.gone,.badge.del{background:#FEF0F0!important;color:#F56C6C!important;
+  border-color:#FBC4C4!important}
+.build-item:hover .bi-code{color:#4C33C7!important}
+.icon-btn.cmp.on{background:#4C33C7!important;color:#fff!important;
+  border-color:#4C33C7!important}
+.icon-btn.edit:hover{color:#4C33C7!important;border-color:#4C33C7!important}
+.icon-btn.del:hover{color:#F56C6C!important;border-color:#F56C6C!important}
+.fixed-gun{background:#F0F2FD!important;color:#4C33C7!important;
+  border-color:#D9D2F5!important}
+.gc-go,.gc-more{color:#4C33C7!important}
+.ficon{background:linear-gradient(140deg,#705BD2,#4C33C7)!important;
+  box-shadow:0 6px 16px rgba(76,51,199,.24)!important}
+.fcard:hover{box-shadow:0 4px 16px rgba(76,51,199,.12)!important;transform:none!important}
+.hero-tags .badge,.stats .stat{background:#F0F2FD!important;color:#4C33C7!important;
+  border-color:#D9D2F5!important}
+/* 顶栏那条彩虹进度线也去掉 */
+header.top::after,header.top::before{display:none!important}
+
+/* ⑬ 最后几处橙：导航胶囊、功能图标 */
+.fnav a{border-radius:4px!important;background:#FFFFFF!important;
+  border:1px solid #DCDFE6!important;box-shadow:none!important;color:#606266!important}
+.fnav a:hover{background:#F0F2FD!important;color:#4C33C7!important;transform:none!important}
+.fnav a.on{background:#4C33C7!important;color:#fff!important;
+  border-color:#4C33C7!important;box-shadow:none!important}
+.fnav .sep{background:#E4E7ED!important}
+.ficon{background:linear-gradient(140deg,#705BD2,#4C33C7)!important;
+  border-radius:6px!important;box-shadow:0 6px 16px rgba(76,51,199,.22)!important;
+  text-shadow:none!important}
