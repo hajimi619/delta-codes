@@ -831,6 +831,61 @@ function enterApp() {
 <iframe src="/delta-codes/" style="width:390px;height:700px"></iframe>
 ```
 
+## 顶部导航：从三个快速切换改成一个返回首页
+
+**改前**：`[首页] [三角洲行动·改枪码库] [基米餐馆] │ 2 个功能`
+**改后**：功能页只有一个 `← 工具箱首页`；首页上这一行整个不显示。
+
+理由：手机上三个胶囊占一整行还经常折行，而「换个功能」走首页就够了。
+桌面端同理（`renderNav()` 是共用的）。
+
+```js
+function renderNav() {
+  var host = document.getElementById("siteNav");
+  if (!host) return;
+  if (!currentId()) { host.innerHTML = ""; return; }   // 首页：留空
+  host.innerHTML = '<a class="back-home" href="' + esc(homeUrl()) + '">← 工具箱首页</a>';
+}
+```
+
+配一条 CSS 让空行自己收掉：
+
+```css
+.fnav:empty{display:none}
+```
+
+### 顺手修掉的：手机端标压到统计条上
+
+**现象**：手机上品牌标题和「菜系 15」重叠在一起。
+
+**根因**：`.brand` 里那个包 `h1` 的内层 `<div>` 没有 `min-width:0`。
+flex 布局下，**flex 项的默认 `min-width:auto` 意味着它不肯收缩到内容宽度以下**，
+于是标题溢出、压到隔壁去。补 `.brand > div{min-width:0}` 才能让 `text-overflow:ellipsis` 生效。
+
+### 又一个坑：光加 min-width 还不够
+
+补完之后标题不重叠了，但被压成 **「基…」**，只剩一个字加省略号。
+
+**别猜，量。** 注入一段探针把每个盒子的实际宽度打出来：
+
+```
+.brand  : w=75px      <- 只拿到 75px
+.stats  : w=278px     <- 抢走 278px，可它内容只有 菜品288=63 + 退出=61
+.brand h1: w=35px     <- 所以只能显示「基…」
+```
+
+**`.stats` 会被撑到 278px**，把品牌挤没了。光靠 `flex-grow` 分配不回来，得两边都给硬约束：
+
+```css
+.brand{flex:1 1 0%;min-width:0;overflow:hidden}   /* 完全按剩余空间分配 */
+.stats{flex:0 1 auto;min-width:0;max-width:52%}   /* 不管谁来撑，最多占 52% */
+```
+
+改完实测：`.brand` 75px → **165px**，`.brand h1` 35px → **58px**，标题完整显示。
+
+> 探针本身也踩了一下：我用 `.brand > div` 选元素，结果选中的是 `.mark`（它也是 `.brand` 的直接子 div）。
+> 要写 `.brand > div:not(.mark)`。
+
 ## 更新数据
 
 本地（推荐）：
