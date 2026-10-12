@@ -19,6 +19,28 @@
 <!-- /图标与 PWA -->
 <link rel="stylesheet" href="../assets/theme.css" />
 <style>
+  /* ---- 增添记录 ---- */
+  .hfilter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .hfilter{padding:5px 13px;font-size:12.5px;font-family:inherit;cursor:pointer;
+    border:1px solid var(--rim-2);border-radius:999px;background:transparent;
+    color:var(--dim2)}
+  .hfilter:hover{color:var(--txt)}
+  .hfilter.on{background:var(--txt);border-color:var(--txt);color:#fff;font-weight:600}
+  .hrow{border:1px solid var(--rim-2);border-radius:10px;padding:10px 12px;
+    margin-bottom:8px;background:rgba(255,255,255,.6)}
+  .h-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .h-gun{font-size:14.5px}
+  .h-who{font-size:12px;color:var(--dim2)}
+  .h-badge{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .h-badge.h-ok{background:rgba(34,176,125,.14);color:#0f7d55}
+  .h-badge.h-no{background:rgba(238,93,80,.14);color:#c33a2d}
+  .h-badge.h-pend{background:rgba(245,166,36,.18);color:#9a6a00}
+  .h-act{margin-left:auto;font-size:12px;padding:4px 11px}
+  .h-sub{font-size:12.5px;color:var(--dim2);margin-top:4px}
+  .h-code{font:500 13.5px/1.4 var(--mono,monospace);color:var(--txt);
+    letter-spacing:.4px;margin-top:4px;word-break:break-all}
+  .h-rev{font-size:11.5px;color:var(--dim2);margin-top:4px}
+
   /* ---- 审核列表 ---- */
   .review-list{max-height:60vh;overflow:auto;margin-top:2px}
   .rv{border:1px solid var(--rim-2);border-radius:10px;padding:12px 13px;margin-bottom:10px;
@@ -1226,6 +1248,7 @@ setTimeout(function () {
           '<span class="who">⚙ 管理员模式：<b>' + esc(adminUser) + "</b>" +
           '　显示「已失效/已删除」才能看到隐藏内容</span>' +
           '<button class="btn" id="adminReview">📥 待审核 <b id="pendingN">0</b></button>' +
+          '<button class="btn" id="adminHistory">📜 增添记录</button>' +
           '<button class="btn" id="adminRecycle">🗂 回收站</button>' +
           '<button class="btn" id="adminClear">清除全部失效标记</button>' +
           '<button class="btn ghost" id="adminLogout">退出</button>';
@@ -1426,6 +1449,75 @@ setTimeout(function () {
       .then(function () { if ($("#modal")) openReview(); });
   }
 
+  /* ---------------- 增添记录 ---------------- */
+  /* 谁什么时候提交了什么、谁审的。拒绝过的也留着（服务端只打标记不删记录），
+     所以这里能查到完整的提交历史。 */
+
+  var histFilter = "all";
+  var HIST_LABEL = { pending: "待审核", approved: "已通过", rejected: "已拒绝" };
+  var HIST_CLS = { pending: "h-pend", approved: "h-ok", rejected: "h-no" };
+
+  function openHistory(filter) {
+    if (filter !== undefined) histFilter = filter;
+    if (!API_ON) { showToast("没配后端，看不了记录", false); return; }
+    fetch(API + "/api/admin/history", { headers: adminHeaders(), cache: "no-store" })
+      .then(function (r) { return r.json()["catch"](function () { return {}; }); })
+      .then(function (d) {
+        if (d && d.error) throw new Error(d.error);
+        var all = (d && d.items) || [];
+        var st = (d && d.stat) || { total: 0, pending: 0, approved: 0, rejected: 0 };
+        var items = histFilter === "all" ? all
+          : all.filter(function (i) { return i.review === histFilter; });
+
+        var tabs = [["all", "全部", st.total], ["pending", "待审", st.pending],
+                    ["approved", "已通过", st.approved], ["rejected", "已拒绝", st.rejected]]
+          .map(function (t) {
+            return '<button class="hfilter' + (histFilter === t[0] ? " on" : "") +
+              '" data-hf="' + t[0] + '">' + t[1] + " " + t[2] + "</button>";
+          }).join("");
+
+        var rows = items.map(function (i) {
+          var extra = [];
+          if (i.legacy) extra.push("旧数据（直接上线的）");
+          if (i.flagged) extra.push("被标记失效");
+          if (i.hidden) extra.push("已隐藏");
+          var reviewInfo = i.reviewed_at
+            ? "审核：" + esc(i.reviewed_by || "admin") + " · " + esc(timeAgo(i.reviewed_at))
+            : (i.review === "pending" ? "还没审" : "");
+          return '<div class="hrow" data-id="' + esc(i.target_id) + '">' +
+            '<div class="h-hd">' +
+              '<span class="h-badge ' + HIST_CLS[i.review] + '">' +
+                HIST_LABEL[i.review] + "</span>" +
+              '<b class="h-gun">' + esc(i.gun) + "</b>" +
+              '<span class="h-who">' + esc(i.author || "匿名") + " 提交 · " +
+                esc(timeAgo(i.created_at)) + "</span>" +
+              (i.review === "rejected"
+                ? '<button class="btn h-act" data-hact="approve">重新通过</button>' : "") +
+            "</div>" +
+            '<div class="h-sub">' + esc(i.build || "未命名") + " · " + esc(i.tab || "") +
+              (extra.length ? "　" + esc(extra.join(" / ")) : "") + "</div>" +
+            '<div class="h-code">' + esc(i.code) + "</div>" +
+            (reviewInfo ? '<div class="h-rev">' + reviewInfo + "</div>" : "") +
+          "</div>";
+        }).join("");
+
+        $("#modalHost").innerHTML =
+          '<div class="modal" id="modal"><div class="modal-in" style="max-width:660px">' +
+          "<h2>增添记录 · 共 " + st.total + " 条" +
+            '<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
+          '<p style="font-size:12.5px;color:var(--dim2);margin:0 0 12px">' +
+            "网友提交过的全部改枪码，包括还没审的和被拒绝的。" +
+            "彻底删除请用「回收站」。" + "</p>" +
+          '<div class="hfilter-bar">' + tabs + "</div>" +
+          '<div class="review-list">' +
+            (rows || '<div class="empty-tip">这一类还没有记录</div>') + "</div>" +
+          "</div></div>";
+        $("#modalClose").onclick = closeModal;
+        $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+      })
+      ["catch"](function (e) { showToast((e && e.message) || "打不开增添记录", false); });
+  }
+
   function openRecycle() {
     var gone = ALL.filter(function (r) { return r.deleted || r.invalid; });
     var rows = gone.map(function (r) {
@@ -1529,11 +1621,32 @@ setTimeout(function () {
     if (!b) return;
     if (b.id === "adminLogout") { adminLogout(); return; }
     if (b.id === "adminReview") { openReview(); return; }
+    if (b.id === "adminHistory") { openHistory("all"); return; }
     if (b.id === "adminRecycle") { openRecycle(); return; }
     if (b.id === "adminClear") { adminClearAllFlags(); return; }
   });
   /* 回收站里「恢复显示 / 清除失效」的委托监听，全局只挂一次 */
   $("#modalHost").addEventListener("click", function (e) {
+    /* ---- 增添记录：筛选 ---- */
+    var hf = e.target.closest("[data-hf]");
+    if (hf) { openHistory(hf.dataset.hf); return; }
+    /* ---- 增添记录：把拒错的重新通过 ---- */
+    var ha = e.target.closest("[data-hact]");
+    if (ha && !ha.disabled) {
+      var hrow = ha.closest(".hrow");
+      if (hrow) {
+        ha.disabled = true;
+        adminPost("/api/admin/review", { target_id: hrow.dataset.id, action: "approve" })
+          .then(function () { return adminAfterChange("已重新通过，已上传到列表"); })
+          .then(function () { return refreshPending(); })
+          .then(function () { if ($("#modal")) openHistory(); })
+          ["catch"](function (err) {
+            ha.disabled = false;
+            showToast((err && err.message) || "操作失败", false);
+          });
+      }
+      return;
+    }
     /* ---- 审核按钮 ---- */
     var rvb = e.target.closest("[data-rv]");
     if (rvb && !rvb.disabled) {
