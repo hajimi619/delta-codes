@@ -117,6 +117,26 @@
     .gate{margin-top:5vh;padding:26px 20px}
   }
 </style>
+<script>
+/* 立刻标上 .js，让 .reveal 的隐藏生效（无 JS 时不隐藏，内容照常显示） */
+document.documentElement.className += " js";
+/* 兜底一：site.js 要是没加载成功，1.8 秒后直接把内容显示出来 */
+setTimeout(function () {
+  if (window.SITE && window.SITE.reveal) return;
+  var l = document.querySelectorAll(".reveal");
+  for (var i = 0; i < l.length; i++) l[i].classList.add("in");
+}, 1800);
+/* 兜底二：3.5 秒后，凡是已经进了视口却还没显示的，直接显示。
+   （IntersectionObserver 极少出问题，但滚动浮现这种写法一旦失效就是整片空白，
+     所以宁可多留一道网。） */
+setTimeout(function () {
+  var l = document.querySelectorAll(".reveal:not(.in)");
+  for (var i = 0; i < l.length; i++) {
+    var r = l[i].getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) l[i].classList.add("in");
+  }
+}, 3500);
+</script>
 </head>
 <body>
 <div class="grain"></div>
