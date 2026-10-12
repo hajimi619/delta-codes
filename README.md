@@ -831,28 +831,35 @@ function enterApp() {
 <iframe src="/delta-codes/" style="width:390px;height:700px"></iframe>
 ```
 
-## 顶部导航：从三个快速切换改成一个返回首页
+## 顶部导航：整个去掉，改成点猫头像回首页
 
-**改前**：`[首页] [三角洲行动·改枪码库] [基米餐馆] │ 2 个功能`
-**改后**：功能页只有一个 `← 工具箱首页`；首页上这一行整个不显示。
+**演变过程**：
+1. 最早是 `[首页] [三角洲行动·改枪码库] [基米餐馆] │ 2 个功能`
+2. 手机上太占地方 → 改成只留一个 `← 工具箱首页`
+3. 还是多余 → **整个导航行删掉，回首页靠点左侧猫头像**
 
-理由：手机上三个胶囊占一整行还经常折行，而「换个功能」走首页就够了。
-桌面端同理（`renderNav()` 是共用的）。
-
-```js
-function renderNav() {
-  var host = document.getElementById("siteNav");
-  if (!host) return;
-  if (!currentId()) { host.innerHTML = ""; return; }   // 首页：留空
-  host.innerHTML = '<a class="back-home" href="' + esc(homeUrl()) + '">← 工具箱首页</a>';
-}
+```html
+<!-- 三个页面的品牌块本来就是链接，指向各自的上层目录 -->
+<a class="brand" href="../" title="返回工具箱首页">
+  <div class="mark has-img"><img src="../icons/icon-192.png" ... /></div>
+  <h1>改枪码库</h1>
+</a>
 ```
 
-配一条 CSS 让空行自己收掉：
+`../` 从 `/jimi-restaurant/` 和 `/delta-codes/` 都解析到 `/`，首页用 `./` ✅
 
-```css
-.fnav:empty{display:none}
-```
+配套改动：
+- 三个页面删掉 `<nav class="fnav" id="siteNav">`
+- `site.js` 删掉 `renderNav()` 和 `homeUrl()`
+- 删掉改枪码页那个 `$("#brand").addEventListener("click", ...)` ——
+  它**没写 `preventDefault()`**，调完 `closeGun()` 还是会跳走，等于什么都没做。
+  详情页本来就有自己的「← 返回全部枪械」按钮，不需要它。
+- 给品牌块加了 `title` 提示和 hover / 按下反馈，让人知道能点
+
+**效果**：手机端顶栏变成**单行**（首页 47px，功能页 47px）。
+从最初的 175px（23.5% 屏幕）→ **47px（约 6%）**。
+
+**实测**：写了个页子在餐馆页真点一下猫头像，确认落到了工具箱首页（不是只看着代码像对）。
 
 ### 顺手修掉的：手机端标压到统计条上
 
