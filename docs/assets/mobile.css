@@ -1,0 +1,76 @@
+/* ============================================================
+   哈基米工具箱 · 手机端收紧
+   ------------------------------------------------------------
+   为什么单独一个文件、而且要最后加载：
+     theme.css 在页面自己的 <style> 之前加载，同优先级下**会被压住**。
+     改枪码页和餐馆页各自都写了 .tabs / .chips / .panel / .notice 的样式，
+     所以把手机端规则写在 theme.css 里对它们无效。
+     放在最后加载的一层，才能稳定盖住。
+
+   文件分工：
+     theme.css   结构、布局基础
+     skin.css    配色、圆角、阴影
+     mobile.css  手机端收紧（本文件，最后加载）
+   ============================================================ */
+
+/* 手机端短标题（桌面上不显示） */
+.h1-mob{display:none}
+
+@media (max-width:620px){
+
+  /* ---------- 顶栏：175px -> 87px ---------- */
+  /* 原来 .top-in 是 flex-wrap:wrap，统计条放不下就独占一行，白吃 41px */
+  .top-in{padding:8px 14px 7px;gap:9px;flex-wrap:nowrap;align-items:center}
+  .brand{gap:8px;flex:1 1 auto;min-width:0}
+  .brand .mark,
+  .brand .mark.has-img{width:32px;height:32px;flex:0 0 32px;border-radius:8px}
+  .brand h1,.brand .bt{font-size:15px;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;letter-spacing:0}
+  .brand .sub{display:none}                    /* 副标题：手机上省掉 */
+  .h1-full{display:none}                       /* 长标题换短的，免得被截断 */
+  .h1-mob{display:inline}
+
+  /* 统计条：不换行、变小、能横滑 */
+  .stats{flex:0 1 auto;gap:5px;flex-wrap:nowrap;overflow-x:auto;
+    scrollbar-width:none;-ms-overflow-style:none}
+  .stats::-webkit-scrollbar{display:none}
+  .stat{font-size:11.5px;padding:4px 8px;white-space:nowrap;flex:0 0 auto}
+  .stat b{font-size:12px}
+  .stats .stat[data-mhide]{display:none}       /* 改枪码页藏掉「枪械」「收录」 */
+
+  /* 导航：一整行横滑，不折行；末尾的「N 个功能」去掉 */
+  .fnav{flex-wrap:nowrap;overflow-x:auto;padding:0 14px 7px;margin:0;
+    scrollbar-width:none;-ms-overflow-style:none}
+  .fnav::-webkit-scrollbar{display:none}
+  .fnav a{flex:0 0 auto;font-size:12.5px;padding:5px 11px;border-radius:999px}
+  .fnav .sep{display:none}
+  .fnav > span{display:none}
+
+  /* 再滚就再收一点 */
+  body.scrolled .top-in{padding-top:6px;padding-bottom:5px}
+
+  /* ---------- 筛选区：横滑，不再折成好几行 ---------- */
+  /* 用负边距顶到屏幕两边，滑起来更像原生控件 */
+  .tabs,.chips{
+    flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;-ms-overflow-style:none;
+    margin-left:-14px;margin-right:-14px;
+    padding:0 14px 6px;
+  }
+  .tabs::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
+  .tabs > *,.chips > *{flex:0 0 auto}
+
+  /* 筛选面板挤紧：价格条独占一行，其余并排 */
+  .panel{padding:11px 13px}
+  .panel .row{gap:7px 9px}
+  .panel .row .price-box{flex:1 1 100%}
+  .panel .row .chk{flex:0 0 auto;font-size:12px}
+  .panel .row .btn{padding:7px 13px;font-size:12.5px}
+
+  /* 使用须知那条提示收一点 */
+  .notice{margin-bottom:9px}
+  .notice summary{padding:9px 13px;font-size:13px}
+
+  /* 分组标题（步枪 / 冲锋枪 …）收紧 */
+  .cat-title{margin:15px 0 9px}
+}
