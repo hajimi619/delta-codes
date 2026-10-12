@@ -19,7 +19,21 @@
 <!-- /图标与 PWA -->
 <link rel="stylesheet" href="../assets/theme.css" />
 <style>
-  /* ---- 改枪码功能专属样式（共用部分见 ../assets/theme.css） ---- */
+  /* ---- 审核列表 ---- */
+  .review-list{max-height:60vh;overflow:auto;margin-top:2px}
+  .rv{border:1px solid var(--rim-2);border-radius:10px;padding:12px 13px;margin-bottom:10px;
+    background:rgba(255,255,255,.6)}
+  .rv-hd{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;
+    font-size:12.5px;color:var(--dim2)}
+  .rv-who{font-weight:700;color:var(--txt);font-size:13.5px}
+  .rv-time{margin-left:auto}
+  .rv .form-grid{margin:0}
+  .rv-act{display:flex;gap:8px;margin-top:11px;padding-top:11px;
+    border-top:1px solid var(--rim-2)}
+  #adminReview.hot{background:rgba(245,166,36,.16);border-color:rgba(245,166,36,.5);
+    color:#9a6a00;font-weight:700}
+  #adminReview.hot b{color:#9a6a00}
+  #pendingN{margin-left:3px}  /* ---- 改枪码功能专属样式（共用部分见 ../assets/theme.css） ---- */
 
   /* 使用须知 */
   .notice{margin:18px 0 0;border-radius:16px;padding:12px 16px;font-size:13px;color:var(--dim);
@@ -1035,7 +1049,7 @@ setTimeout(function () {
         .then(function () { return apiGetChanges(); })
         .then(function () {
           closeModal(); render();
-          showToast("已提交，感谢 " + payload.author + "！");
+          showToast("已提交，感谢 " + payload.author + "！管理员审核通过后就会出现在列表里");
         })
         .catch(function (e) {
           err.textContent = (e && e.message) || "提交失败，稍后再试";
@@ -1211,9 +1225,11 @@ setTimeout(function () {
         host.innerHTML =
           '<span class="who">⚙ 管理员模式：<b>' + esc(adminUser) + "</b>" +
           '　显示「已失效/已删除」才能看到隐藏内容</span>' +
+          '<button class="btn" id="adminReview">📥 待审核 <b id="pendingN">0</b></button>' +
           '<button class="btn" id="adminRecycle">🗂 回收站</button>' +
           '<button class="btn" id="adminClear">清除全部失效标记</button>' +
           '<button class="btn ghost" id="adminLogout">退出</button>';
+        refreshPending();
       }
     }
   }
@@ -1280,6 +1296,7 @@ setTimeout(function () {
         try { localStorage.setItem(ADMIN_KEY, adminToken); } catch (e) {}
         closeModal(); setAdminUI(); render();
         showToast("已进入管理员模式");
+      startPendingPoll();
       })["catch"](function (e) {
         err.textContent = (e && e.message) || "登录失败";
         btn.disabled = false; btn.textContent = "登录";
@@ -1299,6 +1316,116 @@ setTimeout(function () {
   }
 
   /** 回收站：列出所有被隐藏 / 被标记失效的条目，可一键恢复 */
+  /* ---------------- 审核 ---------------- */
+  /* 网友提交的码会先进待审，公开列表里看不到；管理员通过之后才上线。
+     服务端在 publicChanges() 里过滤 review==="pending"。 */
+
+  var pendingCount = 0;
+  var pendingTimer = null;
+
+  function paintPendingBadge() {
+    var b = $("#pendingN");
+    if (!b) return;
+    b.textContent = pendingCount ? pendingCount : "0";
+    var btn = $("#adminReview");
+    if (btn) btn.classList.toggle("hot", pendingCount > 0);
+  }
+
+  /** 只取个数，用来更新按钮上的角标 */
+  function refreshPending() {
+    if (!isAdmin()) { pendingCount = 0; paintPendingBadge(); return Promise.resolve(0); }
+    return fetch(API + "/api/admin/pending", { headers: adminHeaders(), cache: "no-store" })
+      .then(function (r) { return r.json()["catch"](function () { return {}; }); })
+      .then(function (d) { pendingCount = (d && d.count) || 0; paintPendingBadge(); return pendingCount; })
+      ["catch"](function () { return 0; });
+  }
+
+  /** 管理员在的时候，每 60 秒看有没有新提交 */
+  function startPendingPoll() {
+    if (pendingTimer) return;
+    pendingTimer = setInterval(function () {
+      if (!isAdmin()) { clearInterval(pendingTimer); pendingTimer = null; return; }
+      refreshPending();
+    }, 60000);
+  }
+
+  function timeAgo(iso) {
+    var t = Date.parse(iso);
+    if (!t) return "";
+    var m = Math.round((Date.now() - t) / 60000);
+    if (m < 1) return "刚刚";
+    if (m < 60) return m + " 分钟前";
+    if (m < 1440) return Math.round(m / 60) + " 小时前";
+    return Math.round(m / 1440) + " 天前";
+  }
+
+  function openReview() {
+    if (!API_ON) { showToast("没配后端，审核功能不可用", false); return; }
+    fetch(API + "/api/admin/pending", { headers: adminHeaders(), cache: "no-store" })
+      .then(function (r) { return r.json()["catch"](function () { return {}; }); })
+      .then(function (d) {
+        if (d && d.error) throw new Error(d.error);
+        var items = (d && d.items) || [];
+        pendingCount = items.length;
+        paintPendingBadge();
+
+        var rows = items.map(function (it) {
+          var opts = (D.modes || []).map(function (m) {
+            return '<option value="' + esc(m) + '"' + (m === it.tab ? " selected" : "") +
+              ">" + esc(m) + "</option>";
+          }).join("");
+          return '<div class="rv" data-id="' + esc(it.target_id) + '">' +
+            '<div class="rv-hd"><span class="rv-who">' + esc(it.author || "匿名") + "</span>" +
+              "<span>提交了一份改枪码</span>" +
+              '<span class="rv-time">' + esc(timeAgo(it.created_at)) + "</span></div>" +
+            '<div class="form-grid">' +
+              '<label><b>枪械名</b><input class="rv-gun" maxlength="24" value="' + esc(it.gun) + '" /></label>' +
+              '<label><b>改装名 / 价位</b><input class="rv-build" maxlength="40" value="' + esc(it.build || "") + '" /></label>' +
+              '<label><b>玩法</b><select class="rv-tab">' + opts + "</select></label>" +
+              '<label><b>改枪码</b><input class="rv-code" maxlength="32" value="' + esc(it.code) + '" /></label>' +
+              '<div class="hint">字段可以直接改 —— 提交里常有错别字，改完点「通过并上传」就行。</div>' +
+            "</div>" +
+            '<div class="rv-act">' +
+              '<button class="btn primary" data-rv="approve">✓ 通过并上传</button>' +
+              '<button class="btn" data-rv="reject">✕ 拒绝</button>' +
+            "</div></div>";
+        }).join("");
+
+        $("#modalHost").innerHTML =
+          '<div class="modal" id="modal"><div class="modal-in" style="max-width:640px">' +
+          "<h2>待审核 · " + items.length + " 条" +
+            '<span class="x">' +
+            (items.length > 1 ? '<button class="btn" data-rv="approve-all">全部通过</button> ' : "") +
+            (items.length > 1 ? '<button class="btn" data-rv="reject-all">全部拒绝</button> ' : "") +
+            '<button class="btn" id="modalClose">关闭</button></span></h2>' +
+          '<p style="font-size:12.5px;color:var(--dim2);margin:0 0 14px">' +
+            "通过之后才会出现在公开列表里。现在外面看不到这些提交。" +
+            (items.length ? "" : "　（当前没有待审的）") + "</p>" +
+          '<div class="review-list">' +
+            (rows || '<div class="empty-tip">没有待审核的提交 🎉</div>') + "</div>" +
+          "</div></div>";
+        $("#modalClose").onclick = closeModal;
+        $("#modal").addEventListener("click", function (e) { if (e.target.id === "modal") closeModal(); });
+      })
+      ["catch"](function (e) { showToast((e && e.message) || "打不开待审列表", false); });
+  }
+
+  function approveOrReject(row, action) {
+    var body = { target_id: row.dataset.id, action: action };
+    if (action === "approve") {
+      body.gun = row.querySelector(".rv-gun").value.trim();
+      body.build = row.querySelector(".rv-build").value.trim();
+      body.tab = row.querySelector(".rv-tab").value;
+      body.code = row.querySelector(".rv-code").value.trim();
+    }
+    return adminPost("/api/admin/review", body)
+      .then(function () {
+        return adminAfterChange(action === "approve" ? "已通过，已上传到列表" : "已拒绝");
+      })
+      .then(function () { return refreshPending(); })
+      .then(function () { if ($("#modal")) openReview(); });
+  }
+
   function openRecycle() {
     var gone = ALL.filter(function (r) { return r.deleted || r.invalid; });
     var rows = gone.map(function (r) {
@@ -1401,11 +1528,42 @@ setTimeout(function () {
     var b = e.target.closest("button");
     if (!b) return;
     if (b.id === "adminLogout") { adminLogout(); return; }
+    if (b.id === "adminReview") { openReview(); return; }
     if (b.id === "adminRecycle") { openRecycle(); return; }
     if (b.id === "adminClear") { adminClearAllFlags(); return; }
   });
   /* 回收站里「恢复显示 / 清除失效」的委托监听，全局只挂一次 */
   $("#modalHost").addEventListener("click", function (e) {
+    /* ---- 审核按钮 ---- */
+    var rvb = e.target.closest("[data-rv]");
+    if (rvb && !rvb.disabled) {
+      var act = rvb.dataset.rv;
+      if (act === "approve-all" || act === "reject-all") {
+        rvb.disabled = true;
+        adminPost("/api/admin/reviewall", { action: act === "approve-all" ? "approve" : "reject" })
+          .then(function (d) {
+            return adminAfterChange((d && d.action === "approve" ? "全部通过，" : "全部拒绝，") +
+              ((d && d.count) || 0) + " 条");
+          })
+          .then(function () { return refreshPending(); })
+          .then(function () { if ($("#modal")) { if (rvb.dataset.rv === "approve-all" && !$(".rv")) closeModal(); else openReview(); } })
+          ["catch"](function (err) { rvb.disabled = false; showToast((err && err.message) || "操作失败", false); });
+        return;
+      }
+      var revRow = rvb.closest(".rv");
+      if (revRow) {
+        rvb.disabled = true;
+        var other = revRow.querySelectorAll("[data-rv]");
+        for (var k = 0; k < other.length; k++) other[k].disabled = true;
+        approveOrReject(revRow, act)
+          ["catch"](function (err) {
+            for (var j = 0; j < other.length; j++) other[j].disabled = false;
+            showToast((err && err.message) || "操作失败", false);
+          });
+      }
+      return;
+    }
+    /* ---- 回收站按钮 ---- */
     var btn = e.target.closest("[data-r]");
     if (!btn || btn.disabled) return;
     var item = btn.closest(".item");
