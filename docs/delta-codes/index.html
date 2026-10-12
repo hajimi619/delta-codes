@@ -286,6 +286,8 @@ setTimeout(function () {
   }
 }, 3500);
 </script>
+<!-- 皮肤层：只改配色/圆角/阴影，删掉这行就回原样 -->
+<link rel="stylesheet" href="../assets/skin.css" />
 </head>
 <body>
 <div class="grain"></div>
@@ -302,7 +304,7 @@ setTimeout(function () {
       <div class="stat">枪械 <b id="s-guns">0</b></div>
       <div class="stat">改枪码 <b id="s-codes">0</b></div>
       <div class="stat">收录 <b id="s-total">0</b></div>
-      <div class="stat" id="s-api" hidden>接口 <b>—</b></div>
+      <!-- 顶栏的接口状态徽章已移除（setApiStat 里有 !el 保护，不会报错）-->
       <button class="stat" id="s-admin" title="管理员登录 / 管理面板">管理员 <b>登录</b></button>
     </div>
   </div>
@@ -512,7 +514,7 @@ setTimeout(function () {
 
   // ---------- 后端 ----------
   /* 线路不稳（国内到 Cloudflare 的 TLS 握手经常十几秒甚至超时），
-     所以：1) 失败自动重试  2) 在顶栏显示接口状态
+     所以：1) 失败自动重试
         3) 彻底失败后每 20 秒在后台自动重试，连上就自动恢复
      免得"连不上"被误当成"没人提交过" */
   var apiWarned = false;
