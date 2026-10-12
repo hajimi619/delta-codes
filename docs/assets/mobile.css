@@ -86,11 +86,6 @@
   .cat-title{margin:15px 0 9px}
 }
 
-/* ---------- 顶部导航：只剩一个返回首页 ---------- */
-.fnav:empty{display:none}                        /* 首页上没有导航，整行收掉 */
-.fnav .back-home{font-weight:600}
-.fnav .back-home::before{content:none}
-
 /* 手机端品牌标题和统计条重叠的修复：
    .brand 内层 div 缺 min-width:0，flex 布局下它不肯收缩到内容宽度以下，
    于是标题溢出压到统计条上。补上 min-width:0 让 ellipsis 正常生效。 */
