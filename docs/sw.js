@@ -8,7 +8,7 @@
    - /api/changes：网络优先，2 秒超时回退到上次结果
    ============================================================ */
 
-var VERSION = "hk-v8";
+var VERSION = "hk-v9";
 var SHELL = "shell-" + VERSION;
 var ASSET = "asset-" + VERSION;
 var DATA = "data-" + VERSION;
