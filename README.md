@@ -1127,6 +1127,91 @@ GET /api/admin/history  ->  { stat: {total,pending,approved,rejected}, items: [.
   purge 能真删                    ✅
 ```
 
+## 删除：两步确认 + 网友可申请
+
+两件事一起做的：**A** 管理员删除要二次确认；**B** 网友也能申请删除。
+
+### B. 网友申请删除
+
+```
+POST /api/request-delete  { target_id, reason? }     # 公开，不需要登录
+```
+
+效果：**这条码立刻从公开列表消失**（和「标记失效」不同，是真隐藏），
+但**不会被物理删除**。管理员在「增添记录」里能看到是谁申请的、理由是什么，
+再由他决定「恢复显示」还是「确认永久删除」。
+
+这样网友能顺手清掉错误的码，又不会有人恶意把别人的码删光（同一目标只记最新一次申请，
+并且走 IP 限流）。代码行上多了一个 🗑 按钮，被申请过的会显示「待删」标记。
+
+### A. 管理员删除 → 二次确认
+
+管理员点 🗑 只是**隐藏**（进回收站），要真正抹掉必须在「增添记录」里点
+**确认永久删除**。界面会把两种隐藏区分开：
+
+```
+已通过  管理员隐藏测试枪  测试员 提交 · 刚刚  [恢复显示] [确认永久删除]
+  3w测试 · 烽火地带   管理员已隐藏
+已通过  界面测试枪  界面测试员 提交 · 2 分钟前  [恢复显示] [确认永久删除]
+  1w测试 · 烽火地带   ★ 网友申请删除 / 理由：界面验证
+```
+
+> 基础数据（`data.js` 里的）只能隐藏，不能物理删除 —— 它不在数据库里。
+
+### ⚠️ 这里踩了两个坑，都是"功能看着对、其实没生效"
+
+**坑一：往 if-else 链里插了一个独立 `if`**
+
+```js
+if (c.type === "flag") flag[c.target_id] = c.status;
+if (c.type === "delete" && c.requested && ...) reqDel[c.target_id] = true;   // ← 独立 if
+else if (c.type === "edit") ...
+else if (c.type === "delete") deleted[c.target_id] = c.status !== "valid";   // ← 挂到新的 if 上了
+```
+
+后果：网友申请删除走第一个分支就结束，**`deleted[]` 永远设不上 —— 行根本不会隐藏**，
+只显示个「待删」标签。改成完整的 if-else 链：
+
+```js
+if (c.type === "flag") { ... }
+else if (c.type === "edit") { ... }
+else if (c.type === "delete") {
+  var gone = c.status !== "valid";
+  deleted[c.target_id] = gone;
+  if (gone && c.requested) reqDel[c.target_id] = true;
+}
+```
+
+**坑二：`publicChanges()` 的字段白名单漏了 `requested`**
+
+```js
+.map(function (c) {
+  return {
+    id: c.id, type: c.type, target_id: c.target_id, status: c.status,
+    requested: c.requested ? true : undefined,     // ← 原来没有这行
+    ...
+```
+
+服务端存了 `requested: true`，`/api/admin/history` 也返回了，
+但客户端读的是 `/api/changes` —— **那层映射没带这个字段，前端永远收不到信号**。
+
+### 为什么能抓到
+
+API 层的测试**测不出这个** —— 它按服务端数据判断，全绿。
+所以又写了一个测试：**把页面里真正的 `rebuildAll()` 抠出来，在 Node 里跑**
+（连 `PRICE_RE` / `CATS` / `CAT_COLOR` 这些常量一起抠），喂真实数据，断言
+「标了 `reqDel` 的必须同时 `deleted=true`」：
+
+```
+被隐藏的条数 : 1
+  TESTUI00000000000DEL  界面测试枪  reqDel=true     ← 修好后
+标了「网友申请删除」的: 1
+✅ 通过
+```
+
+> 教训：**接口测试全绿 ≠ 功能真的работает。** 数据在客户端还要过一遍加工，
+> 那一层必须单独验 —— 最靠得住的办法是把那段函数抠出来真跑一遍。
+
 ## 更新数据
 
 本地（推荐）：
