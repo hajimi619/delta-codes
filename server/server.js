@@ -11,6 +11,7 @@
  *   GET  /api/changes
  *   POST /api/add             新增一个改枪码
  *   POST /api/flag            标记失效 / 恢复
+ *   POST /api/request-delete  申请删除（网友也能点；先隐藏，管理员确认后才真删）
  *
  * 基米餐馆（菜单只放服务器上，客户端不可能绕过密码）:
  *   POST /api/restaurant/unlock  {password} -> {token}
@@ -348,6 +349,43 @@ function flagCode(body, req) {
   return { ok: true, status: status };
 }
 
+/* ---------------- 申请删除 ---------------- */
+
+/** 网友也能点「申请删除」。
+    效果：这条码立刻从公开列表消失（和标记失效不同，是真隐藏），
+    但**不会被物理删除** —— 管理员在「增添记录」里能看到是谁申请的，
+    再由他决定「确认永久删除」还是「恢复显示」。
+    这样既让网友能顺手清掉错误的码，又不会有人恶意把别人的码删光。 */
+function requestDelete(body, req) {
+  const targetId = clean(body.target_id, 80);
+  const reason = clean(body.reason, 60);
+  if (!targetId) throw new Error("缺少目标改枪码");
+
+  const ipHash = hashIp(clientIp(req));
+  assertUnderRateLimit(ipHash);
+
+  /* 已经有人申请过了就不重复记（同一条只留最新的申请信息） */
+  const dup = changes.filter(function (c) {
+    return c.type === "delete" && c.target_id === targetId;
+  })[0];
+  if (dup && dup.status === "deleted") {
+    return { ok: true, already: true, message: "这条已经有人申请删除了，等管理员确认" };
+  }
+
+  changes = changes.filter(function (c) {
+    return !(c.type === "delete" && c.target_id === targetId);
+  });
+  changes.push({
+    id: crypto.randomUUID(), type: "delete", target_id: targetId,
+    status: "deleted", requested: true, reason: reason || null,
+    gun: null, build: null, tab: null, mode: null, code: null, author: null,
+    created_at: new Date().toISOString(), ip_hash: ipHash,
+  });
+  saveJson(STORE, { changes: changes });
+  return { ok: true, requested: true,
+           message: "已提交删除申请，管理员确认后才会真正删除" };
+}
+
 /* ---------------- 管理员业务 ---------------- */
 
 /** target_id 可能是基础数据的 id（玩法|码），也可能是 user|<uuid> */
@@ -366,6 +404,7 @@ function adminDelete(body) {
   changes.push({
     id: crypto.randomUUID(), type: "delete", target_id: targetId,
     status: undo ? "valid" : "deleted",
+    requested: false,          // 管理员自己删的，不是网友申请
     gun: null, build: null, tab: null, mode: null, code: null, author: null,
     created_at: new Date().toISOString(), ip_hash: null,
   });
@@ -527,8 +566,12 @@ function adminHistory() {
     .filter(function (c) { return c.type === "add"; })
     .sort(function (a, b) { return Date.parse(b.created_at) - Date.parse(a.created_at); })
     .map(function (c) {
+      const uid = "user|" + c.id;
+      const delRec = changes.filter(function (d) {
+        return d.type === "delete" && d.target_id === uid;
+      })[0];
       return {
-        target_id: "user|" + c.id, id: c.id,
+        target_id: uid, id: c.id,
         /* 老数据没有 review 字段 —— 那时候新增直接上线，算已通过 */
         review: c.review || "approved",
         legacy: !c.review,
@@ -540,9 +583,13 @@ function adminHistory() {
         flagged: changes.some(function (f) {
           return f.type === "flag" && f.target_id === ("user|" + c.id) && f.status === "invalid";
         }),
-        hidden: changes.some(function (d) {
-          return d.type === "delete" && d.target_id === ("user|" + c.id) && d.status === "deleted";
-        }),
+        /* 删除相关的信息：隐藏了没有、是网友申请的还是管理员删的、什么时候 */
+        hidden: delRec && delRec.status === "deleted",
+        delRequested: !!(delRec && delRec.requested),
+        delReason: (delRec && delRec.reason) || null,
+        delAt: (delRec && delRec.status === "deleted") ? delRec.created_at : null,
+        /* 只有网友提交的才能物理删掉 —— 基础数据在 data.js 里，删不了只能隐藏 */
+        canPurge: true,
       };
     });
   const stat = { total: items.length, pending: 0, approved: 0, rejected: 0 };
@@ -645,6 +692,10 @@ function publicChanges() {
     .map(function (c) {
       return {
         id: c.id, type: c.type, target_id: c.target_id, status: c.status,
+        /* requested 要带上：客户端靠它区分「网友申请删除」和「管理员自己删的」，
+           决定要不要显示「待删」标记。漏了的话前端永远收不到这个信号。
+           注意别把 reason / ip_hash 这类内部字段一起带出去。 */
+        requested: c.requested ? true : undefined,
         gun: c.gun, build: c.build, tab: c.tab, mode: c.mode,
         code: c.code, author: c.author, created_at: c.created_at,
       };
@@ -705,6 +756,7 @@ const server = http.createServer(function (req, res) {
     const routes = {
       "/api/add": function (b, r) { return addCode(b, r); },
       "/api/flag": function (b, r) { return flagCode(b, r); },
+      "/api/request-delete": function (b, r) { return requestDelete(b, r); },
       "/api/restaurant/unlock": function (b, r) { return restaurantUnlock(b, r); },
       "/api/admin/login": function (b, r) { return adminLogin(b, r); },
       "/api/admin/logout": function (b, r) {
