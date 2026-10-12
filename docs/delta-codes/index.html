@@ -294,7 +294,7 @@ setTimeout(function () {
 <div class="grain"></div>
 <header class="top">
   <div class="top-in">
-    <a class="brand" id="brand" href="../">
+    <a class="brand" id="brand" href="../" title="返回工具箱首页">
       <div class="mark has-img"><img src="../icons/icon-192.png" alt="改枪码库" width="42" height="42" /></div>
       <div>
         <h1><span class="h1-full">三角洲行动 · 改枪码库</span><span class="h1-mob">改枪码库</span></h1>
@@ -309,7 +309,6 @@ setTimeout(function () {
       <button class="stat" id="s-admin" title="管理员登录 / 管理面板"><span class="st-full">管理员 </span><b>登录</b></button>
     </div>
   </div>
-  <nav class="fnav" id="siteNav"></nav>
 </header>
 
 <div class="wrap">
@@ -1107,7 +1106,6 @@ setTimeout(function () {
     state = defaults(); state.cmp = cmp;
     syncControls(); render();
   });
-  $("#brand").addEventListener("click", function () { if (state.gun) closeGun(); });
   $("#tabs").addEventListener("click", function (e) {
     var el = e.target.closest(".tab"); if (!el) return;
     var t = el.dataset.tab;
