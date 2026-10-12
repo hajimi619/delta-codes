@@ -35,7 +35,11 @@
   .h-badge.h-ok{background:rgba(34,176,125,.14);color:#0f7d55}
   .h-badge.h-no{background:rgba(238,93,80,.14);color:#c33a2d}
   .h-badge.h-pend{background:rgba(245,166,36,.18);color:#9a6a00}
-  .h-act{margin-left:auto;font-size:12px;padding:4px 11px}
+  .h-act{font-size:12px;padding:4px 11px;margin-left:6px}
+  .h-act:first-of-type{margin-left:auto}
+  .h-act.danger{color:#c33a2d;border-color:rgba(238,93,80,.45);
+    background:rgba(238,93,80,.08)}
+  .h-act.danger:hover{background:rgba(238,93,80,.16)}
   .h-sub{font-size:12.5px;color:var(--dim2);margin-top:4px}
   .h-code{font:500 13.5px/1.4 var(--mono,monospace);color:var(--txt);
     letter-spacing:.4px;margin-top:4px;word-break:break-all}
@@ -504,12 +508,21 @@ setTimeout(function () {
   /** 基础数据 + 改动 = 最终列表
       改动类型：add 新增 / flag 标记失效 / edit 覆盖内容 / delete 隐藏（管理员） */
   function rebuildAll() {
-    var flag = {}, edits = {}, deleted = {};
+    var flag = {}, edits = {}, deleted = {}, reqDel = {};
     CHANGES.forEach(function (c) {
       if (!c.target_id && c.type !== "add") return;
-      if (c.type === "flag") flag[c.target_id] = c.status;
-      else if (c.type === "edit") edits[c.target_id] = c;
-      else if (c.type === "delete") deleted[c.target_id] = c.status !== "valid";
+      /* 注意别把这条 if-else 链拆开：
+         插一个独立的 if 进去，后面的 else 会挂到新的 if 上，
+         网友申请删除那条就永远设不上 deleted[]，行不会隐藏。 */
+      if (c.type === "flag") {
+        flag[c.target_id] = c.status;
+      } else if (c.type === "edit") {
+        edits[c.target_id] = c;
+      } else if (c.type === "delete") {
+        var gone = c.status !== "valid";
+        deleted[c.target_id] = gone;
+        if (gone && c.requested) reqDel[c.target_id] = true;   // 网友申请的
+      }
     });
 
     var out = BASE.map(function (r) {
@@ -539,6 +552,7 @@ setTimeout(function () {
         r.edited = true;
       }
       r.invalid = flag[r.id] === "invalid";
+    r.reqDel = !!reqDel[r.id];
       r.deleted = !!deleted[r.id];
       r.cat = catOf(r.gun);
     });
@@ -828,6 +842,10 @@ setTimeout(function () {
         '<button class="icon-btn cmp' + (isCmp ? " on" : "") + '" data-act="cmp" title="加入对比">⇄</button>' +
         (canEdit ? '<button class="icon-btn flag' + (r.invalid ? " on" : "") + '" data-act="flag" title="' +
           (r.invalid ? "恢复这条码" : "标记为失效") + '">' + (r.invalid ? "↺" : "⊘") + "</button>" : "") +
+        (canEdit && !r.deleted && !r.reqDel
+          ? '<button class="icon-btn del" data-act="reqdel" title="申请删除（会先隐藏，管理员确认后才彻底删除）">🗑</button>'
+          : "") +
+        (r.reqDel ? '<span class="badge del" title="已有人申请删除，等管理员确认">待删</span>' : "") +
         '<button class="copy" data-code="' + esc(r.code) + '">复制</button>' +
         (adm ? '<button class="icon-btn edit" data-act="edit" title="编辑这条">✎</button>' : "") +
         (adm ? (r.deleted
@@ -1201,6 +1219,25 @@ setTimeout(function () {
           ["catch"](function (e) { act.disabled = false; showToast(e.message || "操作失败", false); });
         return;
       }
+      if (a === "reqdel") {
+        var rid = act.closest("[data-id]").dataset.id;
+        var rrec = byId[rid];
+        if (!rrec) return;
+        if (!confirm("申请删除这条改枪码？\n\n" + rrec.code +
+                     "\n\n提交后会先从列表里隐藏，管理员在「增添记录」里确认之后才会彻底删除。")) return;
+        act.disabled = true;
+        apiPost("/api/request-delete", { target_id: rid })
+          .then(function () { return apiGetChanges(); })
+          .then(function () {
+            render();
+            showToast("已提交删除申请，管理员确认后才会真正删除");
+          })
+          ["catch"](function (e) {
+            act.disabled = false;
+            showToast((e && e.message) || "操作失败", false);
+          });
+        return;
+      }
       if (a === "purge") {
         var pid = act.closest("[data-id]").dataset.id;
         if (!confirm("永久删除这条网友新增的改枪码？\n\n这会从数据库里物理移除，不可恢复。")) return;
@@ -1480,7 +1517,8 @@ setTimeout(function () {
           var extra = [];
           if (i.legacy) extra.push("旧数据（直接上线的）");
           if (i.flagged) extra.push("被标记失效");
-          if (i.hidden) extra.push("已隐藏");
+          if (i.hidden) extra.push(i.delRequested ? "★ 网友申请删除" : "管理员已隐藏");
+          if (i.delReason) extra.push("理由：" + i.delReason);
           var reviewInfo = i.reviewed_at
             ? "审核：" + esc(i.reviewed_by || "admin") + " · " + esc(timeAgo(i.reviewed_at))
             : (i.review === "pending" ? "还没审" : "");
@@ -1492,7 +1530,12 @@ setTimeout(function () {
               '<span class="h-who">' + esc(i.author || "匿名") + " 提交 · " +
                 esc(timeAgo(i.created_at)) + "</span>" +
               (i.review === "rejected"
-                ? '<button class="btn h-act" data-hact="approve">重新通过</button>' : "") +
+                ? '<button class="btn h-act" data-hact="approve">重新通过</button>'
+                : (i.hidden
+                    ? '<button class="btn h-act" data-hact="restore">恢复显示</button>' +
+                      '<button class="btn h-act danger" data-hact="purge">确认永久删除</button>'
+                    : (i.review === "approved"
+                        ? '<button class="btn h-act" data-hact="hide">隐藏这条</button>' : ""))) +
             "</div>" +
             '<div class="h-sub">' + esc(i.build || "未命名") + " · " + esc(i.tab || "") +
               (extra.length ? "　" + esc(extra.join(" / ")) : "") + "</div>" +
@@ -1507,7 +1550,7 @@ setTimeout(function () {
             '<span class="x"><button class="btn" id="modalClose">关闭</button></span></h2>' +
           '<p style="font-size:12.5px;color:var(--dim2);margin:0 0 12px">' +
             "网友提交过的全部改枪码，包括还没审的和被拒绝的。" +
-            "彻底删除请用「回收站」。" + "</p>" +
+            "被隐藏的条目会显示是谁申请删的，确认无误再点「确认永久删除」。" + "</p>" +
           '<div class="hfilter-bar">' + tabs + "</div>" +
           '<div class="review-list">' +
             (rows || '<div class="empty-tip">这一类还没有记录</div>') + "</div>" +
@@ -1635,11 +1678,31 @@ setTimeout(function () {
     if (ha && !ha.disabled) {
       var hrow = ha.closest(".hrow");
       if (hrow) {
+        var hid = hrow.dataset.id;
+        var what = ha.dataset.hact;
+
+        if (what === "purge") {
+          if (!confirm("确认永久删除这条改枪码？\n\n这会从数据库里物理移除，不可恢复。")) return;
+        }
         ha.disabled = true;
-        adminPost("/api/admin/review", { target_id: hrow.dataset.id, action: "approve" })
-          .then(function () { return adminAfterChange("已重新通过，已上传到列表"); })
-          .then(function () { return refreshPending(); })
-          .then(function () { if ($("#modal")) openHistory(); })
+
+        var job;
+        if (what === "approve") {
+          job = adminPost("/api/admin/review", { target_id: hid, action: "approve" })
+            .then(function () { return adminAfterChange("已重新通过，已上传到列表"); })
+            .then(function () { return refreshPending(); });
+        } else if (what === "hide") {
+          job = adminPost("/api/admin/delete", { target_id: hid })
+            .then(function () { return adminAfterChange("已隐藏，在「增添记录」里可以确认永久删除"); });
+        } else if (what === "restore") {
+          job = adminPost("/api/admin/delete", { target_id: hid, undo: true })
+            .then(function () { return adminAfterChange("已恢复显示"); });
+        } else {
+          job = adminPost("/api/admin/purge", { target_id: hid })
+            .then(function () { return adminAfterChange("已永久删除"); });
+        }
+
+        job.then(function () { if ($("#modal")) openHistory(); })
           ["catch"](function (err) {
             ha.disabled = false;
             showToast((err && err.message) || "操作失败", false);
