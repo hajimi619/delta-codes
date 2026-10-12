@@ -617,6 +617,72 @@ location ~* \.webmanifest$ {
 > `deploy_pages.ps1`（Cloudflare Pages）现在会报错，但**已经没用了** ——
 > Cloudflare 停用后只剩一个 301 跳转 Worker，站点在服务器上。这个脚本可以删了。
 
+## 质感升级 + 性能优化
+
+一次性做的，分两块。
+
+### 性能（不加任何依赖）
+
+| 措施 | 为什么 |
+|---|---|
+| **`body::before{will-change:transform}`** | 背景光晕是满屏 `filter:blur(48px)` + 无限动画。不加这个，**每一帧都要重算 blur** —— 手机上最吃 GPU 的就是它。加了之后浏览器把模糊结果单独栅格化一次，之后只做位移 |
+| **小元件去掉 `backdrop-filter`** | `.stat` / `.btn` / `.copy` / `.icon-btn` / `.badge` 原来各带一层模糊（全站 20 多处）。它们只有 10~13px 的模糊、底下背景已经被父级玻璃糊过，**再去一次视觉上几乎看不出**，但每个都要单独开合成层。去掉后把不透明度调高一点补偿 |
+| **`.gun-card` / `.dish` 加 `content-visibility:auto`** | 改枪码页 67 张卡、餐馆几十道菜，屏幕外的**直接跳过布局和绘制**。配 `contain-intrinsic-size:auto 300px` 让滚动条不跳 |
+| **Speculation Rules 预渲染** | 鼠标在功能卡片上停 200ms，浏览器就**提前把目标页渲染好**，点下去秒开 |
+| `.toast/.totop/.cartbar` 加 `will-change` | 固定定位又常动的，各给一层 |
+
+**没动**：gzip、图片懒加载、系统字体、Service Worker —— 本来就对。
+
+### 外观
+
+| 加的东西 | 效果 |
+|---|---|
+| **滚动进场** `.reveal` | 元素进入视口时上浮淡入，功能卡片按 `data-d` 依次错开 60ms |
+| **顶栏滚动收缩** | 滚下去 `.top-in` 内边距收紧、副标题淡出、阴影加深 |
+| **滚动进度线** | 顶栏最上边一条 3px 彩线，随滚动从左边长出来；底下常驻原来那道淡彩虹 |
+| **卡片顶部高光** | `.card/.fcard/.hero` 顶部一条极淡的白线，像真盖了层玻璃 |
+| **`:focus-visible`** | 键盘 Tab 时有清晰的橙色描边（无障碍，也更好看） |
+| **按下反馈** | `.btn/.copy/.icon-btn/.fcard` 按下去缩 2.5%，60ms |
+| 数字 `tabular-nums` | 等宽数字，变的时候不跳字 |
+
+### ⚠️ 滚动浮现的**双保险**（重要）
+
+`.reveal` 默认是 `opacity:0`。**这类写法一旦 JS 出问题就是整片白屏**，所以做了两层保护：
+
+```html
+<!-- 放在 <head>，不依赖 site.js -->
+<script>
+document.documentElement.className += " js";        // ① 没 JS 就不隐藏（.js .reveal 才生效）
+setTimeout(function () {                            // ② site.js 挂了就全显示
+  if (window.SITE && window.SITE.reveal) return;
+  document.querySelectorAll(".reveal").forEach(function (e) { e.classList.add("in"); });
+}, 1800);
+setTimeout(function () {                            // ③ IO 万一没触发，视口内的直接显示
+  document.querySelectorAll(".reveal:not(.in)").forEach(function (e) {
+    var r = e.getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) e.classList.add("in");
+  });
+}, 3500);
+</script>
+```
+
+**CSS 那边必须写成 `.js .reveal{opacity:0}`**，不能直接写 `.reveal{opacity:0}` —— 否则禁用 JS 的用户看到的是空白页。
+
+### 两个踩坑
+
+**① `SITE.reveal` 被覆盖**：增强模块写在 `site.js` 的 IIFE 里，我一开始写
+`window.SITE.reveal = reveal`，但文件结尾还有一句 `window.SITE = SITE`，**把整个对象换掉了**。
+改成 `SITE.reveal = reveal`（挂到同一个对象上）。
+
+**② 进度线一开始看不出来**：最初做成"只有一条线，`scaleX(--prog)`"，结果回到页面顶部时
+进度是 0，线整条消失 —— 原来那道彩虹装饰没了。改成**两层**：`::after` 常驻淡彩虹当轨道，
+`::before` 才是随滚动变长的亮线。
+
+> **无头浏览器验证不了滚动动画**（sticky 定位和滚动截图会错位），
+> 所以滚动相关效果是**靠读 `getComputedStyle` 的数值**验证的：
+> `--prog=0.0000`（顶部）、`::before 尺寸 666×3`、`top:0px` 都对，
+> 但"滚起来好不好看"得用真浏览器看。
+
 ## 更新数据
 
 本地（推荐）：
