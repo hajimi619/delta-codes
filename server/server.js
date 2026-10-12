@@ -24,6 +24,14 @@
  *   POST /api/admin/purge     {target_id}         永久删除（仅网友新增，物理移除）
  *   POST /api/admin/edit      {target_id, gun, build, tab, mode, code}
  *   POST /api/admin/clearflags{target_id}         清除失效标记（不给 target_id 就是全清）
+ *   GET  /api/admin/pending                       待审核的网友新增
+ *   POST /api/admin/review   {target_id, action}  审核单条（approve / reject，可顺带改字段）
+ *   POST /api/admin/reviewall{action}             批量审核全部待审
+ *
+ * 审核流：
+ *   POST /api/add 提交的码会带 review:"pending"，GET /api/changes **不会**返回它，
+ *   所以列表里看不见。管理员在「待审核」里通过之后 review 变 approved，才进公开列表。
+ *   老数据没有 review 字段，按"已通过"处理（向后兼容）。
  */
 "use strict";
 
@@ -305,11 +313,14 @@ function addCode(body, req) {
   const id = crypto.randomUUID();
   changes.push({
     id: id, type: "add", target_id: null, status: "valid",
+    /* 待审核：公开接口会把它过滤掉，管理员在「待审核」里通过之后才进列表 */
+    review: "pending",
     gun: gun, build: build, tab: tab, mode: tab === "烽火高操速T0" ? "烽火地带" : tab,
     code: code, author: author, created_at: new Date().toISOString(), ip_hash: ipHash,
   });
   saveJson(STORE, { changes: changes });
-  return { ok: true, id: "user|" + id };
+  return { ok: true, id: "user|" + id, pending: true,
+           message: "提交成功，等管理员审核通过后就会出现在列表里" };
 }
 
 function flagCode(body, req) {
@@ -420,6 +431,97 @@ function adminClearFlags(body) {
   return { ok: true, removed: removed };
 }
 
+/* ---------------- 审核流 ---------------- */
+
+/** 是不是"待审核的网友新增"。
+    老数据没 review 字段 —— 那时候新增是直接上线的，按已通过处理，不能把历史内容藏了。 */
+function isPendingReview(c) {
+  return c.type === "add" && c.review === "pending";
+}
+
+function adminPending() {
+  const items = changes
+    .filter(isPendingReview)
+    .sort(function (a, b) { return Date.parse(b.created_at) - Date.parse(a.created_at); })
+    .map(function (c) {
+      return {
+        target_id: "user|" + c.id, id: c.id,
+        gun: c.gun, build: c.build, tab: c.tab, mode: c.mode,
+        code: c.code, author: c.author, created_at: c.created_at,
+      };
+    });
+  return { ok: true, count: items.length, items: items };
+}
+
+/** 审核单条。action=approve 通过；action=reject 直接丢掉这条提交。
+    可以顺带把 gun/build/tab/code 传进来 —— 提交里常有错别字，审核时直接改掉最省事。 */
+function adminReview(body, operator) {
+  const targetId = clean(body.target_id, 80);
+  const action = body.action === "reject" ? "reject" : "approve";
+  if (!targetId) throw new Error("缺少目标");
+  if (!isUserRecord(targetId)) throw new Error("只能审核网友提交的内容");
+
+  const rawId = targetId.slice(5);
+  const rec = changes.filter(function (c) { return c.id === rawId && c.type === "add"; })[0];
+  if (!rec) throw new Error("这条提交已经不在了（可能刚被处理过）");
+  if (rec.review !== "pending") throw new Error("这条已经审核过了");
+
+  if (action === "reject") {
+    const before = changes.length;
+    changes = changes.filter(function (c) {
+      return c.id !== rawId && c.target_id !== targetId;
+    });
+    saveJson(STORE, { changes: changes });
+    return { ok: true, action: "reject", removed: before - changes.length, gun: rec.gun };
+  }
+
+  /* 通过：允许顺手改字段 */
+  if (body.gun != null) {
+    const gun = clean(body.gun, 24);
+    if (!gun) throw new Error("枪械名不能为空");
+    rec.gun = gun;
+  }
+  if (body.build != null) rec.build = clean(body.build, 40);
+  if (body.tab != null) {
+    const tab = clean(body.tab, 20);
+    if (MODES.indexOf(tab) < 0) throw new Error("请选择玩法");
+    rec.tab = tab;
+    rec.mode = tab === "烽火高操速T0" ? "烽火地带" : tab;
+  }
+  if (body.code != null) {
+    const code = String(body.code).trim();
+    if (!CODE_RE.test(code)) throw new Error("改枪码格式不对（8–32 位字母数字）");
+    if (changes.some(function (c) {
+      return c !== rec && c.type === "add" && c.code === code && c.review !== "reject";
+    })) throw new Error("这个码已经有另一条提交了");
+    rec.code = code;
+  }
+
+  rec.review = "approved";
+  rec.reviewed_at = new Date().toISOString();
+  rec.reviewed_by = operator || "admin";
+  saveJson(STORE, { changes: changes });
+  return { ok: true, action: "approve", target_id: targetId, gun: rec.gun, code: rec.code };
+}
+
+/** 批量：把当前所有待审一次性通过 / 全部丢掉 */
+function adminReviewAll(body, operator) {
+  const action = body.action === "reject" ? "reject" : "approve";
+  const pend = changes.filter(isPendingReview);
+  if (!pend.length) return { ok: true, action: action, count: 0 };
+
+  if (action === "reject") {
+    changes = changes.filter(function (c) { return !isPendingReview(c); });
+  } else {
+    const now = new Date().toISOString();
+    pend.forEach(function (c) {
+      c.review = "approved"; c.reviewed_at = now; c.reviewed_by = operator || "admin";
+    });
+  }
+  saveJson(STORE, { changes: changes });
+  return { ok: true, action: action, count: pend.length };
+}
+
 /* ---------------- 基米餐馆 ----------------
    菜单和密码都只存在服务器上（/var/lib/hajimiovo/），
    docs/ 里一个字都不放 —— 不然看源码就把密码绕过去了。 */
@@ -486,6 +588,7 @@ function restaurantMenu(req) {
 function publicChanges() {
   return changes
     .filter(function (c) { return c.type !== "delete" || c.status !== "valid"; })  // 保留删除记录给前端
+    .filter(function (c) { return !isPendingReview(c); })   // 待审核的不给外面看
     .map(function (c) {
       return {
         id: c.id, type: c.type, target_id: c.target_id, status: c.status,
@@ -518,6 +621,14 @@ const server = http.createServer(function (req, res) {
         return sendJson(res, headers, 401, { error: e.message });
       }
     }
+    if (p === "/api/admin/pending") {
+      try {
+        requireAdmin(req);
+        return sendJson(res, headers, 200, adminPending());
+      } catch (e) {
+        return sendJson(res, headers, 401, { error: e.message });
+      }
+    }
     if (p === "/api/admin/me") {
       try {
         const u = requireAdmin(req);
@@ -544,6 +655,8 @@ const server = http.createServer(function (req, res) {
       "/api/admin/purge": function (b, r) { requireAdmin(r); return adminPurge(b); },
       "/api/admin/edit": function (b, r) { requireAdmin(r); return adminEdit(b); },
       "/api/admin/clearflags": function (b, r) { requireAdmin(r); return adminClearFlags(b); },
+      "/api/admin/review": function (b, r) { return adminReview(b, requireAdmin(r)); },
+      "/api/admin/reviewall": function (b, r) { return adminReviewAll(b, requireAdmin(r)); },
     };
     const fn = routes[p];
     if (!fn) return sendJson(res, headers, 404, { error: "接口不存在" });
