@@ -726,6 +726,61 @@ setTimeout(function () {                            // ③ IO 万一没触发，
 
 两个页面里更新它们的 `setApiStat()` / `setStat()` 都有 `if (!el) return;` 保护，**删掉元素不会让 JS 报错**，重试逻辑照常工作，只是不再显示。
 
+## 踩过的坑：基米餐馆「输密码后一直转圈」
+
+**现象**：输对密码，按钮卡在「验证中…」，页面不动；**刷新一下才进得去**。
+
+**原因**：进入菜单这件事有两条路径，只有一条做了"显示菜单"。
+
+```js
+// 启动路径（localStorage 里有 token）—— 有显示逻辑
+fetchMenu().then(function (ok) {
+  if (!ok) return;
+  $("#gate").hidden = true;     // 关掉密码门
+  $("#app").hidden = false;     // 显示菜单
+  cur = MENU.cuisines[0].id;
+  render();
+});
+
+// 输密码路径 —— 取完菜单就结束了，没人显示菜单
+.then(function (d) {
+  token = d.token;
+  localStorage.setItem(TOKEN_KEY, token);
+  return fetchMenu();           // <-- 到这里函数就没了
+})
+```
+
+所以：**密码是对的、token 存进去了、菜单也拿到了** —— 但 `#gate` 没关、`#app` 没开，
+按钮还停在 `disabled` 的「验证中…」，而且**不报任何错**，用户完全不知道为什么。
+
+**修法**：把"亮出菜单"抽成一个 `enterApp()`，两条路径都调它。
+
+```js
+function enterApp() {
+  $("#gate").hidden = true;
+  $("#app").hidden = false;
+  $("#go").disabled = false;
+  $("#go").textContent = "进 门";
+  $("#pwd").value = "";
+  if (MENU && MENU.cuisines && MENU.cuisines.length && !cur) cur = MENU.cuisines[0].id;
+  render();
+}
+```
+
+### 为什么一直没发现
+
+**因为我之前测试餐馆时，是用 API 直接拿 token 塞进 localStorage 再打开页面** ——
+那走的正好是**能用的那条路径**，把出问题的那条完全绕过去了。
+
+**教训**：测登录/解锁这种流程，**必须走用户真实走的那条路**（真填密码、真点按钮），
+不能图省事预置状态。所以这次的验证特意做了两个页面：
+一个退回旧逻辑（复现 bug，证明测试有效），一个修复版（证明修好了）：
+
+```
+旧逻辑:  #gate隐藏=false  #app显示=false  按钮disabled=true  「验证中…」  #dishes=0
+修复后:  #gate隐藏=true   #app显示=true   按钮disabled=false 「进 门」    #dishes=26
+```
+
 ## 更新数据
 
 本地（推荐）：
